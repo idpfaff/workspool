@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agent-workbook"
-version = "0.5.1"
-description = "Workspool: a local, versioned workbook for humans and MCP agents"
+version = "0.6.0"
+description = "Workspool: durable tasks, reusable results, and exact evidence for AI agents"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "LicenseRef-MIT-Commons-Clause"

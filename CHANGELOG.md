@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.0 — 2026-11-07
+
+- Add durable tasks: versioned definitions, dependent SQL steps, a coherent snapshot of all inputs, reusable materialized results, explicit partial recovery, and generation-checked publication across concurrent agents.
+- Add `task_define`, `task_run`, `task_status`, and ranked `context` retrieval through a new `agent` profile. Preserve the compatible and efficient profiles. Fresh sessions receive self-contained briefs; callers retaining an unabridged brief can request a small unchanged receipt with `base_run`.
+- Add a persistent query cache with conservative deterministic-query eligibility, cross-process single flight, owner leases and fencing, integrity validation, isolated workers, and bounded cache entries, rows, files, memory, and query time.
+- Add a persistent full-source FTS5 passage index with exact UTF-8 byte citations, immutable source versions, corruption detection, and explicit indexing and output coverage.
+- Preserve typed CSV decimals and large integer Parquet results. Reject unsupported or out-of-range HUGEINT materialization instead of silently rounding through floating point.
+- Safely reclaim abandoned import stages on macOS and Linux while file locks protect live writers.
+- Exercise the task lifecycle against 34,015,435 real Massive records and a persistent direct DuckDB control. Include independently checked full results, source-change invalidation, concurrent publication, context resets, exact MCP token counts, and a bounded live-model evaluation.
+
 ## 0.5.1 — 2026-11-07
 
 - Expand the README with everyday uses: document questions, spreadsheet analysis, writing, debugging, project follow-ups, and handoffs between agents.

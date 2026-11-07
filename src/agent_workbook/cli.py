@@ -22,6 +22,10 @@ TOOL_CHOICES = [
     "diff",
     "sync",
     "retrieve",
+    "task_define",
+    "task_run",
+    "task_status",
+    "context",
 ]
 
 
@@ -70,9 +74,9 @@ def main() -> None:
     serve.add_argument("--port", type=int, default=8731)
     serve.add_argument(
         "--profile",
-        choices=["compatible", "efficient"],
+        choices=["compatible", "efficient", "agent"],
         default="compatible",
-        help="efficient enables lazy discovery, adaptive replies, and retrieval/synchronization tools",
+        help="agent adds durable tasks and indexed context with text-only replies; efficient enables retrieval and synchronization",
     )
     serve.add_argument(
         "--response-format",
@@ -82,7 +86,7 @@ def main() -> None:
     serve.add_argument(
         "--response-content",
         choices=["both", "text", "structured"],
-        default="both",
+        default=None,
         help="return both MCP representations, or one copy for compatible hosts",
     )
     serve.add_argument(
@@ -156,7 +160,36 @@ def main() -> None:
         "--reads", default="[]", help="JSON list of ref/offset/bytes requests"
     )
     retrieve.add_argument("--max-bytes", type=int, default=32768)
-    for bounded in (sync, retrieve):
+    define = commands.add_parser(
+        "task-define", help="Save a reusable source, SQL-step and evidence plan"
+    )
+    define.add_argument("name")
+    define.add_argument("file", type=Path, help="JSON task definition")
+    define.add_argument("--expected-version", type=int)
+    task_run = commands.add_parser(
+        "task-run", help="Reconcile a task against pinned current inputs"
+    )
+    task_run.add_argument("name")
+    task_run.add_argument("--resume-from")
+    task_run.add_argument("--force", action="store_true")
+    task_status = commands.add_parser(
+        "task-status", help="Reopen a task run without recomputing"
+    )
+    task_status.add_argument("name")
+    task_status.add_argument("--run-id")
+    for task_command in (task_run, task_status):
+        task_command.add_argument(
+            "--base-run", help="Only when retaining the prior unabridged brief"
+        )
+    context = commands.add_parser(
+        "context", help="Rank exact passages using the persistent full-source index"
+    )
+    context.add_argument("query")
+    context.add_argument("--ref", action="append")
+    context.add_argument("--limit", type=int, default=8)
+    for bounded in (task_run, task_status, context):
+        bounded.add_argument("--max-bytes", type=int, default=16384)
+    for bounded in (sync, retrieve, task_run, task_status, context):
         bounded.add_argument("--max-tokens", type=int)
         bounded.add_argument(
             "--tokenizer", help="encoding name or local tokenizer.json"
@@ -225,7 +258,13 @@ def main() -> None:
                 max_preview_rows=args.max_preview_rows,
             )
             workbook = Workbook(args.workspace, settings)
-            if args.command in {"sync", "retrieve"}:
+            if args.command in {
+                "sync",
+                "retrieve",
+                "task-run",
+                "task-status",
+                "context",
+            }:
                 from .budget import token_counter, validate_limit
 
                 counter = token_counter(args.tokenizer) if args.tokenizer else None
@@ -307,6 +346,67 @@ def main() -> None:
                         args.max_bytes,
                         fits=fits,
                     )
+                case "task-define":
+                    from .tasks import define_task
+
+                    with args.file.open("rb") as stream:
+                        raw = stream.read(32769)
+                    if len(raw) > 32768:
+                        raise ValueError("Task definition exceeds 32 KiB")
+                    definition = json.loads(raw)
+                    if not isinstance(definition, dict):
+                        raise TypeError("Task definition must be a JSON object")
+                    result = define_task(
+                        workbook,
+                        args.name,
+                        **definition,
+                        expected_version=args.expected_version,
+                    )
+                case "task-run":
+                    from .tasks import run_task
+
+                    result = run_task(
+                        workbook,
+                        args.name,
+                        args.resume_from,
+                        args.force,
+                        args.max_bytes,
+                        fits,
+                        args.base_run,
+                    )
+                case "task-status":
+                    from .tasks import status
+
+                    result = status(
+                        workbook,
+                        args.name,
+                        args.run_id,
+                        args.max_bytes,
+                        fits,
+                        args.base_run,
+                    )
+                case "context":
+                    from .context_index import ranked_search
+
+                    result = ranked_search(
+                        workbook,
+                        args.query,
+                        args.ref,
+                        limit=args.limit,
+                        max_bytes=args.max_bytes,
+                    )
+                    if fits is not None:
+                        while result["hits"] and not fits(result):
+                            result["hits"].pop()
+                            result["complete"], result["truncated"] = False, True
+                        if (
+                            not fits(result)
+                            or not result["hits"]
+                            and result["truncated"]
+                        ):
+                            raise ValueError(
+                                "Context token budget cannot fit one exact chunk and its provenance"
+                            )
                 case "search":
                     from .retrieval import search
 

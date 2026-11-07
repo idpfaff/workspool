@@ -9,6 +9,7 @@ from threading import BoundedSemaphore, Timer
 
 import duckdb
 
+from .materialize import lossless_parquet_projection
 from .store import Workbook
 
 QUERY_SLOT = BoundedSemaphore(1)
@@ -195,7 +196,10 @@ def query(
             deadline.start()
             try:
                 if save_as:
-                    db.sql(sql, params=parameters or []).write_parquet(str(output))
+                    relation, conversions = lossless_parquet_projection(
+                        db.sql(sql, params=parameters or [])
+                    )
+                    relation.write_parquet(str(output))
                     cursor = db.execute(
                         "SELECT * FROM read_parquet(?) LIMIT ?",
                         [str(output), rows + 1],
@@ -203,6 +207,8 @@ def query(
                 else:
                     cursor = db.sql(sql, params=parameters or []).limit(rows + 1)
                 result = _preview(cursor, rows)
+                if save_as and conversions:
+                    result["materialized_type_conversions"] = conversions
             finally:
                 deadline.cancel()
                 deadline.join()

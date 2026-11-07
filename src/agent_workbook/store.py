@@ -8,17 +8,24 @@ import os
 import re
 import shutil
 import sqlite3
+import stat
 import tempfile
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
 from .settings import Settings
 
+try:
+    import fcntl
+except ImportError:  # Windows keeps legacy staging; no dead-writer cleanup claim.
+    fcntl = None
+
 TABLE_TYPES = {"text/csv", "application/vnd.apache.parquet"}
 MEDIA_BY_SUFFIX = {".csv": "text/csv", ".parquet": "application/vnd.apache.parquet"}
 BLOB_NAME = re.compile(r"[0-9a-f]{64}")
+STAGING_NAME = re.compile(r"\.workspool-stage-[0-9a-f]{32}-[a-z0-9_]+\.tmp")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS artifacts (
@@ -194,6 +201,40 @@ class Workbook:
         }
         return item | self._status(db, row["artifact_id"])
 
+    @contextmanager
+    def _staging(self):
+        """Create and lock a stage before GC can observe it.
+
+        POSIX flock is held until the writer closes the file, including across
+        promotion to its content hash. The catalog write lock closes the race
+        between creating a visible stage and acquiring its file lock. SIGKILL
+        releases both locks automatically. Platforms without flock retain the
+        prior unmarked staging behavior, which GC deliberately does not touch.
+        """
+        with ExitStack() as files:
+            staged = None
+            try:
+                if fcntl is None:
+                    staged = files.enter_context(
+                        tempfile.NamedTemporaryFile(dir=self.blobs, delete=False)
+                    )
+                else:
+                    with self.connect() as db:
+                        db.execute("BEGIN IMMEDIATE")
+                        staged = files.enter_context(
+                            tempfile.NamedTemporaryFile(
+                                dir=self.blobs,
+                                prefix=f".workspool-stage-{uuid4().hex}-",
+                                suffix=".tmp",
+                                delete=False,
+                            )
+                        )
+                        fcntl.flock(staged.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                yield staged
+            finally:
+                if staged is not None:
+                    Path(staged.name).unlink(missing_ok=True)
+
     def _save(
         self,
         stream,
@@ -217,7 +258,7 @@ class Workbook:
             raise ValueError("At most 16 dependencies are supported")
         digest = hashlib.sha256()
         index_bytes = self.settings.index_bytes
-        with tempfile.NamedTemporaryFile(dir=self.blobs, delete=False) as staged:
+        with self._staging() as staged:
             staged_path = Path(staged.name)
             try:
                 size = 0
@@ -554,6 +595,40 @@ class Workbook:
                     candidates.append((Path(entry.path), entry.stat().st_size))
         return candidates
 
+    def _staging_candidates(self):
+        """Recognizable regular stages only; old unmarked tmp files stay alone."""
+        if fcntl is not None:
+            with os.scandir(self.blobs) as entries:
+                for entry in entries:
+                    if STAGING_NAME.fullmatch(entry.name) and entry.is_file(
+                        follow_symlinks=False
+                    ):
+                        yield Path(entry.path)
+
+    @staticmethod
+    @contextmanager
+    def _claim_stage(path):
+        """Yield an exclusively locked abandoned stage, or None for a live one.
+
+        The caller must hold the catalog write lock for the entire context.
+        Writers acquire that same lock before stage creation and file locking.
+        """
+        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+        with os.fdopen(descriptor, "rb") as stream:
+            try:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                yield None
+                return
+            opened, current = os.fstat(stream.fileno()), path.lstat()
+            if not stat.S_ISREG(current.st_mode) or (opened.st_dev, opened.st_ino) != (
+                current.st_dev,
+                current.st_ino,
+            ):
+                yield None
+                return
+            yield stream
+
     def _collect_garbage(self) -> dict:
         """Clean up after catalog commit, rechecking references under a new lock.
 
@@ -562,7 +637,7 @@ class Workbook:
         Cleanup failures leave unused files for a later prune, never rolled-back
         catalog records pointing to already-removed content.
         """
-        count = freed = failures = 0
+        count = stages = freed = failures = 0
         errors = []
 
         def record_error(blob: str | None, exc: Exception) -> None:
@@ -584,9 +659,27 @@ class Workbook:
                     else:
                         count += 1
                         freed += size
+                for path in self._staging_candidates():
+                    try:
+                        with self._claim_stage(path) as staged:
+                            if staged is None:
+                                continue
+                            size = os.fstat(staged.fileno()).st_size
+                            path.unlink()
+                    except FileNotFoundError:
+                        continue
+                    except OSError as exc:
+                        record_error(path.name, exc)
+                    else:
+                        stages += 1
+                        freed += size
         except (OSError, sqlite3.Error) as exc:
             record_error(None, exc)
-        result = {"blobs_removed": count, "bytes_freed": freed}
+        result = {
+            "blobs_removed": count,
+            "stages_removed": stages,
+            "bytes_freed": freed,
+        }
         if failures:
             result |= {
                 "cleanup_pending": True,
@@ -662,9 +755,19 @@ class Workbook:
                 removed += self._remove(db, rows, splice=True)
             if dry_run:
                 candidates = self._garbage(db)
+                stages, stage_bytes = 0, 0
+                for path in self._staging_candidates():
+                    try:
+                        with self._claim_stage(path) as staged:
+                            if staged is not None:
+                                stages += 1
+                                stage_bytes += os.fstat(staged.fileno()).st_size
+                    except FileNotFoundError:
+                        continue
                 garbage = {
                     "blobs_removed": len(candidates),
-                    "bytes_freed": sum(size for _, size in candidates),
+                    "stages_removed": stages,
+                    "bytes_freed": sum(size for _, size in candidates) + stage_bytes,
                 }
                 db.execute("ROLLBACK")
         if not dry_run:

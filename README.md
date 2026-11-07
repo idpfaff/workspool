@@ -1,15 +1,16 @@
 # Workspool
 
-**Stop re-sending work your agent already did.**
+**Pick up a task with its sources, results, and evidence intact.**
 
-Workspool gives your AI agents a shared local workspace. Save source files, query results, drafts, and checkpoints once. Your agent can retrieve the evidence it needs, calculate answers locally, and continue the work in another session or model.
+Workspool gives AI agents a shared local workspace for work that continues across sessions. Save a task's source files, SQL steps, and evidence searches once. Each run pins a coherent set of source versions, reuses eligible calculated results, and returns a brief with exact source citations and explicit freshness and omission status.
 
-- **Use fewer tokens on large files.** Query CSV and Parquet data locally and return a compact answer.
-- **Read the relevant passages.** Search documents and retrieve exact excerpts with their source versions.
-- **Carry work between sessions.** Save decisions, results, and the next step so another agent can pick them up.
-- **Keep reused work current.** Receive document changes and see when a saved result depends on outdated inputs.
+- **Define recurring work once.** Name the inputs and dependent SQL steps, then rerun the saved plan as sources change.
+- **Reuse verified calculations.** Eligible exact queries reuse materialized results across sessions and processes. Changes to inputs, SQL, parameters, or relevant settings invalidate reuse.
+- **Resume a coherent snapshot.** Reopen a task's results without recomputing, or retry an interrupted attempt against its original input versions.
+- **Read supporting evidence.** Rank document passages through a persistent index and return exact versioned excerpts, with incomplete coverage disclosed.
+- **Keep large inputs local.** Send selected rows, answers, and passages to the agent. Use retained-context replies only when the agent still has the required base.
 
-Works with local or hosted models through an MCP-compatible agent. Your workbook stays on your machine; you choose which excerpts and results your agent reads.
+Works with local or hosted models through an MCP-compatible agent. Your workbook stays on your machine; you choose which excerpts and results your agent reads. Workspool executes the plan you or your agent define; it does not schedule runs or monitor external files automatically.
 
 ## What you can save
 
@@ -27,23 +28,27 @@ Workspool reduces the material your agent needs to read again. Use it for everyd
 
 Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not automatically add its contents to the conversation.
 
-**96.7% fewer tokens for a 1,000-row stock-data summary.** Keeping the records local saved **29,369 tokens** compared with sending the CSV to the agent:
+### Measured savings on continuing work
 
-| Records summarized | Full CSV text | Workspool, including setup | Tokens avoided |
-| ---: | ---: | ---: | ---: |
-| 1,000 | 30,375 | 1,006 | **29,369 (96.7%)** |
-| 34,015,435 | 1,027,283,033 | 1,017 | **1,027,282,016 (99.9999%)** |
+In a live agent evaluation, both approaches answered correctly using local data and saved work. Workspool's task tools reduced the tokens needed to recover and update an analysis:
 
-Counts use `cl100k_base`; Workspool includes tool setup, import, query requests, and replies. The comparison is against transmitting the source CSV once. The full 34-million-row file exceeds model context limits, so that row measures source tokens kept out of context, not an observed API bill.
+| Agent action | Existing SQL and saved-result tools | Task tools | Tokens saved |
+| --- | ---: | ---: | ---: |
+| Resume after losing conversation context | 9,840 | 6,629 | **3,211 (32.6%)** |
+| Recalculate after sources change | 12,579 | 7,730 | **4,849 (38.5%)** |
 
-The full dataset came from Massive and contains **1.86 GB of CSV data**. Querying its typed Parquet copy took **1.12 seconds** on the test machine. Saving and refreshing a **528,697-row** filtered result each took about one second. [See the token counts and full stress-test results](benchmarks/MASSIVE_STRESS.md#token-savings).
+These are provider-reported input plus output tokens for one small workflow, including tool schemas and model decisions. Creating the task cost more; across initial setup and all three follow-ups, task tools used **33,814 tokens versus 33,012**, or 2.4% more overall. The benefit appeared in recovery and source updates, not every turn. [Full results, including the initial failures and fixes](benchmarks/TASK_MODEL.md).
+
+On **34,015,435 real market records**, a three-step task took **1.38 seconds cold and 22 ms with reusable results**. Changing one input recomputed its two affected steps and reused the independent branch. A direct cached DuckDB script was faster; Workspool supplies the shared task state, provenance, recovery, and agent interface. [Stress results and token counts](benchmarks/TASK_STRESS.md) · [Task API and limits](benchmarks/TASKS.md).
+
+As a source-exclusion example, the recorded 1,000-row stock-data summary used **1,006 `cl100k_base` tokens**, including compatible-profile setup, import, query requests, and replies, versus **30,375 tokens** for the CSV alone. That measures text kept out of context, not a provider bill or an advantage over a local SQL script. The [Massive stress report](benchmarks/MASSIVE_STRESS.md#token-savings) also covers 34 million real rows and the limits of that comparison.
 
 ## Quick start
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.5.1 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.6.0 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
@@ -65,7 +70,7 @@ Use stdio with a local MCP host. Give each host the same absolute workspace path
   "mcpServers": {
     "workspool": {
       "command": "/absolute/path/to/workspool/.venv/bin/workspool",
-      "args": ["--workspace", "/absolute/path/to/MyWorkbook", "serve"]
+      "args": ["--workspace", "/absolute/path/to/MyWorkbook", "serve", "--profile", "agent"]
     }
   }
 }
@@ -77,17 +82,103 @@ The workbook defaults to `~/.agent-workbook/default`. Set `WORKSPOOL_HOME` or pa
 
 Workspool speaks MCP and runs independently of the model. Any host that supports MCP tool calls works, with a local MLX model, another local runtime, or a hosted model. The host decides which tool responses it forwards to its model.
 
-For the retrieval and revision features, start with:
+For new agent integrations, use the `agent` profile:
 
 ```sh
-uv run workspool --workspace ~/MyWorkbook serve --profile efficient
+uv run workspool --workspace ~/MyWorkbook serve --profile agent
 ```
 
-This exposes the six existing operations plus `search`, `describe`, `diff`, `sync`, and `retrieve` through the lazy `workspool` dispatcher, with adaptive text replies. The default `compatible` profile retains the six eager tools and compact JSON. `--tools`, `--tool-discovery`, and `--response-format` override the selected profile; `import` and `delete` always require an explicit allowlist.
+It exposes the existing storage, query, and retrieval operations plus `task_define`, `task_run`, `task_status`, and `context` through one lazy `workspool` dispatcher. Adaptive text replies carry one copy of the result. The host must support the dispatcher and text response blocks.
+
+Starting `serve` without a profile still selects `compatible`: six eager tools, compact JSON, and both text and structured replies. `efficient` adds retrieval and revision operations with lazy discovery and adaptive replies, but does not add task operations and retains both response copies. `--tools`, `--tool-discovery`, `--response-format`, and `--response-content` override a profile. `import` and `delete` always require an explicit allowlist.
+
+## Define a task, then run or reopen it
+
+This example keeps a spending report and its review policy together. Create and import the sample inputs from the project directory:
+
+```sh
+mkdir -p demo-input
+printf 'category,amount\nHosting,40.25\nHosting,9.75\nTools,15.00\n' > demo-input/spending.csv
+printf 'Review categories with total spending of at least 50.00 before renewing.\n' > demo-input/policy.txt
+uv run workspool --workspace ~/MyWorkbook import demo-input/spending.csv --name demo/spending
+uv run workspool --workspace ~/MyWorkbook import demo-input/policy.txt --name demo/policy
+```
+
+With the `agent` profile, call the `workspool` tool with this JSON to save the plan:
+
+```json
+{
+  "tool": "task_define",
+  "arguments": {
+    "name": "spending-review",
+    "objective": "Total spending by category, flag categories requiring review, and cite the policy.",
+    "sources": {"spending": "demo/spending", "policy": "demo/policy"},
+    "csv_types": {"spending": {"amount": "DECIMAL(18,2)"}},
+    "steps": [
+      {
+        "name": "totals",
+        "inputs": ["spending"],
+        "sql": "SELECT category, sum(amount) AS total FROM input1 GROUP BY category ORDER BY category"
+      },
+      {
+        "name": "review",
+        "inputs": ["totals"],
+        "sql": "SELECT category, total FROM input1 WHERE total >= ? ORDER BY total DESC, category",
+        "parameters": [50]
+      }
+    ],
+    "searches": ["review"]
+  }
+}
+```
+
+Each step's ordered `inputs` become SQL tables `input1`, `input2`, and so on. Later steps can consume earlier results. Explicit CSV types preserve the intended decimal precision; imported Parquet already supplies its schema. Updating the definition requires its current `expected_version`.
+
+By default, `task_define` resolves each source name or artifact ID to its stable name. Future runs follow that name's latest version, even when the definition originally received an immutable ID. Set `"pin_sources": true` in the definition arguments to keep exactly the versions resolved at definition time across future runs; updating those inputs then requires a revised definition. Every run still pins one coherent snapshot before executing its steps.
+
+If you provide evidence `searches`, include at least one document-text source in `sources`, as this example does with `policy`. A definition containing searches but only table sources is rejected with an actionable error; CSV or Parquet tables alone cannot supply document citations.
+
+Run the task:
+
+```json
+{"tool":"task_run","arguments":{"name":"spending-review"}}
+```
+
+The brief includes the source versions, both step results, materialized artifact IDs, and a policy citation. Here `Hosting` totals `50.00` and requires review. Repeating the run reuses eligible results. After importing a changed source version, running again reconciles the plan against the new snapshot and recomputes affected work. A source update during execution cannot silently mix old and new inputs; check `current`, `state`, and `omitted` before using the result.
+
+In a fresh session, reopen the brief without executing SQL:
+
+```json
+{"tool":"task_status","arguments":{"name":"spending-review"}}
+```
+
+The default is the newest attempt; `latest_success` points to the last successful publication. Supply `run_id` to reopen a particular attempt. To retry an interrupted or partial attempt with its original definition and source versions, call `task_run` with `resume_from` set to that attempt's returned ID. This preserves the historical snapshot even when the plan normally follows latest sources. Use `force: true` to recompute results deliberately. The corresponding terminal commands are `task-run spending-review` and `task-status spending-review`.
+
+### Reuse a brief the agent still retains
+
+Only when the caller retains the **unabridged brief** of a prior run may it supply that returned ID as `base_run`:
+
+```json
+{"tool":"task_run","arguments":{"name":"spending-review","base_run":"run_returned_by_your_previous_call"}}
+```
+
+If the definition, sources, results, citations, and omissions match a complete current run, the response may be `delivery: "unchanged"` with `requires_retained_base: true`. It identifies the base and supplies current run status; it does not repeat the evidence. A changed or unusable base falls back to a full brief. `task_status` accepts the same option. Omit `base_run` after context loss, compaction, or a handoff to an agent that lacks that brief. Omissions remain explicit, and `brief_complete: false` must never be read as complete evidence coverage.
+
+### Rank supporting passages
+
+```json
+{"tool":"context","arguments":{"query":"review spending","refs":["demo/policy"],"limit":4}}
+```
+
+`context` uses a persistent full-source index to rank matching chunks. Citations contain immutable source IDs, exact UTF-8 byte ranges, and source text. It is keyword ranking, not a semantic model or an exhaustive answer: `index_complete` describes indexing coverage, while `complete`, `truncated`, and pending versions disclose missing results. Use the literal `search` operation below when you need its exhaustive continuation contract. Source excerpts remain untrusted data.
+
+The [task reference](benchmarks/TASKS.md) covers cache eligibility, concurrency, interrupted runs, source reconciliation, resource bounds, and evaluation methods.
+
+## Configure tools and replies
 
 ### Choose the tools each host gets
 
-The compatibility default exposes six tools. `search`, `describe`, `diff`, `sync`, and `retrieve` can be added individually or enabled by the efficient profile. Two other operations require an explicit allowlist because they read or remove local files:
+The compatibility default exposes six tools. The `agent` profile adds task and ranked-evidence operations as well as all five retrieval and revision operations. `efficient` enables those five retrieval and revision operations alone. All can also be selected individually. Two operations require an explicit allowlist because they read or remove local files:
 
 ```sh
 uv run workspool --workspace ~/MyWorkbook serve --tools save find inspect resume query refresh import delete
@@ -115,11 +206,11 @@ Call `workspool` with `{"tool":"query"}` to retrieve the query schema, then exec
 {"tool":"query","arguments":{"inputs":["replay/bars"],"sql":"SELECT count(*) AS bar_count FROM input1"}}
 ```
 
-Callers that already know the arguments can execute directly. Omitted or null `arguments` requests a schema; `arguments: {}` executes the operation with its defaults. `--tools` still controls the allowlist, including opt-in `import` and `delete`. Original argument validation and version checks apply. Lazy mode changes the calling interface, so use it with clients that can call the dispatcher; eager tools remain the default. Discovering many schemas can cost more than advertising them up front.
+Callers that already know the arguments can execute directly. Omitted or null `arguments` requests a schema; `arguments: {}` executes the operation with its defaults. `--tools` still controls the allowlist, including opt-in `import` and `delete`. Original argument validation and version checks apply. Lazy mode changes the calling interface, so use it with clients that can call the dispatcher; the compatible profile keeps eager tools. Discovering many schemas can cost more than advertising them up front.
 
 ### Keep MCP overhead small
 
-Replies are compact JSON by default. IDs, names, versions, freshness flags, dependencies, checkpoint fields, query results, and requested excerpts are always present. The compact form of `inspect` omits the summary, source label, hash, timestamp, size, kind, media type, and previous version ID; request `inspect` with `full: true` for all of them, or start with `serve --response-format full` to get full metadata in every reply. `find` and `resume` keep summaries, since that is where you decide what to open. CLI output is always full.
+The compatible profile uses compact JSON. Its artifact metadata keeps IDs, names, versions, freshness flags, dependencies, and requested excerpts. The compact form of `inspect` omits the summary, source label, hash, timestamp, size, kind, media type, and previous version ID; request `inspect` with `full: true` for all of them, or start with `serve --response-format full` to get full metadata in every reply. `find` and `resume` keep summaries, since that is where you decide what to open. Task briefs retain their provenance fields and disclose any budget omissions. CLI output uses the full metadata representation.
 
 Read related artifacts in one call:
 
@@ -135,13 +226,13 @@ For long document reads, text format avoids quoting and escaping the excerpt ins
 uv run workspool --workspace ~/MyWorkbook serve --tools inspect --response-format text --response-content text
 ```
 
-In text format, `content[0].text` contains compact JSON metadata. Each artifact's `excerpt_block` is the zero-based index of the content block containing its exact raw excerpt; batches preserve the `artifacts` array. Full metadata and pagination work as before. With the default `--response-content both`, `structuredContent` retains the original object with string `excerpt` fields. Choose `text` to omit that structured copy, or `structured` to omit successful text replies for hosts that consume structured results. Errors remain readable text. These modes require a compatible host; [the report](benchmarks/EFFICIENCY.md#response-representations) specifies the block layout and measured tradeoffs.
+In text format, `content[0].text` contains compact JSON metadata. Each artifact's `excerpt_block` is the zero-based index of the content block containing its exact raw excerpt; batches preserve the `artifacts` array. Full metadata and pagination work as before. With `--response-content both` (the compatible/efficient profile default), `structuredContent` retains the original object with string `excerpt` fields. Choose `text` to omit that structured copy, or `structured` to omit successful text replies for hosts that consume structured results. Errors remain readable text. These modes require a compatible host; [the report](benchmarks/EFFICIENCY.md#response-representations) specifies the block layout and measured tradeoffs.
 
 `--response-format adaptive` chooses among compact JSON, raw excerpt blocks, and packed artifact metadata using serialized byte size. It preserves missing fields, nulls, values, and exact excerpts. With `--tokenizer`, it instead chooses the lowest counted serialized result among its lossless representations; without a tokenizer, byte size remains a heuristic. Hosts can reconstruct the original object with [`agent_workbook.render.decode`](src/agent_workbook/render.py); `structuredContent` stays unchanged when present. The [workflow report](benchmarks/WORKFLOWS.md#adaptive-replies) describes the versioned envelopes.
 
 ### Retrieve the evidence you need
 
-Under the efficient profile, call `workspool` with a literal source search:
+Under the agent or efficient profile, call `workspool` with a literal source search:
 
 ```json
 {"tool":"search","arguments":{"text":"release code","context_bytes":128}}
@@ -202,12 +293,12 @@ Install the optional tokenizer dependencies and configure the encoding explicitl
 ```sh
 uv sync --locked --extra tokens
 uv run --locked --extra tokens workspool --workspace ~/MyWorkbook serve \
-  --profile efficient --tokenizer cl100k_base
+  --profile agent --tokenizer cl100k_base
 ```
 
-Then include `"max_tokens": 800` in a `sync` or `retrieve` call. Supported encodings are `cl100k_base`, `o200k_base`, or a path to a local `tokenizer.json`; Workspool does not guess an encoding from a model name. Named encodings may download their rank files on first use. A local tokenizer file works offline.
+Then include `"max_tokens": 800` in a `task_run`, `task_status`, `context`, `sync`, or `retrieve` call. Supported encodings are `cl100k_base`, `o200k_base`, or a path to a local `tokenizer.json`; Workspool does not guess an encoding from a model name. Named encodings may download their rank files on first use. A local tokenizer file works offline.
 
-The limit counts the exact compact JSON serialization of the **complete successful MCP result**, including both text and structured content when enabled. It excludes JSON-RPC framing, provider message formatting, and error replies, so it is not a billing cap. Limits are 1–131,072 tokens. Requests without a configured tokenizer, or budgets too small for metadata and progress, fail explicitly. CLI `sync`/`retrieve` also support `--tokenizer` and `--max-tokens`, counting their actual printed JSON and final newline instead.
+The limit counts the exact compact JSON serialization of the **complete successful MCP result**, including both text and structured content when enabled. It excludes JSON-RPC framing, provider message formatting, and error replies, so it is not a billing cap. Limits are 1–131,072 tokens. Requests without a configured tokenizer, or budgets too small for required metadata, fail explicitly. Task briefs may omit whole result previews or citations and report those omissions; `context` may return fewer complete chunks. The matching CLI commands also support `--tokenizer` and `--max-tokens`, counting their actual printed JSON and final newline instead.
 
 Adaptive replies may use a `sources-v1` envelope: `data` holds metadata and `excerpt_paths` identifies where the following exact text blocks belong. Use `agent_workbook.render.decode` to reconstruct it. Structured content always retains the original object. Token budgets limit output size; they do not summarize or discard evidence silently.
 
@@ -340,7 +431,7 @@ When a new snapshot arrives, import it under `replay/bars` with `--expected-vers
 
 ## Delete and prune
 
-Nothing is removed on its own. Deletion refuses versions another artifact still pins and names the blockers. Pruning skips pinned versions.
+Saved artifacts are not removed on their own. The query reuse cache can evict entries; promoted task results and source/run records remain durable artifacts. Deletion refuses versions another artifact still pins and names the blockers. Pruning skips pinned versions.
 
 - `delete <wb_id>` removes one superseded version. `delete <name> --expected-version N` removes every version of a name, with the same version check an update makes.
 - `prune` drops superseded versions nothing pins, keeping the newest `--keep` versions of each name (default 1). It runs to a fixed point, so an old result and the old input it pinned go together. `prune --dry-run` reports what would go.
@@ -363,7 +454,7 @@ Over MCP, `delete` is available only to hosts whose `--tools` list includes it.
 - **Results pin their input IDs.** If any recorded input or ancestor has a newer version, the derived result is marked stale. Queries require current inputs by default; set `allow_historical` to replay a specific older snapshot.
 - **Imports are snapshots.** When the original file changes, import a new version. The previous bytes stay available by artifact ID until you delete or prune them.
 - **Native files stay in their original format.** The MCP tools return paged excerpts for supported text and query CSV or Parquet. Use `export` to copy any version back out, such as a PDF or an image: `uv run workspool --workspace ~/MyWorkbook export replay/bars ./bars-copy.parquet`.
-- **Large integers stay exact.** Query previews return integers outside JavaScript's safe range as decimal strings and list the affected columns in `integer_string_columns`. Parquet results keep their original types. Pass a large integer back through a JSON client as a string with an explicit SQL cast.
+- **Large integers stay exact.** Query previews return integers outside JavaScript's safe range as decimal strings and list the affected columns in `integer_string_columns`. Materialization stores DuckDB `HUGEINT`/`UHUGEINT` columns as checked `DECIMAL(38,0)` and reports the conversion; values outside that range fail instead of rounding through floating point. Pass a large integer back through a JSON client as a string with an explicit SQL cast.
 
 ## MCP tools
 
@@ -375,11 +466,15 @@ Over MCP, `delete` is available only to hosts whose `--tools` list includes it.
 | `resume` | Open a checkpoint and preview every artifact it pins. |
 | `query` | Run one SELECT over selected CSV or Parquet artifacts as `input1`, `input2`, and so on. Optionally save the full result as Parquet. |
 | `refresh` | Rerun a saved query using the current versions of its direct inputs. |
-| `search` | Efficient profile or explicit allowlist. Find exact source passages beyond the catalog index, with bounded scanning and continuations. |
-| `describe` | Efficient profile or explicit allowlist. Page through exact table column names and SQL types without returning rows. |
-| `diff` | Efficient profile or explicit allowlist. Return exact edits against a complete immutable base the caller retains, or request a full read. |
-| `sync` | Efficient profile or explicit allowlist. Return unchanged status, exact edits, or a full page of the current source in one call. |
-| `retrieve` | Efficient profile or explicit allowlist. Combine up to 8 literal searches and 16 byte-range reads, merging overlapping spans. |
+| `task_define` | Agent profile or explicit allowlist. Save a versioned plan with source aliases, dependent SQL steps, optional CSV types, and evidence searches. Sources follow latest versions by default; `pin_sources: true` fixes the resolved versions. |
+| `task_run` | Agent profile or explicit allowlist. Pin a source snapshot, reuse eligible materialized results, and return results with exact evidence and status. |
+| `task_status` | Agent profile or explicit allowlist. Reopen a persisted attempt without recomputing; default replies are self-contained. |
+| `context` | Agent profile or explicit allowlist. Rank exact document chunks through a persistent full-source index, reporting coverage and omitted matches. |
+| `search` | Agent/efficient profile or explicit allowlist. Find exact source passages beyond the catalog index, with bounded scanning and continuations. |
+| `describe` | Agent/efficient profile or explicit allowlist. Page through exact table column names and SQL types without returning rows. |
+| `diff` | Agent/efficient profile or explicit allowlist. Return exact edits against a complete immutable base the caller retains, or request a full read. |
+| `sync` | Agent/efficient profile or explicit allowlist. Return unchanged status, exact edits, or a full page of the current source in one call. |
+| `retrieve` | Agent/efficient profile or explicit allowlist. Combine up to 8 literal searches and 16 byte-range reads, merging overlapping spans. |
 | `import` | Opt-in. Copy a local file by absolute path in its native format: CSV, Parquet, PDF, images, anything. |
 | `delete` | Opt-in. Delete a superseded version by ID, or every version of a name with its `expected_version`. |
 
@@ -392,12 +487,14 @@ The defaults keep a query predictable on a laptop; raise them when the machine a
 | `--query-timeout` | 15 s | a running SELECT is interrupted after this |
 | `--query-memory` | 1GB | DuckDB memory limit |
 | `--query-threads` | 2 | DuckDB threads per query |
-| `--max-preview-rows` | 25 | most rows one query reply previews; the preview is also capped at about 7.5 KB |
+| `--max-preview-rows` | 25 | most rows an ordinary query reply previews; the preview is also capped at about 7.5 KB; task steps preview 5 rows |
 | `--index-bytes` | 65536 | bytes of each text artifact indexed for `find` |
 
-The indexing limit applies when saving a new version. Existing versions keep their earlier search index; import a new version to index more of an existing source.
+The `find` indexing limit applies when saving a new version. Existing versions keep their earlier catalog index; import a new version to index more of an existing source. The persistent full-source index used by `context` and task evidence has separate bounded build/query work and reports pending versions.
 
-Fixed bounds: names up to 120 characters, summaries and source labels up to 360, at most 16 dependencies per artifact, at most 8 inputs and 6,000 characters of SQL per query, one query at a time per server process, and 8 KiB per `inspect` excerpt page. The `sync` and `retrieve` limits are documented above.
+Fixed bounds include names up to 120 characters, summaries and source labels up to 360, at most 16 dependencies per artifact, at most 8 inputs and 6,000 characters of SQL per query, and 8 KiB per `inspect` excerpt page. The existing `query`/`refresh` path serializes queries within its server process. Task steps use separate bounded workers and coordinate same-key cache computation across processes.
+
+A task supports up to 8 source aliases, 8 SQL steps, and 8 evidence searches. Steps execute sequentially, with at most 1 million materialized rows and 64 MiB per cached result. The reuse cache defaults to 256 MiB and 128 entries, with leased reservations and eviction. These are per-step/cache limits: they are not a whole-run deadline, a process RSS cap, or a total workbook storage quota. Durable task results and source/run anchors remain pinned after cache eviction. See [task limits and recovery](benchmarks/TASKS.md) for the precise guarantees; `sync` and `retrieve` limits are documented above.
 
 ## Try a local example
 
@@ -418,7 +515,11 @@ Detailed measurements, evaluation results, and reproduction instructions are ava
 
 ## How it runs
 
-SQLite stores the artifact catalog, search index, checkpoints, and dependency links. File contents live under their SHA-256 hashes in the workspace directory. DuckDB runs analytical queries in a separate in-memory connection with file access limited to the selected artifacts and the temporary output used when saving.
+SQLite stores the artifact catalog, checkpoints, dependency links, and task ledger. Separate local databases hold the reusable query cache and ranked text index. File contents live under their SHA-256 hashes in the workspace directory.
+
+Ordinary `query` calls use a restricted in-memory DuckDB connection. Task steps execute in bounded DuckDB worker processes, materialize exact results, and promote them into versioned artifacts. Cache keys bind the exact SQL, typed parameters, ordered immutable inputs, reader types, engine version, and relevant settings. Only conservatively classified deterministic queries qualify for reuse; other accepted queries still execute but are not reused. Cross-process leases coordinate eligible computations and allow recovery after an owner dies.
+
+Each task run pins its definition and sources before executing steps. Publication checks freshness and generation order, so an older finishing run cannot replace a newer successful brief. Interrupted attempts retain completed progress; explicitly resume their snapshot to continue. Immutable run artifacts describe computation snapshots and direct readers to `task_status` for publication and freshness status.
 
 The server is designed for trusted local workspaces and files. Give each host access to the workspace it needs, and the tools it needs. Checkpoints are saved explicitly, and freshness follows the versions recorded in the workbook.
 
@@ -437,7 +538,7 @@ uv run --no-sync ruff check src tests benchmarks
 uv run --no-sync ruff format --check src tests
 ```
 
-CI runs the suite on Linux and macOS with Python 3.11 to 3.13, and once more with the minimum supported MCP SDK. Coverage includes independent-session handoffs, stale results and refresh, deletion and pruning with pinned versions, the opt-in tools, HTTP authentication, exact large integers, batched Unicode reads, complete metadata access, restricted tool registration, current-version synchronization, merged retrieval and pagination, and exact serialized token limits.
+CI runs the suite on Linux and macOS with Python 3.11 to 3.13, and once more with the minimum supported MCP SDK. Coverage includes independent-session handoffs, stale results and refresh, deletion and pruning with pinned versions, the opt-in tools, HTTP authentication, exact large integers, batched Unicode reads, complete metadata access, restricted tool registration, current-version synchronization, merged retrieval and pagination, exact serialized token limits, task snapshot races, cache process death and singleflight, typed CSV materialization, and explicit evidence omissions.
 
 To publish a new GitHub release, update the version in `pyproject.toml` and `uv.lock`, add its changelog entry, and push to `main`. The release workflow runs when the package metadata or release workflow changes, and also supports manual runs on `main`. It tests the package, verifies the license in both archives, and publishes a new version tag with a wheel, source distribution, and checksums. It refuses to replace an existing tag or release. It does not publish to PyPI.
 
