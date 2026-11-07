@@ -1,0 +1,4521 @@
+{
+  "source_sha256": {
+    "benchmarks/massive_stress.py": "e149563d6ce29285ade6d57ab440f81930e3525cf445aa227fcc21bc3e3cb855",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "a754cae2b8d50c1e3347f9fca3d740276bb4103e3ca82c5142d97b9bfa528629",
+    "src/agent_workbook/cli.py": "e73c54d3626202d7cf388db313425165b6eb69b8dc1a83cd711e1afad674e774",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/server.py": "185b9661a34a5f0bb63dc8bfeaa870ce0fd7a908e810171aedebab26ff526d53",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0"
+  },
+  "runtime": {
+    "python": "3.13.15",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "packages": {
+      "mcp": "1.30.0",
+      "duckdb": "1.5.6",
+      "pyarrow": "23.0.1",
+      "psutil": "7.2.2",
+      "tiktoken": "0.14.0"
+    }
+  },
+  "scope": "Real local rows, no replication or model calls. Local computation/IO versus direct DuckDB, not a raw-corpus model-latency claim. MCP payload counts are not provider billing. Canonical decimal conversion is exact or fails.",
+  "limits": {
+    "case_seconds": 180,
+    "preparation_seconds": 1800,
+    "tree_rss_bytes": 4294967296,
+    "output_bytes": 42949672960,
+    "minimum_free_bytes": 10737418240
+  },
+  "timing_limits": "Import/staging touch files: timings use uncontrolled/warm OS caches, never claimed as cold-disk or statistical speedup. Direct SELECT uses identical SQL, fresh connections, memory/threads and preview limit; direct materialization omits Workspool catalog/version copy. Worker/direct RSS and server RSS are distinct processes. Sampled tree RSS includes descendants, may miss peaks, and allows polling-interval overshoot. Native ru_maxrss is reported separately.",
+  "source_files_unchanged": true,
+  "output_bytes_after_cleanup": 3910176675,
+  "settings": {
+    "rows": [
+      1000000,
+      5000000,
+      10000000,
+      25000000,
+      34015435
+    ],
+    "decimal_scale": 12,
+    "batch_rows": 16384,
+    "query_timeout": 15,
+    "query_memory": "1GB",
+    "query_threads": 2,
+    "concurrent_reads": 3,
+    "saved_rows_cap": 1000000
+  },
+  "preparation": {
+    "guard": {
+      "status": "ok",
+      "exit_code": 0,
+      "elapsed_seconds": 47.622192625072785,
+      "peak_sampled_tree_rss_bytes": 268500992,
+      "rss_samples": 760,
+      "rss_sampling_seconds": 0.05,
+      "output_bytes_after_exit": 3858413027,
+      "free_disk_bytes_after_exit": 708972740608
+    },
+    "source_rows_used": 34015435,
+    "source_bytes": 1855955557,
+    "maximum_batch_rows": 16384,
+    "elapsed_seconds": 47.51838033297099,
+    "selection": "Prefix of sorted source paths and original row order; no replication, resampling, deduplication, or shuffled population claim.",
+    "snapshots": {
+      "999999": {
+        "rows": 999999,
+        "bytes": 26953982,
+        "sha256": "67d4d4c4d8aa82550b10a3b20566c1e5e06ee01bcf8589d2adb58b0a9fefa2b2",
+        "oracle": {
+          "aggregate": [
+            999999,
+            4,
+            1704186000000,
+            1767229080000,
+            "28189125301",
+            "444523436",
+            "99.88",
+            "638.25",
+            434261
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 207349
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            15413,
+            4,
+            1704188160000,
+            1767225600000,
+            "370106401",
+            "6113082",
+            "100",
+            "638.25",
+            6785
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3180
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "9464561631e556599989a6813734604b62317cb439403682609423f0da9d73d9"
+        }
+      },
+      "1000000": {
+        "rows": 1000000,
+        "bytes": 26954011,
+        "sha256": "5b5567439870735997025b74a8fa2bedc6f73210019d8d8c038ceb910b7c1ce9",
+        "oracle": {
+          "aggregate": [
+            1000000,
+            4,
+            1704186000000,
+            1767229080000,
+            "28189132591",
+            "444523726",
+            "99.88",
+            "638.25",
+            434262
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 207350
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            15413,
+            4,
+            1704188160000,
+            1767225600000,
+            "370106401",
+            "6113082",
+            "100",
+            "638.25",
+            6785
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3180
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "9464561631e556599989a6813734604b62317cb439403682609423f0da9d73d9"
+        }
+      },
+      "4999999": {
+        "rows": 4999999,
+        "bytes": 134125726,
+        "sha256": "1f6366e3aa026e51206f8a01eb4af179e86c95f18262412a0c062a31eb3d03d3",
+        "oracle": {
+          "aggregate": [
+            4999999,
+            20,
+            1704186000000,
+            1767229140000,
+            "134983046607",
+            "1685829744",
+            "21.5",
+            "1219.9399",
+            2061260
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 14398
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            77694,
+            20,
+            1704188160000,
+            1767225600000,
+            "1823746933",
+            "23563977",
+            "22.25",
+            "1212",
+            32230
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 234
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "957f30efa58aaaa5d38a5a73ddfd3ca518f1679298d3ccade06a020468c81133"
+        }
+      },
+      "5000000": {
+        "rows": 5000000,
+        "bytes": 134125727,
+        "sha256": "3113946ed15e0a1a71e228cdbc251b9ed19e4ee4ed415b0f3cca03e8782f7da7",
+        "oracle": {
+          "aggregate": [
+            5000000,
+            20,
+            1704186000000,
+            1767229140000,
+            "134983051124",
+            "1685829870",
+            "21.5",
+            "1219.9399",
+            2061260
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 14399
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            77694,
+            20,
+            1704188160000,
+            1767225600000,
+            "1823746933",
+            "23563977",
+            "22.25",
+            "1212",
+            32230
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 234
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "957f30efa58aaaa5d38a5a73ddfd3ca518f1679298d3ccade06a020468c81133"
+        }
+      },
+      "9999999": {
+        "rows": 9999999,
+        "bytes": 261550133,
+        "sha256": "452e948281371be3e294059da7037f6bef1e43664e55943019cc3ce16a68fa03",
+        "oracle": {
+          "aggregate": [
+            9999999,
+            41,
+            1704186000000,
+            1767229140000,
+            "243573048543.925",
+            "2706711335",
+            "8.37",
+            "1219.9399",
+            4150996
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 201318,
+            "CMCSA": 218988,
+            "COIN": 339979,
+            "COP": 205982,
+            "COST": 200618,
+            "CRM": 224467,
+            "CRWD": 232502,
+            "CVS": 218111,
+            "CVX": 220292,
+            "DASH": 206392,
+            "DDOG": 213004,
+            "DE": 183471,
+            "DIA": 242031,
+            "DIS": 236893,
+            "F": 301187,
+            "FDX": 193411,
+            "GDX": 298874,
+            "GE": 211972,
+            "GILD": 207407,
+            "GLD": 293184,
+            "GM": 222245,
+            "GOOG": 142070
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            155025,
+            41,
+            1704188160000,
+            1767225600000,
+            "3295654234.038",
+            "38012118",
+            "8.42",
+            "1212",
+            64819
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 3086,
+            "CMCSA": 3354,
+            "COIN": 5345,
+            "COP": 3183,
+            "COST": 3062,
+            "CRM": 3482,
+            "CRWD": 3555,
+            "CVS": 3369,
+            "CVX": 3420,
+            "DASH": 3169,
+            "DDOG": 3283,
+            "DE": 2793,
+            "DIA": 3737,
+            "DIS": 3667,
+            "F": 4729,
+            "FDX": 2966,
+            "GDX": 4672,
+            "GE": 3274,
+            "GILD": 3183,
+            "GLD": 4599,
+            "GM": 3419,
+            "GOOG": 2218
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "5acb69afaeb393c6092cc6c4617a9b93ee6af68c9732a8f1baee3d9b15c9d23c"
+        }
+      },
+      "10000000": {
+        "rows": 10000000,
+        "bytes": 261550157,
+        "sha256": "1f2d9ea34a66ce60cb8af07bb265fa7d5ff67f912b1d2964ebb4697b2eb8858e",
+        "oracle": {
+          "aggregate": [
+            10000000,
+            41,
+            1704186000000,
+            1767229140000,
+            "243573095513.925",
+            "2706711967",
+            "8.37",
+            "1219.9399",
+            4150996
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 201318,
+            "CMCSA": 218988,
+            "COIN": 339979,
+            "COP": 205982,
+            "COST": 200618,
+            "CRM": 224467,
+            "CRWD": 232502,
+            "CVS": 218111,
+            "CVX": 220292,
+            "DASH": 206392,
+            "DDOG": 213004,
+            "DE": 183471,
+            "DIA": 242031,
+            "DIS": 236893,
+            "F": 301187,
+            "FDX": 193411,
+            "GDX": 298874,
+            "GE": 211972,
+            "GILD": 207407,
+            "GLD": 293184,
+            "GM": 222245,
+            "GOOG": 142071
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            155025,
+            41,
+            1704188160000,
+            1767225600000,
+            "3295654234.038",
+            "38012118",
+            "8.42",
+            "1212",
+            64819
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 3086,
+            "CMCSA": 3354,
+            "COIN": 5345,
+            "COP": 3183,
+            "COST": 3062,
+            "CRM": 3482,
+            "CRWD": 3555,
+            "CVS": 3369,
+            "CVX": 3420,
+            "DASH": 3169,
+            "DDOG": 3283,
+            "DE": 2793,
+            "DIA": 3737,
+            "DIS": 3667,
+            "F": 4729,
+            "FDX": 2966,
+            "GDX": 4672,
+            "GE": 3274,
+            "GILD": 3183,
+            "GLD": 4599,
+            "GM": 3419,
+            "GOOG": 2218
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "5acb69afaeb393c6092cc6c4617a9b93ee6af68c9732a8f1baee3d9b15c9d23c"
+        }
+      },
+      "24999999": {
+        "rows": 24999999,
+        "bytes": 643568647,
+        "sha256": "0687c6ce3719af1f8ff3440f341732999ea581abfa8c6638a7fdf4b577a3a8ad",
+        "oracle": {
+          "aggregate": [
+            24999999,
+            97,
+            1704186000000,
+            1767229140000,
+            "811059005406.725",
+            "7560492922",
+            "3.02",
+            "1219.9399",
+            10229468
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 201318,
+            "CMCSA": 218988,
+            "COIN": 339979,
+            "COP": 205982,
+            "COST": 200618,
+            "CRM": 224467,
+            "CRWD": 232502,
+            "CVS": 218111,
+            "CVX": 220292,
+            "DASH": 206392,
+            "DDOG": 213004,
+            "DE": 183471,
+            "DIA": 242031,
+            "DIS": 236893,
+            "F": 301187,
+            "FDX": 193411,
+            "GDX": 298874,
+            "GE": 211972,
+            "GILD": 207407,
+            "GLD": 293184,
+            "GM": 222245,
+            "GOOG": 319893,
+            "GOOGL": 342625,
+            "GS": 201468,
+            "HD": 205641,
+            "HOOD": 357058,
+            "HYG": 206117,
+            "INTC": 408156,
+            "INTU": 184536,
+            "IWM": 375462,
+            "JD": 298323,
+            "JNJ": 208364,
+            "JPM": 223503,
+            "KLAC": 163317,
+            "KO": 235750,
+            "LCID": 359639,
+            "LLY": 218120,
+            "LMT": 183590,
+            "LOW": 197829,
+            "LRCX": 209589,
+            "MA": 196638,
+            "MCD": 205373,
+            "MDB": 200493,
+            "META": 307366,
+            "MRK": 216844,
+            "MS": 207187,
+            "MSFT": 309944,
+            "MU": 340444,
+            "NET": 212233,
+            "NFLX": 241652,
+            "NIO": 385486,
+            "NKE": 261755,
+            "NOW": 186135,
+            "NVDA": 466480,
+            "NVO": 295064,
+            "ORCL": 262714,
+            "OXY": 267661,
+            "PANW": 222276,
+            "PDD": 270367,
+            "PEP": 213711,
+            "PFE": 315224,
+            "PG": 207208,
+            "PLTR": 433655,
+            "PM": 202252,
+            "PYPL": 269467,
+            "QCOM": 239425,
+            "QQQ": 431329,
+            "RIVN": 342376,
+            "RTX": 205233,
+            "SBUX": 230213,
+            "SCHW": 206760,
+            "SHOP": 243296,
+            "SLB": 216978,
+            "SLV": 328539,
+            "SMH": 248682,
+            "SNOW": 244804,
+            "SOFI": 394602,
+            "SOXX": 213224
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            388345,
+            97,
+            1704188160000,
+            1767225600000,
+            "11054524601.838",
+            "106366818",
+            "3.04",
+            "1212",
+            159575
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 3086,
+            "CMCSA": 3354,
+            "COIN": 5345,
+            "COP": 3183,
+            "COST": 3062,
+            "CRM": 3482,
+            "CRWD": 3555,
+            "CVS": 3369,
+            "CVX": 3420,
+            "DASH": 3169,
+            "DDOG": 3283,
+            "DE": 2793,
+            "DIA": 3737,
+            "DIS": 3667,
+            "F": 4729,
+            "FDX": 2966,
+            "GDX": 4672,
+            "GE": 3274,
+            "GILD": 3183,
+            "GLD": 4599,
+            "GM": 3419,
+            "GOOG": 5027,
+            "GOOGL": 5377,
+            "GS": 3063,
+            "HD": 3143,
+            "HOOD": 5578,
+            "HYG": 3163,
+            "INTC": 6377,
+            "INTU": 2813,
+            "IWM": 5893,
+            "JD": 4688,
+            "JNJ": 3218,
+            "JPM": 3440,
+            "KLAC": 2483,
+            "KO": 3713,
+            "LCID": 5641,
+            "LLY": 3352,
+            "LMT": 2858,
+            "LOW": 3030,
+            "LRCX": 3208,
+            "MA": 3013,
+            "MCD": 3170,
+            "MDB": 3060,
+            "META": 4808,
+            "MRK": 3356,
+            "MS": 3183,
+            "MSFT": 4860,
+            "MU": 5345,
+            "NET": 3269,
+            "NFLX": 3716,
+            "NIO": 6039,
+            "NKE": 4088,
+            "NOW": 2858,
+            "NVDA": 7325,
+            "NVO": 4661,
+            "ORCL": 4075,
+            "OXY": 4199,
+            "PANW": 3405,
+            "PDD": 4267,
+            "PEP": 3306,
+            "PFE": 4911,
+            "PG": 3206,
+            "PLTR": 6813,
+            "PM": 3111,
+            "PYPL": 4174,
+            "QCOM": 3740,
+            "QQQ": 6782,
+            "RIVN": 5341,
+            "RTX": 3164,
+            "SBUX": 3534,
+            "SCHW": 3200,
+            "SHOP": 3786,
+            "SLB": 3344,
+            "SLV": 5159,
+            "SMH": 3916,
+            "SNOW": 3775,
+            "SOFI": 6175,
+            "SOXX": 3339
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "000593391fe3bc08c5ac2e92402a2ddcaa51fcc22d1a3e90eaf637d1e4a2449c"
+        }
+      },
+      "25000000": {
+        "rows": 25000000,
+        "bytes": 643568706,
+        "sha256": "a039f968a5f2fa8ec92894d918e85c364d414f431dba022aacc9ac50646c0aab",
+        "oracle": {
+          "aggregate": [
+            25000000,
+            97,
+            1704186000000,
+            1767229140000,
+            "811059042282.725",
+            "7560493302",
+            "3.02",
+            "1219.9399",
+            10229469
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 201318,
+            "CMCSA": 218988,
+            "COIN": 339979,
+            "COP": 205982,
+            "COST": 200618,
+            "CRM": 224467,
+            "CRWD": 232502,
+            "CVS": 218111,
+            "CVX": 220292,
+            "DASH": 206392,
+            "DDOG": 213004,
+            "DE": 183471,
+            "DIA": 242031,
+            "DIS": 236893,
+            "F": 301187,
+            "FDX": 193411,
+            "GDX": 298874,
+            "GE": 211972,
+            "GILD": 207407,
+            "GLD": 293184,
+            "GM": 222245,
+            "GOOG": 319893,
+            "GOOGL": 342625,
+            "GS": 201468,
+            "HD": 205641,
+            "HOOD": 357058,
+            "HYG": 206117,
+            "INTC": 408156,
+            "INTU": 184536,
+            "IWM": 375462,
+            "JD": 298323,
+            "JNJ": 208364,
+            "JPM": 223503,
+            "KLAC": 163317,
+            "KO": 235750,
+            "LCID": 359639,
+            "LLY": 218120,
+            "LMT": 183590,
+            "LOW": 197829,
+            "LRCX": 209589,
+            "MA": 196638,
+            "MCD": 205373,
+            "MDB": 200493,
+            "META": 307366,
+            "MRK": 216844,
+            "MS": 207187,
+            "MSFT": 309944,
+            "MU": 340444,
+            "NET": 212233,
+            "NFLX": 241652,
+            "NIO": 385486,
+            "NKE": 261755,
+            "NOW": 186135,
+            "NVDA": 466480,
+            "NVO": 295064,
+            "ORCL": 262714,
+            "OXY": 267661,
+            "PANW": 222276,
+            "PDD": 270367,
+            "PEP": 213711,
+            "PFE": 315224,
+            "PG": 207208,
+            "PLTR": 433655,
+            "PM": 202252,
+            "PYPL": 269467,
+            "QCOM": 239425,
+            "QQQ": 431329,
+            "RIVN": 342376,
+            "RTX": 205233,
+            "SBUX": 230213,
+            "SCHW": 206760,
+            "SHOP": 243296,
+            "SLB": 216978,
+            "SLV": 328539,
+            "SMH": 248682,
+            "SNOW": 244804,
+            "SOFI": 394602,
+            "SOXX": 213225
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            388345,
+            97,
+            1704188160000,
+            1767225600000,
+            "11054524601.838",
+            "106366818",
+            "3.04",
+            "1212",
+            159575
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 3086,
+            "CMCSA": 3354,
+            "COIN": 5345,
+            "COP": 3183,
+            "COST": 3062,
+            "CRM": 3482,
+            "CRWD": 3555,
+            "CVS": 3369,
+            "CVX": 3420,
+            "DASH": 3169,
+            "DDOG": 3283,
+            "DE": 2793,
+            "DIA": 3737,
+            "DIS": 3667,
+            "F": 4729,
+            "FDX": 2966,
+            "GDX": 4672,
+            "GE": 3274,
+            "GILD": 3183,
+            "GLD": 4599,
+            "GM": 3419,
+            "GOOG": 5027,
+            "GOOGL": 5377,
+            "GS": 3063,
+            "HD": 3143,
+            "HOOD": 5578,
+            "HYG": 3163,
+            "INTC": 6377,
+            "INTU": 2813,
+            "IWM": 5893,
+            "JD": 4688,
+            "JNJ": 3218,
+            "JPM": 3440,
+            "KLAC": 2483,
+            "KO": 3713,
+            "LCID": 5641,
+            "LLY": 3352,
+            "LMT": 2858,
+            "LOW": 3030,
+            "LRCX": 3208,
+            "MA": 3013,
+            "MCD": 3170,
+            "MDB": 3060,
+            "META": 4808,
+            "MRK": 3356,
+            "MS": 3183,
+            "MSFT": 4860,
+            "MU": 5345,
+            "NET": 3269,
+            "NFLX": 3716,
+            "NIO": 6039,
+            "NKE": 4088,
+            "NOW": 2858,
+            "NVDA": 7325,
+            "NVO": 4661,
+            "ORCL": 4075,
+            "OXY": 4199,
+            "PANW": 3405,
+            "PDD": 4267,
+            "PEP": 3306,
+            "PFE": 4911,
+            "PG": 3206,
+            "PLTR": 6813,
+            "PM": 3111,
+            "PYPL": 4174,
+            "QCOM": 3740,
+            "QQQ": 6782,
+            "RIVN": 5341,
+            "RTX": 3164,
+            "SBUX": 3534,
+            "SCHW": 3200,
+            "SHOP": 3786,
+            "SLB": 3344,
+            "SLV": 5159,
+            "SMH": 3916,
+            "SNOW": 3775,
+            "SOFI": 6175,
+            "SOXX": 3339
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "000593391fe3bc08c5ac2e92402a2ddcaa51fcc22d1a3e90eaf637d1e4a2449c"
+        }
+      },
+      "34015434": {
+        "rows": 34015434,
+        "bytes": 862965535,
+        "sha256": "2b161fef58b9ecdc22deff92dfeab5f8aab8c7cf25fb0270d3a6d4019b1ae5c9",
+        "oracle": {
+          "aggregate": [
+            34015434,
+            131,
+            1704186000000,
+            1767229140000,
+            "1160177301214.835",
+            "10371506373",
+            "3.02",
+            "1219.9399",
+            13941398
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 201318,
+            "CMCSA": 218988,
+            "COIN": 339979,
+            "COP": 205982,
+            "COST": 200618,
+            "CRM": 224467,
+            "CRWD": 232502,
+            "CVS": 218111,
+            "CVX": 220292,
+            "DASH": 206392,
+            "DDOG": 213004,
+            "DE": 183471,
+            "DIA": 242031,
+            "DIS": 236893,
+            "F": 301187,
+            "FDX": 193411,
+            "GDX": 298874,
+            "GE": 211972,
+            "GILD": 207407,
+            "GLD": 293184,
+            "GM": 222245,
+            "GOOG": 319893,
+            "GOOGL": 342625,
+            "GS": 201468,
+            "HD": 205641,
+            "HOOD": 357058,
+            "HYG": 206117,
+            "INTC": 408156,
+            "INTU": 184536,
+            "IWM": 375462,
+            "JD": 298323,
+            "JNJ": 208364,
+            "JPM": 223503,
+            "KLAC": 163317,
+            "KO": 235750,
+            "LCID": 359639,
+            "LLY": 218120,
+            "LMT": 183590,
+            "LOW": 197829,
+            "LRCX": 209589,
+            "MA": 196638,
+            "MCD": 205373,
+            "MDB": 200493,
+            "META": 307366,
+            "MRK": 216844,
+            "MS": 207187,
+            "MSFT": 309944,
+            "MU": 340444,
+            "NET": 212233,
+            "NFLX": 241652,
+            "NIO": 385486,
+            "NKE": 261755,
+            "NOW": 186135,
+            "NVDA": 466480,
+            "NVO": 295064,
+            "ORCL": 262714,
+            "OXY": 267661,
+            "PANW": 222276,
+            "PDD": 270367,
+            "PEP": 213711,
+            "PFE": 315224,
+            "PG": 207208,
+            "PLTR": 433655,
+            "PM": 202252,
+            "PYPL": 269467,
+            "QCOM": 239425,
+            "QQQ": 431329,
+            "RIVN": 342376,
+            "RTX": 205233,
+            "SBUX": 230213,
+            "SCHW": 206760,
+            "SHOP": 243296,
+            "SLB": 216978,
+            "SLV": 328539,
+            "SMH": 248682,
+            "SNOW": 244804,
+            "SOFI": 394602,
+            "SOXX": 238135,
+            "SPXU": 305366,
+            "SPY": 407850,
+            "SQQQ": 457686,
+            "T": 249467,
+            "TGT": 221397,
+            "TLT": 359919,
+            "TMUS": 203251,
+            "TQQQ": 462999,
+            "TSLA": 462813,
+            "TSM": 325563,
+            "UBER": 272162,
+            "UNH": 245920,
+            "UPRO": 314178,
+            "UPS": 217197,
+            "USO": 262373,
+            "V": 208347,
+            "VOO": 270618,
+            "VTI": 209331,
+            "VZ": 243629,
+            "WBD": 243359,
+            "WFC": 219008,
+            "WMT": 248243,
+            "XLB": 199427,
+            "XLC": 199709,
+            "XLE": 234419,
+            "XLF": 257614,
+            "XLI": 203054,
+            "XLK": 226473,
+            "XLP": 205351,
+            "XLRE": 200898,
+            "XLU": 210890,
+            "XLV": 207419,
+            "XLY": 201192,
+            "XOM": 233402
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            528697,
+            131,
+            1704188160000,
+            1767225600000,
+            "15852243537.398",
+            "146247177",
+            "3.04",
+            "1212",
+            217439
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 3086,
+            "CMCSA": 3354,
+            "COIN": 5345,
+            "COP": 3183,
+            "COST": 3062,
+            "CRM": 3482,
+            "CRWD": 3555,
+            "CVS": 3369,
+            "CVX": 3420,
+            "DASH": 3169,
+            "DDOG": 3283,
+            "DE": 2793,
+            "DIA": 3737,
+            "DIS": 3667,
+            "F": 4729,
+            "FDX": 2966,
+            "GDX": 4672,
+            "GE": 3274,
+            "GILD": 3183,
+            "GLD": 4599,
+            "GM": 3419,
+            "GOOG": 5027,
+            "GOOGL": 5377,
+            "GS": 3063,
+            "HD": 3143,
+            "HOOD": 5578,
+            "HYG": 3163,
+            "INTC": 6377,
+            "INTU": 2813,
+            "IWM": 5893,
+            "JD": 4688,
+            "JNJ": 3218,
+            "JPM": 3440,
+            "KLAC": 2483,
+            "KO": 3713,
+            "LCID": 5641,
+            "LLY": 3352,
+            "LMT": 2858,
+            "LOW": 3030,
+            "LRCX": 3208,
+            "MA": 3013,
+            "MCD": 3170,
+            "MDB": 3060,
+            "META": 4808,
+            "MRK": 3356,
+            "MS": 3183,
+            "MSFT": 4860,
+            "MU": 5345,
+            "NET": 3269,
+            "NFLX": 3716,
+            "NIO": 6039,
+            "NKE": 4088,
+            "NOW": 2858,
+            "NVDA": 7325,
+            "NVO": 4661,
+            "ORCL": 4075,
+            "OXY": 4199,
+            "PANW": 3405,
+            "PDD": 4267,
+            "PEP": 3306,
+            "PFE": 4911,
+            "PG": 3206,
+            "PLTR": 6813,
+            "PM": 3111,
+            "PYPL": 4174,
+            "QCOM": 3740,
+            "QQQ": 6782,
+            "RIVN": 5341,
+            "RTX": 3164,
+            "SBUX": 3534,
+            "SCHW": 3200,
+            "SHOP": 3786,
+            "SLB": 3344,
+            "SLV": 5159,
+            "SMH": 3916,
+            "SNOW": 3775,
+            "SOFI": 6175,
+            "SOXX": 3724,
+            "SPXU": 4812,
+            "SPY": 6445,
+            "SQQQ": 7150,
+            "T": 3894,
+            "TGT": 3422,
+            "TLT": 5689,
+            "TMUS": 3115,
+            "TQQQ": 7250,
+            "TSLA": 7214,
+            "TSM": 5174,
+            "UBER": 4273,
+            "UNH": 3809,
+            "UPRO": 4962,
+            "UPS": 3353,
+            "USO": 4125,
+            "V": 3193,
+            "VOO": 4308,
+            "VTI": 3225,
+            "VZ": 3790,
+            "WBD": 3767,
+            "WFC": 3396,
+            "WMT": 3850,
+            "XLB": 3053,
+            "XLC": 3068,
+            "XLE": 3651,
+            "XLF": 3969,
+            "XLI": 3100,
+            "XLK": 3508,
+            "XLP": 3171,
+            "XLRE": 3091,
+            "XLU": 3275,
+            "XLV": 3170,
+            "XLY": 3072,
+            "XOM": 3623
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "7c1fbbcaaaefb927bfd94721e7def4efeee509f0fa75308fbcf0d68f626b3484"
+        }
+      },
+      "34015435": {
+        "rows": 34015435,
+        "bytes": 862965562,
+        "sha256": "68ff4a547f09a586fe8cc1dbd02c684847991fb7a38200cf4e7b9f45683cf1d7",
+        "oracle": {
+          "aggregate": [
+            34015435,
+            131,
+            1704186000000,
+            1767229140000,
+            "1160177301319.835",
+            "10371506375",
+            "3.02",
+            "1219.9399",
+            13941398
+          ],
+          "per_ticker_rows": {
+            "AAPL": 375619,
+            "ABBV": 203576,
+            "ABNB": 213455,
+            "ADBE": 214464,
+            "AFRM": 256481,
+            "AMAT": 224676,
+            "AMD": 403780,
+            "AMGN": 196661,
+            "AMZN": 374430,
+            "ARKK": 241403,
+            "ARM": 278233,
+            "ASML": 204345,
+            "AVGO": 305896,
+            "BA": 263091,
+            "BABA": 352692,
+            "BAC": 254082,
+            "BIDU": 254223,
+            "BLK": 140647,
+            "C": 227847,
+            "CAT": 201318,
+            "CMCSA": 218988,
+            "COIN": 339979,
+            "COP": 205982,
+            "COST": 200618,
+            "CRM": 224467,
+            "CRWD": 232502,
+            "CVS": 218111,
+            "CVX": 220292,
+            "DASH": 206392,
+            "DDOG": 213004,
+            "DE": 183471,
+            "DIA": 242031,
+            "DIS": 236893,
+            "F": 301187,
+            "FDX": 193411,
+            "GDX": 298874,
+            "GE": 211972,
+            "GILD": 207407,
+            "GLD": 293184,
+            "GM": 222245,
+            "GOOG": 319893,
+            "GOOGL": 342625,
+            "GS": 201468,
+            "HD": 205641,
+            "HOOD": 357058,
+            "HYG": 206117,
+            "INTC": 408156,
+            "INTU": 184536,
+            "IWM": 375462,
+            "JD": 298323,
+            "JNJ": 208364,
+            "JPM": 223503,
+            "KLAC": 163317,
+            "KO": 235750,
+            "LCID": 359639,
+            "LLY": 218120,
+            "LMT": 183590,
+            "LOW": 197829,
+            "LRCX": 209589,
+            "MA": 196638,
+            "MCD": 205373,
+            "MDB": 200493,
+            "META": 307366,
+            "MRK": 216844,
+            "MS": 207187,
+            "MSFT": 309944,
+            "MU": 340444,
+            "NET": 212233,
+            "NFLX": 241652,
+            "NIO": 385486,
+            "NKE": 261755,
+            "NOW": 186135,
+            "NVDA": 466480,
+            "NVO": 295064,
+            "ORCL": 262714,
+            "OXY": 267661,
+            "PANW": 222276,
+            "PDD": 270367,
+            "PEP": 213711,
+            "PFE": 315224,
+            "PG": 207208,
+            "PLTR": 433655,
+            "PM": 202252,
+            "PYPL": 269467,
+            "QCOM": 239425,
+            "QQQ": 431329,
+            "RIVN": 342376,
+            "RTX": 205233,
+            "SBUX": 230213,
+            "SCHW": 206760,
+            "SHOP": 243296,
+            "SLB": 216978,
+            "SLV": 328539,
+            "SMH": 248682,
+            "SNOW": 244804,
+            "SOFI": 394602,
+            "SOXX": 238135,
+            "SPXU": 305366,
+            "SPY": 407850,
+            "SQQQ": 457686,
+            "T": 249467,
+            "TGT": 221397,
+            "TLT": 359919,
+            "TMUS": 203251,
+            "TQQQ": 462999,
+            "TSLA": 462813,
+            "TSM": 325563,
+            "UBER": 272162,
+            "UNH": 245920,
+            "UPRO": 314178,
+            "UPS": 217197,
+            "USO": 262373,
+            "V": 208347,
+            "VOO": 270618,
+            "VTI": 209331,
+            "VZ": 243629,
+            "WBD": 243359,
+            "WFC": 219008,
+            "WMT": 248243,
+            "XLB": 199427,
+            "XLC": 199709,
+            "XLE": 234419,
+            "XLF": 257614,
+            "XLI": 203054,
+            "XLK": 226473,
+            "XLP": 205351,
+            "XLRE": 200898,
+            "XLU": 210890,
+            "XLV": 207419,
+            "XLY": 201192,
+            "XOM": 233403
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "sample_oracle": {
+          "aggregate": [
+            528697,
+            131,
+            1704188160000,
+            1767225600000,
+            "15852243537.398",
+            "146247177",
+            "3.04",
+            "1212",
+            217439
+          ],
+          "per_ticker_rows": {
+            "AAPL": 5854,
+            "ABBV": 3131,
+            "ABNB": 3248,
+            "ADBE": 3294,
+            "AFRM": 4021,
+            "AMAT": 3460,
+            "AMD": 6356,
+            "AMGN": 3027,
+            "AMZN": 5887,
+            "ARKK": 3766,
+            "ARM": 4262,
+            "ASML": 3187,
+            "AVGO": 4752,
+            "BA": 4057,
+            "BABA": 5543,
+            "BAC": 3958,
+            "BIDU": 3995,
+            "BLK": 2126,
+            "C": 3536,
+            "CAT": 3086,
+            "CMCSA": 3354,
+            "COIN": 5345,
+            "COP": 3183,
+            "COST": 3062,
+            "CRM": 3482,
+            "CRWD": 3555,
+            "CVS": 3369,
+            "CVX": 3420,
+            "DASH": 3169,
+            "DDOG": 3283,
+            "DE": 2793,
+            "DIA": 3737,
+            "DIS": 3667,
+            "F": 4729,
+            "FDX": 2966,
+            "GDX": 4672,
+            "GE": 3274,
+            "GILD": 3183,
+            "GLD": 4599,
+            "GM": 3419,
+            "GOOG": 5027,
+            "GOOGL": 5377,
+            "GS": 3063,
+            "HD": 3143,
+            "HOOD": 5578,
+            "HYG": 3163,
+            "INTC": 6377,
+            "INTU": 2813,
+            "IWM": 5893,
+            "JD": 4688,
+            "JNJ": 3218,
+            "JPM": 3440,
+            "KLAC": 2483,
+            "KO": 3713,
+            "LCID": 5641,
+            "LLY": 3352,
+            "LMT": 2858,
+            "LOW": 3030,
+            "LRCX": 3208,
+            "MA": 3013,
+            "MCD": 3170,
+            "MDB": 3060,
+            "META": 4808,
+            "MRK": 3356,
+            "MS": 3183,
+            "MSFT": 4860,
+            "MU": 5345,
+            "NET": 3269,
+            "NFLX": 3716,
+            "NIO": 6039,
+            "NKE": 4088,
+            "NOW": 2858,
+            "NVDA": 7325,
+            "NVO": 4661,
+            "ORCL": 4075,
+            "OXY": 4199,
+            "PANW": 3405,
+            "PDD": 4267,
+            "PEP": 3306,
+            "PFE": 4911,
+            "PG": 3206,
+            "PLTR": 6813,
+            "PM": 3111,
+            "PYPL": 4174,
+            "QCOM": 3740,
+            "QQQ": 6782,
+            "RIVN": 5341,
+            "RTX": 3164,
+            "SBUX": 3534,
+            "SCHW": 3200,
+            "SHOP": 3786,
+            "SLB": 3344,
+            "SLV": 5159,
+            "SMH": 3916,
+            "SNOW": 3775,
+            "SOFI": 6175,
+            "SOXX": 3724,
+            "SPXU": 4812,
+            "SPY": 6445,
+            "SQQQ": 7150,
+            "T": 3894,
+            "TGT": 3422,
+            "TLT": 5689,
+            "TMUS": 3115,
+            "TQQQ": 7250,
+            "TSLA": 7214,
+            "TSM": 5174,
+            "UBER": 4273,
+            "UNH": 3809,
+            "UPRO": 4962,
+            "UPS": 3353,
+            "USO": 4125,
+            "V": 3193,
+            "VOO": 4308,
+            "VTI": 3225,
+            "VZ": 3790,
+            "WBD": 3767,
+            "WFC": 3396,
+            "WMT": 3850,
+            "XLB": 3053,
+            "XLC": 3068,
+            "XLE": 3651,
+            "XLF": 3969,
+            "XLI": 3100,
+            "XLK": 3508,
+            "XLP": 3171,
+            "XLRE": 3091,
+            "XLU": 3275,
+            "XLV": 3170,
+            "XLY": 3072,
+            "XOM": 3623
+          },
+          "strictly_increasing_timestamps_per_ticker": true,
+          "nonincreasing_timestamp_count": 0,
+          "multiset_sha256_sum": "7c1fbbcaaaefb927bfd94721e7def4efeee509f0fa75308fbcf0d68f626b3484"
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "guard": {
+        "status": "ok",
+        "exit_code": 0,
+        "elapsed_seconds": 1.63359329092782,
+        "peak_sampled_tree_rss_bytes": 390037504,
+        "rss_samples": 26,
+        "rss_sampling_seconds": 0.05,
+        "output_bytes_after_exit": 3914032506,
+        "free_disk_bytes_after_exit": 708917063680
+      },
+      "result": {
+        "status": "passed",
+        "rows": 1000000,
+        "prepared_bytes": 26954011,
+        "updated_rows": 999999,
+        "verified": {
+          "aggregate": true,
+          "concurrent_reads": true,
+          "saved_rows": {
+            "rows": 15413,
+            "multiset_sha256_sum": "9464561631e556599989a6813734604b62317cb439403682609423f0da9d73d9",
+            "sequence_verified": true
+          },
+          "direct_saved_rows": {
+            "rows": 15413,
+            "multiset_sha256_sum": "9464561631e556599989a6813734604b62317cb439403682609423f0da9d73d9",
+            "sequence_verified": true
+          },
+          "refreshed_rows": {
+            "rows": 15413,
+            "multiset_sha256_sum": "9464561631e556599989a6813734604b62317cb439403682609423f0da9d73d9",
+            "sequence_verified": true
+          },
+          "staleness_refresh_and_manual_checkpoint_advance": true,
+          "timeout_and_same_server_recovery": true
+        },
+        "direct_duckdb": {
+          "aggregate": {
+            "result": {
+              "columns": [
+                "row_count",
+                "ticker_count",
+                "first_t",
+                "last_t",
+                "total_volume",
+                "total_trades",
+                "min_low",
+                "max_high",
+                "up_rows"
+              ],
+              "rows": [
+                [
+                  1000000,
+                  4,
+                  1704186000000,
+                  1767229080000,
+                  "28189132591.000000000000",
+                  "444523726.000000000000",
+                  "99.880000000000",
+                  "638.250000000000",
+                  434262
+                ]
+              ],
+              "preview_truncated": false
+            },
+            "elapsed_seconds": 0.038041583029553294,
+            "peak_process_rss_bytes": 216399872
+          },
+          "save_window": {
+            "result": {
+              "columns": [
+                "ticker",
+                "t",
+                "o",
+                "h",
+                "l",
+                "c",
+                "v",
+                "n",
+                "sequence"
+              ],
+              "preview_truncated": true,
+              "source_preview_omitted": true
+            },
+            "elapsed_seconds": 0.03497066698037088,
+            "peak_process_rss_bytes": 262930432,
+            "saved_bytes": 732432,
+            "saved_sha256": "99d21c88cc32dd541fc453ee5866f00702a648eb23c8a0d289bd1cc3b3dc30f2"
+          }
+        },
+        "concurrent_reads": {
+          "requests": 3,
+          "elapsed_seconds": 0.1149751249467954,
+          "scope": "Concurrent requests to one server; current runtime serializes SQL using QUERY_SLOT."
+        },
+        "tokens": {
+          "tool_calls": 23,
+          "cold_setup_tokens": {
+            "cl100k_base": 1386,
+            "o200k_base": 1454
+          },
+          "request_tokens": {
+            "cl100k_base": 1448,
+            "o200k_base": 1465
+          },
+          "reply_tokens": {
+            "cl100k_base": 2871,
+            "o200k_base": 2901
+          },
+          "maximum_reply_bytes": 978
+        },
+        "phases": [
+          {
+            "phase": "import",
+            "tool": "import",
+            "elapsed_seconds": 0.014064625022001565,
+            "request_tokens": {
+              "cl100k_base": 48,
+              "o200k_base": 49
+            },
+            "reply_tokens": {
+              "cl100k_base": 43,
+              "o200k_base": 43
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 59,
+              "o200k_base": 60
+            },
+            "is_error": false
+          },
+          {
+            "phase": "aggregate",
+            "tool": "query",
+            "elapsed_seconds": 0.03999974997714162,
+            "request_tokens": {
+              "cl100k_base": 108,
+              "o200k_base": 109
+            },
+            "reply_tokens": {
+              "cl100k_base": 115,
+              "o200k_base": 117
+            },
+            "reply_bytes": 340,
+            "wire_tokens": {
+              "cl100k_base": 139,
+              "o200k_base": 140
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_0",
+            "tool": "query",
+            "elapsed_seconds": 0.07647141697816551,
+            "request_tokens": {
+              "cl100k_base": 108,
+              "o200k_base": 109
+            },
+            "reply_tokens": {
+              "cl100k_base": 115,
+              "o200k_base": 117
+            },
+            "reply_bytes": 340,
+            "wire_tokens": {
+              "cl100k_base": 139,
+              "o200k_base": 140
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_1",
+            "tool": "query",
+            "elapsed_seconds": 0.11394754203502089,
+            "request_tokens": {
+              "cl100k_base": 108,
+              "o200k_base": 109
+            },
+            "reply_tokens": {
+              "cl100k_base": 115,
+              "o200k_base": 117
+            },
+            "reply_bytes": 340,
+            "wire_tokens": {
+              "cl100k_base": 139,
+              "o200k_base": 140
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_2",
+            "tool": "query",
+            "elapsed_seconds": 0.11451958294492215,
+            "request_tokens": {
+              "cl100k_base": 108,
+              "o200k_base": 109
+            },
+            "reply_tokens": {
+              "cl100k_base": 115,
+              "o200k_base": 117
+            },
+            "reply_bytes": 340,
+            "wire_tokens": {
+              "cl100k_base": 139,
+              "o200k_base": 140
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_window",
+            "tool": "query",
+            "elapsed_seconds": 0.03774337493814528,
+            "request_tokens": {
+              "cl100k_base": 92,
+              "o200k_base": 93
+            },
+            "reply_tokens": {
+              "cl100k_base": 368,
+              "o200k_base": 370
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 394,
+              "o200k_base": 395
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_saved",
+            "tool": "query",
+            "elapsed_seconds": 0.005824374966323376,
+            "request_tokens": {
+              "cl100k_base": 108,
+              "o200k_base": 109
+            },
+            "reply_tokens": {
+              "cl100k_base": 113,
+              "o200k_base": 115
+            },
+            "reply_bytes": 333,
+            "wire_tokens": {
+              "cl100k_base": 137,
+              "o200k_base": 138
+            },
+            "is_error": false
+          },
+          {
+            "phase": "saved_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0011953749926760793,
+            "request_tokens": {
+              "cl100k_base": 31,
+              "o200k_base": 31
+            },
+            "reply_tokens": {
+              "cl100k_base": 172,
+              "o200k_base": 172
+            },
+            "reply_bytes": 492,
+            "wire_tokens": {
+              "cl100k_base": 194,
+              "o200k_base": 194
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.002383291954174638,
+            "request_tokens": {
+              "cl100k_base": 74,
+              "o200k_base": 75
+            },
+            "reply_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 46
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 61,
+              "o200k_base": 63
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume",
+            "tool": "resume",
+            "elapsed_seconds": 0.001259916927665472,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 157,
+              "o200k_base": 159
+            },
+            "reply_bytes": 562,
+            "wire_tokens": {
+              "cl100k_base": 180,
+              "o200k_base": 182
+            },
+            "is_error": false
+          },
+          {
+            "phase": "update_source",
+            "tool": "import",
+            "elapsed_seconds": 0.015113166999071836,
+            "request_tokens": {
+              "cl100k_base": 52,
+              "o200k_base": 53
+            },
+            "reply_tokens": {
+              "cl100k_base": 44,
+              "o200k_base": 44
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 60,
+              "o200k_base": 61
+            },
+            "is_error": false
+          },
+          {
+            "phase": "stale_saved",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0010565000120550394,
+            "request_tokens": {
+              "cl100k_base": 27,
+              "o200k_base": 27
+            },
+            "reply_tokens": {
+              "cl100k_base": 67,
+              "o200k_base": 68
+            },
+            "reply_bytes": 198,
+            "wire_tokens": {
+              "cl100k_base": 87,
+              "o200k_base": 88
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_stale",
+            "tool": "resume",
+            "elapsed_seconds": 0.0010047919349744916,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 157,
+              "o200k_base": 159
+            },
+            "reply_bytes": 560,
+            "wire_tokens": {
+              "cl100k_base": 180,
+              "o200k_base": 182
+            },
+            "is_error": false
+          },
+          {
+            "phase": "reject_stale_query",
+            "tool": "query",
+            "elapsed_seconds": 0.0008997089462354779,
+            "request_tokens": {
+              "cl100k_base": 108,
+              "o200k_base": 109
+            },
+            "reply_tokens": {
+              "cl100k_base": 33,
+              "o200k_base": 33
+            },
+            "reply_bytes": 120,
+            "wire_tokens": {
+              "cl100k_base": 49,
+              "o200k_base": 50
+            },
+            "is_error": true
+          },
+          {
+            "phase": "explicit_historical_query",
+            "tool": "query",
+            "elapsed_seconds": 0.006068625021725893,
+            "request_tokens": {
+              "cl100k_base": 114,
+              "o200k_base": 115
+            },
+            "reply_tokens": {
+              "cl100k_base": 113,
+              "o200k_base": 115
+            },
+            "reply_bytes": 333,
+            "wire_tokens": {
+              "cl100k_base": 137,
+              "o200k_base": 138
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refresh",
+            "tool": "refresh",
+            "elapsed_seconds": 0.03765137493610382,
+            "request_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 12
+            },
+            "reply_tokens": {
+              "cl100k_base": 373,
+              "o200k_base": 375
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 399,
+              "o200k_base": 400
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_refreshed",
+            "tool": "query",
+            "elapsed_seconds": 0.005752082914113998,
+            "request_tokens": {
+              "cl100k_base": 112,
+              "o200k_base": 113
+            },
+            "reply_tokens": {
+              "cl100k_base": 117,
+              "o200k_base": 119
+            },
+            "reply_bytes": 333,
+            "wire_tokens": {
+              "cl100k_base": 141,
+              "o200k_base": 142
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refreshed_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.001140209031291306,
+            "request_tokens": {
+              "cl100k_base": 35,
+              "o200k_base": 35
+            },
+            "reply_tokens": {
+              "cl100k_base": 193,
+              "o200k_base": 193
+            },
+            "reply_bytes": 525,
+            "wire_tokens": {
+              "cl100k_base": 215,
+              "o200k_base": 215
+            },
+            "is_error": false
+          },
+          {
+            "phase": "old_checkpoint_stays_pinned",
+            "tool": "resume",
+            "elapsed_seconds": 0.001558292075060308,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 157,
+              "o200k_base": 159
+            },
+            "reply_bytes": 561,
+            "wire_tokens": {
+              "cl100k_base": 180,
+              "o200k_base": 182
+            },
+            "is_error": false
+          },
+          {
+            "phase": "advance_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.0016459579346701503,
+            "request_tokens": {
+              "cl100k_base": 82,
+              "o200k_base": 84
+            },
+            "reply_tokens": {
+              "cl100k_base": 44,
+              "o200k_base": 45
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 60,
+              "o200k_base": 62
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_current",
+            "tool": "resume",
+            "elapsed_seconds": 0.0010433329734951258,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 164,
+              "o200k_base": 166
+            },
+            "reply_bytes": 562,
+            "wire_tokens": {
+              "cl100k_base": 187,
+              "o200k_base": 189
+            },
+            "is_error": false
+          },
+          {
+            "phase": "bounded_pathological_query",
+            "tool": "query",
+            "elapsed_seconds": 0.06603712507057935,
+            "request_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 47
+            },
+            "reply_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 11
+            },
+            "reply_bytes": 57,
+            "wire_tokens": {
+              "cl100k_base": 28,
+              "o200k_base": 28
+            },
+            "is_error": true
+          },
+          {
+            "phase": "timeout_recovery",
+            "tool": "query",
+            "elapsed_seconds": 0.006191457970999181,
+            "request_tokens": {
+              "cl100k_base": 24,
+              "o200k_base": 25
+            },
+            "reply_tokens": {
+              "cl100k_base": 39,
+              "o200k_base": 41
+            },
+            "reply_bytes": 110,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          }
+        ],
+        "server_memory": {
+          "primary": {
+            "status": "exited",
+            "peak_process_rss_bytes": 117620736,
+            "peak_sampled_server_rss_bytes": 117555200,
+            "samples": 23,
+            "sampling_seconds": 0.025
+          },
+          "timeout_probe": {
+            "status": "exited",
+            "peak_process_rss_bytes": 99663872,
+            "peak_sampled_server_rss_bytes": 98811904,
+            "samples": 3,
+            "sampling_seconds": 0.025
+          }
+        },
+        "worker_peak_rss_bytes": 272482304,
+        "workspace_bytes": 54693673
+      },
+      "rows": 1000000
+    },
+    {
+      "guard": {
+        "status": "ok",
+        "exit_code": 0,
+        "elapsed_seconds": 4.0687572919996455,
+        "peak_sampled_tree_rss_bytes": 533364736,
+        "rss_samples": 66,
+        "rss_sampling_seconds": 0.05,
+        "output_bytes_after_exit": 4134768942,
+        "free_disk_bytes_after_exit": 708696059904
+      },
+      "result": {
+        "status": "passed",
+        "rows": 5000000,
+        "prepared_bytes": 134125727,
+        "updated_rows": 4999999,
+        "verified": {
+          "aggregate": true,
+          "concurrent_reads": true,
+          "saved_rows": {
+            "rows": 77694,
+            "multiset_sha256_sum": "957f30efa58aaaa5d38a5a73ddfd3ca518f1679298d3ccade06a020468c81133",
+            "sequence_verified": true
+          },
+          "direct_saved_rows": {
+            "rows": 77694,
+            "multiset_sha256_sum": "957f30efa58aaaa5d38a5a73ddfd3ca518f1679298d3ccade06a020468c81133",
+            "sequence_verified": true
+          },
+          "refreshed_rows": {
+            "rows": 77694,
+            "multiset_sha256_sum": "957f30efa58aaaa5d38a5a73ddfd3ca518f1679298d3ccade06a020468c81133",
+            "sequence_verified": true
+          },
+          "staleness_refresh_and_manual_checkpoint_advance": true,
+          "timeout_and_same_server_recovery": true
+        },
+        "direct_duckdb": {
+          "aggregate": {
+            "result": {
+              "columns": [
+                "row_count",
+                "ticker_count",
+                "first_t",
+                "last_t",
+                "total_volume",
+                "total_trades",
+                "min_low",
+                "max_high",
+                "up_rows"
+              ],
+              "rows": [
+                [
+                  5000000,
+                  20,
+                  1704186000000,
+                  1767229140000,
+                  "134983051124.000000000000",
+                  "1685829870.000000000000",
+                  "21.500000000000",
+                  "1219.939900000000",
+                  2061260
+                ]
+              ],
+              "preview_truncated": false
+            },
+            "elapsed_seconds": 0.17288049997296184,
+            "peak_process_rss_bytes": 243859456
+          },
+          "save_window": {
+            "result": {
+              "columns": [
+                "ticker",
+                "t",
+                "o",
+                "h",
+                "l",
+                "c",
+                "v",
+                "n",
+                "sequence"
+              ],
+              "preview_truncated": true,
+              "source_preview_omitted": true
+            },
+            "elapsed_seconds": 0.15537433291319758,
+            "peak_process_rss_bytes": 319078400,
+            "saved_bytes": 3503518,
+            "saved_sha256": "a4b28bf13e1d95d4a77b3b764c764ff17786b4192543c016bf884a2eaf966c9d"
+          }
+        },
+        "concurrent_reads": {
+          "requests": 3,
+          "elapsed_seconds": 0.5091991659719497,
+          "scope": "Concurrent requests to one server; current runtime serializes SQL using QUERY_SLOT."
+        },
+        "tokens": {
+          "tool_calls": 23,
+          "cold_setup_tokens": {
+            "cl100k_base": 1386,
+            "o200k_base": 1454
+          },
+          "request_tokens": {
+            "cl100k_base": 1499,
+            "o200k_base": 1525
+          },
+          "reply_tokens": {
+            "cl100k_base": 3015,
+            "o200k_base": 3057
+          },
+          "maximum_reply_bytes": 978
+        },
+        "phases": [
+          {
+            "phase": "import",
+            "tool": "import",
+            "elapsed_seconds": 0.0555840419838205,
+            "request_tokens": {
+              "cl100k_base": 48,
+              "o200k_base": 49
+            },
+            "reply_tokens": {
+              "cl100k_base": 47,
+              "o200k_base": 47
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          },
+          {
+            "phase": "aggregate",
+            "tool": "query",
+            "elapsed_seconds": 0.175342750037089,
+            "request_tokens": {
+              "cl100k_base": 112,
+              "o200k_base": 113
+            },
+            "reply_tokens": {
+              "cl100k_base": 122,
+              "o200k_base": 124
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 146,
+              "o200k_base": 147
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_0",
+            "tool": "query",
+            "elapsed_seconds": 0.3402074999175966,
+            "request_tokens": {
+              "cl100k_base": 112,
+              "o200k_base": 113
+            },
+            "reply_tokens": {
+              "cl100k_base": 122,
+              "o200k_base": 124
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 146,
+              "o200k_base": 147
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_1",
+            "tool": "query",
+            "elapsed_seconds": 0.5080872919643298,
+            "request_tokens": {
+              "cl100k_base": 112,
+              "o200k_base": 113
+            },
+            "reply_tokens": {
+              "cl100k_base": 122,
+              "o200k_base": 124
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 146,
+              "o200k_base": 147
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_2",
+            "tool": "query",
+            "elapsed_seconds": 0.5087114999769256,
+            "request_tokens": {
+              "cl100k_base": 112,
+              "o200k_base": 113
+            },
+            "reply_tokens": {
+              "cl100k_base": 122,
+              "o200k_base": 124
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 146,
+              "o200k_base": 147
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_window",
+            "tool": "query",
+            "elapsed_seconds": 0.15632154198829085,
+            "request_tokens": {
+              "cl100k_base": 96,
+              "o200k_base": 97
+            },
+            "reply_tokens": {
+              "cl100k_base": 377,
+              "o200k_base": 380
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 403,
+              "o200k_base": 405
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_saved",
+            "tool": "query",
+            "elapsed_seconds": 0.009009999921545386,
+            "request_tokens": {
+              "cl100k_base": 113,
+              "o200k_base": 115
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 123
+            },
+            "reply_bytes": 337,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 146
+            },
+            "is_error": false
+          },
+          {
+            "phase": "saved_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.001095375046133995,
+            "request_tokens": {
+              "cl100k_base": 36,
+              "o200k_base": 37
+            },
+            "reply_tokens": {
+              "cl100k_base": 184,
+              "o200k_base": 185
+            },
+            "reply_bytes": 493,
+            "wire_tokens": {
+              "cl100k_base": 206,
+              "o200k_base": 207
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.0026236659614369273,
+            "request_tokens": {
+              "cl100k_base": 79,
+              "o200k_base": 81
+            },
+            "reply_tokens": {
+              "cl100k_base": 46,
+              "o200k_base": 46
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 62,
+              "o200k_base": 63
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume",
+            "tool": "resume",
+            "elapsed_seconds": 0.001364292111247778,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 168,
+              "o200k_base": 171
+            },
+            "reply_bytes": 562,
+            "wire_tokens": {
+              "cl100k_base": 191,
+              "o200k_base": 194
+            },
+            "is_error": false
+          },
+          {
+            "phase": "update_source",
+            "tool": "import",
+            "elapsed_seconds": 0.052689666976220906,
+            "request_tokens": {
+              "cl100k_base": 53,
+              "o200k_base": 54
+            },
+            "reply_tokens": {
+              "cl100k_base": 47,
+              "o200k_base": 47
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          },
+          {
+            "phase": "stale_saved",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0011441250098869205,
+            "request_tokens": {
+              "cl100k_base": 32,
+              "o200k_base": 33
+            },
+            "reply_tokens": {
+              "cl100k_base": 76,
+              "o200k_base": 78
+            },
+            "reply_bytes": 198,
+            "wire_tokens": {
+              "cl100k_base": 96,
+              "o200k_base": 98
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_stale",
+            "tool": "resume",
+            "elapsed_seconds": 0.0010339999571442604,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 168,
+              "o200k_base": 171
+            },
+            "reply_bytes": 560,
+            "wire_tokens": {
+              "cl100k_base": 191,
+              "o200k_base": 194
+            },
+            "is_error": false
+          },
+          {
+            "phase": "reject_stale_query",
+            "tool": "query",
+            "elapsed_seconds": 0.0009285000851377845,
+            "request_tokens": {
+              "cl100k_base": 113,
+              "o200k_base": 115
+            },
+            "reply_tokens": {
+              "cl100k_base": 38,
+              "o200k_base": 39
+            },
+            "reply_bytes": 120,
+            "wire_tokens": {
+              "cl100k_base": 54,
+              "o200k_base": 56
+            },
+            "is_error": true
+          },
+          {
+            "phase": "explicit_historical_query",
+            "tool": "query",
+            "elapsed_seconds": 0.009276124997995794,
+            "request_tokens": {
+              "cl100k_base": 119,
+              "o200k_base": 121
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 123
+            },
+            "reply_bytes": 337,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 146
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refresh",
+            "tool": "refresh",
+            "elapsed_seconds": 0.15522487496491522,
+            "request_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 12
+            },
+            "reply_tokens": {
+              "cl100k_base": 376,
+              "o200k_base": 379
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 402,
+              "o200k_base": 404
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_refreshed",
+            "tool": "query",
+            "elapsed_seconds": 0.009111625025980175,
+            "request_tokens": {
+              "cl100k_base": 112,
+              "o200k_base": 114
+            },
+            "reply_tokens": {
+              "cl100k_base": 119,
+              "o200k_base": 122
+            },
+            "reply_bytes": 337,
+            "wire_tokens": {
+              "cl100k_base": 143,
+              "o200k_base": 145
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refreshed_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0011919590178877115,
+            "request_tokens": {
+              "cl100k_base": 35,
+              "o200k_base": 36
+            },
+            "reply_tokens": {
+              "cl100k_base": 204,
+              "o200k_base": 206
+            },
+            "reply_bytes": 526,
+            "wire_tokens": {
+              "cl100k_base": 226,
+              "o200k_base": 228
+            },
+            "is_error": false
+          },
+          {
+            "phase": "old_checkpoint_stays_pinned",
+            "tool": "resume",
+            "elapsed_seconds": 0.00189166609197855,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 168,
+              "o200k_base": 171
+            },
+            "reply_bytes": 561,
+            "wire_tokens": {
+              "cl100k_base": 191,
+              "o200k_base": 194
+            },
+            "is_error": false
+          },
+          {
+            "phase": "advance_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.001723207999020815,
+            "request_tokens": {
+              "cl100k_base": 82,
+              "o200k_base": 85
+            },
+            "reply_tokens": {
+              "cl100k_base": 47,
+              "o200k_base": 47
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_current",
+            "tool": "resume",
+            "elapsed_seconds": 0.001092792022973299,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 167,
+              "o200k_base": 170
+            },
+            "reply_bytes": 562,
+            "wire_tokens": {
+              "cl100k_base": 190,
+              "o200k_base": 193
+            },
+            "is_error": false
+          },
+          {
+            "phase": "bounded_pathological_query",
+            "tool": "query",
+            "elapsed_seconds": 0.06755979091394693,
+            "request_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 47
+            },
+            "reply_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 11
+            },
+            "reply_bytes": 57,
+            "wire_tokens": {
+              "cl100k_base": 28,
+              "o200k_base": 28
+            },
+            "is_error": true
+          },
+          {
+            "phase": "timeout_recovery",
+            "tool": "query",
+            "elapsed_seconds": 0.010773916961625218,
+            "request_tokens": {
+              "cl100k_base": 24,
+              "o200k_base": 25
+            },
+            "reply_tokens": {
+              "cl100k_base": 43,
+              "o200k_base": 45
+            },
+            "reply_bytes": 111,
+            "wire_tokens": {
+              "cl100k_base": 67,
+              "o200k_base": 68
+            },
+            "is_error": false
+          }
+        ],
+        "server_memory": {
+          "primary": {
+            "status": "exited",
+            "peak_process_rss_bytes": 180813824,
+            "peak_sampled_server_rss_bytes": 180699136,
+            "samples": 99,
+            "sampling_seconds": 0.025
+          },
+          "timeout_probe": {
+            "status": "exited",
+            "peak_process_rss_bytes": 102498304,
+            "peak_sampled_server_rss_bytes": 101679104,
+            "samples": 3,
+            "sampling_seconds": 0.025
+          }
+        },
+        "worker_peak_rss_bytes": 352665600,
+        "workspace_bytes": 271808219
+      },
+      "rows": 5000000
+    },
+    {
+      "guard": {
+        "status": "ok",
+        "exit_code": 0,
+        "elapsed_seconds": 7.132393707986921,
+        "peak_sampled_tree_rss_bytes": 678313984,
+        "rss_samples": 115,
+        "rss_sampling_seconds": 0.05,
+        "output_bytes_after_exit": 4400036648,
+        "free_disk_bytes_after_exit": 708430626816
+      },
+      "result": {
+        "status": "passed",
+        "rows": 10000000,
+        "prepared_bytes": 261550157,
+        "updated_rows": 9999999,
+        "verified": {
+          "aggregate": true,
+          "concurrent_reads": true,
+          "saved_rows": {
+            "rows": 155025,
+            "multiset_sha256_sum": "5acb69afaeb393c6092cc6c4617a9b93ee6af68c9732a8f1baee3d9b15c9d23c",
+            "sequence_verified": true
+          },
+          "direct_saved_rows": {
+            "rows": 155025,
+            "multiset_sha256_sum": "5acb69afaeb393c6092cc6c4617a9b93ee6af68c9732a8f1baee3d9b15c9d23c",
+            "sequence_verified": true
+          },
+          "refreshed_rows": {
+            "rows": 155025,
+            "multiset_sha256_sum": "5acb69afaeb393c6092cc6c4617a9b93ee6af68c9732a8f1baee3d9b15c9d23c",
+            "sequence_verified": true
+          },
+          "staleness_refresh_and_manual_checkpoint_advance": true,
+          "timeout_and_same_server_recovery": true
+        },
+        "direct_duckdb": {
+          "aggregate": {
+            "result": {
+              "columns": [
+                "row_count",
+                "ticker_count",
+                "first_t",
+                "last_t",
+                "total_volume",
+                "total_trades",
+                "min_low",
+                "max_high",
+                "up_rows"
+              ],
+              "rows": [
+                [
+                  10000000,
+                  41,
+                  1704186000000,
+                  1767229140000,
+                  "243573095513.925000000000",
+                  "2706711967.000000000000",
+                  "8.370000000000",
+                  "1219.939900000000",
+                  4150996
+                ]
+              ],
+              "preview_truncated": false
+            },
+            "elapsed_seconds": 0.333316083997488,
+            "peak_process_rss_bytes": 277626880
+          },
+          "save_window": {
+            "result": {
+              "columns": [
+                "ticker",
+                "t",
+                "o",
+                "h",
+                "l",
+                "c",
+                "v",
+                "n",
+                "sequence"
+              ],
+              "preview_truncated": true,
+              "source_preview_omitted": true
+            },
+            "elapsed_seconds": 0.29914058407302946,
+            "peak_process_rss_bytes": 406241280,
+            "saved_bytes": 6899181,
+            "saved_sha256": "c2ccf4655553819df51fb3bc2f87ce66e2a554e64410cb4041ba0bc44cbd2d4f"
+          }
+        },
+        "concurrent_reads": {
+          "requests": 3,
+          "elapsed_seconds": 0.992852249997668,
+          "scope": "Concurrent requests to one server; current runtime serializes SQL using QUERY_SLOT."
+        },
+        "tokens": {
+          "tool_calls": 23,
+          "cold_setup_tokens": {
+            "cl100k_base": 1386,
+            "o200k_base": 1454
+          },
+          "request_tokens": {
+            "cl100k_base": 1529,
+            "o200k_base": 1546
+          },
+          "reply_tokens": {
+            "cl100k_base": 3053,
+            "o200k_base": 3079
+          },
+          "maximum_reply_bytes": 978
+        },
+        "phases": [
+          {
+            "phase": "import",
+            "tool": "import",
+            "elapsed_seconds": 0.0999722919659689,
+            "request_tokens": {
+              "cl100k_base": 48,
+              "o200k_base": 49
+            },
+            "reply_tokens": {
+              "cl100k_base": 53,
+              "o200k_base": 53
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 69,
+              "o200k_base": 70
+            },
+            "is_error": false
+          },
+          {
+            "phase": "aggregate",
+            "tool": "query",
+            "elapsed_seconds": 0.33423716702964157,
+            "request_tokens": {
+              "cl100k_base": 118,
+              "o200k_base": 119
+            },
+            "reply_tokens": {
+              "cl100k_base": 128,
+              "o200k_base": 130
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 152,
+              "o200k_base": 153
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_0",
+            "tool": "query",
+            "elapsed_seconds": 0.6621380000142381,
+            "request_tokens": {
+              "cl100k_base": 118,
+              "o200k_base": 119
+            },
+            "reply_tokens": {
+              "cl100k_base": 128,
+              "o200k_base": 130
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 152,
+              "o200k_base": 153
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_1",
+            "tool": "query",
+            "elapsed_seconds": 0.9917690419824794,
+            "request_tokens": {
+              "cl100k_base": 118,
+              "o200k_base": 119
+            },
+            "reply_tokens": {
+              "cl100k_base": 128,
+              "o200k_base": 130
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 152,
+              "o200k_base": 153
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_2",
+            "tool": "query",
+            "elapsed_seconds": 0.992375958012417,
+            "request_tokens": {
+              "cl100k_base": 118,
+              "o200k_base": 119
+            },
+            "reply_tokens": {
+              "cl100k_base": 128,
+              "o200k_base": 130
+            },
+            "reply_bytes": 345,
+            "wire_tokens": {
+              "cl100k_base": 152,
+              "o200k_base": 153
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_window",
+            "tool": "query",
+            "elapsed_seconds": 0.3055807499913499,
+            "request_tokens": {
+              "cl100k_base": 102,
+              "o200k_base": 103
+            },
+            "reply_tokens": {
+              "cl100k_base": 383,
+              "o200k_base": 385
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 409,
+              "o200k_base": 410
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_saved",
+            "tool": "query",
+            "elapsed_seconds": 0.0117372089298442,
+            "request_tokens": {
+              "cl100k_base": 113,
+              "o200k_base": 114
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 122
+            },
+            "reply_bytes": 337,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 145
+            },
+            "is_error": false
+          },
+          {
+            "phase": "saved_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0012355000944808125,
+            "request_tokens": {
+              "cl100k_base": 36,
+              "o200k_base": 36
+            },
+            "reply_tokens": {
+              "cl100k_base": 188,
+              "o200k_base": 189
+            },
+            "reply_bytes": 493,
+            "wire_tokens": {
+              "cl100k_base": 210,
+              "o200k_base": 211
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.002453082939609885,
+            "request_tokens": {
+              "cl100k_base": 79,
+              "o200k_base": 80
+            },
+            "reply_tokens": {
+              "cl100k_base": 47,
+              "o200k_base": 47
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume",
+            "tool": "resume",
+            "elapsed_seconds": 0.0010997910285368562,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 169,
+              "o200k_base": 170
+            },
+            "reply_bytes": 563,
+            "wire_tokens": {
+              "cl100k_base": 192,
+              "o200k_base": 193
+            },
+            "is_error": false
+          },
+          {
+            "phase": "update_source",
+            "tool": "import",
+            "elapsed_seconds": 0.10114754200913012,
+            "request_tokens": {
+              "cl100k_base": 53,
+              "o200k_base": 54
+            },
+            "reply_tokens": {
+              "cl100k_base": 43,
+              "o200k_base": 43
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 59,
+              "o200k_base": 60
+            },
+            "is_error": false
+          },
+          {
+            "phase": "stale_saved",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0011784159578382969,
+            "request_tokens": {
+              "cl100k_base": 32,
+              "o200k_base": 32
+            },
+            "reply_tokens": {
+              "cl100k_base": 82,
+              "o200k_base": 83
+            },
+            "reply_bytes": 198,
+            "wire_tokens": {
+              "cl100k_base": 102,
+              "o200k_base": 103
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_stale",
+            "tool": "resume",
+            "elapsed_seconds": 0.0011332499561831355,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 169,
+              "o200k_base": 170
+            },
+            "reply_bytes": 561,
+            "wire_tokens": {
+              "cl100k_base": 192,
+              "o200k_base": 193
+            },
+            "is_error": false
+          },
+          {
+            "phase": "reject_stale_query",
+            "tool": "query",
+            "elapsed_seconds": 0.0010190829634666443,
+            "request_tokens": {
+              "cl100k_base": 113,
+              "o200k_base": 114
+            },
+            "reply_tokens": {
+              "cl100k_base": 38,
+              "o200k_base": 38
+            },
+            "reply_bytes": 120,
+            "wire_tokens": {
+              "cl100k_base": 54,
+              "o200k_base": 55
+            },
+            "is_error": true
+          },
+          {
+            "phase": "explicit_historical_query",
+            "tool": "query",
+            "elapsed_seconds": 0.011620542034506798,
+            "request_tokens": {
+              "cl100k_base": 119,
+              "o200k_base": 120
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 122
+            },
+            "reply_bytes": 337,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 145
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refresh",
+            "tool": "refresh",
+            "elapsed_seconds": 0.30432029196526855,
+            "request_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 12
+            },
+            "reply_tokens": {
+              "cl100k_base": 372,
+              "o200k_base": 374
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 398,
+              "o200k_base": 399
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_refreshed",
+            "tool": "query",
+            "elapsed_seconds": 0.012648583971895278,
+            "request_tokens": {
+              "cl100k_base": 112,
+              "o200k_base": 113
+            },
+            "reply_tokens": {
+              "cl100k_base": 119,
+              "o200k_base": 121
+            },
+            "reply_bytes": 337,
+            "wire_tokens": {
+              "cl100k_base": 143,
+              "o200k_base": 144
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refreshed_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0012824999867007136,
+            "request_tokens": {
+              "cl100k_base": 35,
+              "o200k_base": 35
+            },
+            "reply_tokens": {
+              "cl100k_base": 198,
+              "o200k_base": 199
+            },
+            "reply_bytes": 526,
+            "wire_tokens": {
+              "cl100k_base": 220,
+              "o200k_base": 221
+            },
+            "is_error": false
+          },
+          {
+            "phase": "old_checkpoint_stays_pinned",
+            "tool": "resume",
+            "elapsed_seconds": 0.0016682910500094295,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 169,
+              "o200k_base": 170
+            },
+            "reply_bytes": 562,
+            "wire_tokens": {
+              "cl100k_base": 192,
+              "o200k_base": 193
+            },
+            "is_error": false
+          },
+          {
+            "phase": "advance_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.0017659589648246765,
+            "request_tokens": {
+              "cl100k_base": 82,
+              "o200k_base": 84
+            },
+            "reply_tokens": {
+              "cl100k_base": 50,
+              "o200k_base": 50
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 66,
+              "o200k_base": 67
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_current",
+            "tool": "resume",
+            "elapsed_seconds": 0.001072749961167574,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 170,
+              "o200k_base": 171
+            },
+            "reply_bytes": 563,
+            "wire_tokens": {
+              "cl100k_base": 193,
+              "o200k_base": 194
+            },
+            "is_error": false
+          },
+          {
+            "phase": "bounded_pathological_query",
+            "tool": "query",
+            "elapsed_seconds": 0.06961937504820526,
+            "request_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 47
+            },
+            "reply_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 11
+            },
+            "reply_bytes": 57,
+            "wire_tokens": {
+              "cl100k_base": 28,
+              "o200k_base": 28
+            },
+            "is_error": true
+          },
+          {
+            "phase": "timeout_recovery",
+            "tool": "query",
+            "elapsed_seconds": 0.01632012496702373,
+            "request_tokens": {
+              "cl100k_base": 24,
+              "o200k_base": 25
+            },
+            "reply_tokens": {
+              "cl100k_base": 39,
+              "o200k_base": 41
+            },
+            "reply_bytes": 111,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          }
+        ],
+        "server_memory": {
+          "primary": {
+            "status": "exited",
+            "peak_process_rss_bytes": 249004032,
+            "peak_sampled_server_rss_bytes": 248971264,
+            "samples": 190,
+            "sampling_seconds": 0.025
+          },
+          "timeout_probe": {
+            "status": "exited",
+            "peak_process_rss_bytes": 105562112,
+            "peak_sampled_server_rss_bytes": 105332736,
+            "samples": 4,
+            "sampling_seconds": 0.025
+          }
+        },
+        "worker_peak_rss_bytes": 432586752,
+        "workspace_bytes": 530052719
+      },
+      "rows": 10000000
+    },
+    {
+      "guard": {
+        "status": "ok",
+        "exit_code": 0,
+        "elapsed_seconds": 16.292001083958894,
+        "peak_sampled_tree_rss_bytes": 991526912,
+        "rss_samples": 264,
+        "rss_sampling_seconds": 0.05,
+        "output_bytes_after_exit": 5191279226,
+        "free_disk_bytes_after_exit": 707639214080
+      },
+      "result": {
+        "status": "passed",
+        "rows": 25000000,
+        "prepared_bytes": 643568706,
+        "updated_rows": 24999999,
+        "verified": {
+          "aggregate": true,
+          "concurrent_reads": true,
+          "saved_rows": {
+            "rows": 388345,
+            "multiset_sha256_sum": "000593391fe3bc08c5ac2e92402a2ddcaa51fcc22d1a3e90eaf637d1e4a2449c",
+            "sequence_verified": true
+          },
+          "direct_saved_rows": {
+            "rows": 388345,
+            "multiset_sha256_sum": "000593391fe3bc08c5ac2e92402a2ddcaa51fcc22d1a3e90eaf637d1e4a2449c",
+            "sequence_verified": true
+          },
+          "refreshed_rows": {
+            "rows": 388345,
+            "multiset_sha256_sum": "000593391fe3bc08c5ac2e92402a2ddcaa51fcc22d1a3e90eaf637d1e4a2449c",
+            "sequence_verified": true
+          },
+          "staleness_refresh_and_manual_checkpoint_advance": true,
+          "timeout_and_same_server_recovery": true
+        },
+        "direct_duckdb": {
+          "aggregate": {
+            "result": {
+              "columns": [
+                "row_count",
+                "ticker_count",
+                "first_t",
+                "last_t",
+                "total_volume",
+                "total_trades",
+                "min_low",
+                "max_high",
+                "up_rows"
+              ],
+              "rows": [
+                [
+                  25000000,
+                  97,
+                  1704186000000,
+                  1767229140000,
+                  "811059042282.725000000000",
+                  "7560493302.000000000000",
+                  "3.020000000000",
+                  "1219.939900000000",
+                  10229469
+                ]
+              ],
+              "preview_truncated": false
+            },
+            "elapsed_seconds": 0.8210324159590527,
+            "peak_process_rss_bytes": 375619584
+          },
+          "save_window": {
+            "result": {
+              "columns": [
+                "ticker",
+                "t",
+                "o",
+                "h",
+                "l",
+                "c",
+                "v",
+                "n",
+                "sequence"
+              ],
+              "preview_truncated": true,
+              "source_preview_omitted": true
+            },
+            "elapsed_seconds": 0.7393649999285117,
+            "peak_process_rss_bytes": 578977792,
+            "saved_bytes": 16982827,
+            "saved_sha256": "e8c51f053f7d83048cccfd63c242e48b8ef90b0fd2b2ad71145cc072514c9da3"
+          }
+        },
+        "concurrent_reads": {
+          "requests": 3,
+          "elapsed_seconds": 2.4526220409898087,
+          "scope": "Concurrent requests to one server; current runtime serializes SQL using QUERY_SLOT."
+        },
+        "tokens": {
+          "tool_calls": 23,
+          "cold_setup_tokens": {
+            "cl100k_base": 1386,
+            "o200k_base": 1454
+          },
+          "request_tokens": {
+            "cl100k_base": 1453,
+            "o200k_base": 1470
+          },
+          "reply_tokens": {
+            "cl100k_base": 2929,
+            "o200k_base": 2961
+          },
+          "maximum_reply_bytes": 978
+        },
+        "phases": [
+          {
+            "phase": "import",
+            "tool": "import",
+            "elapsed_seconds": 0.23981404199730605,
+            "request_tokens": {
+              "cl100k_base": 48,
+              "o200k_base": 49
+            },
+            "reply_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 45
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 61,
+              "o200k_base": 62
+            },
+            "is_error": false
+          },
+          {
+            "phase": "aggregate",
+            "tool": "query",
+            "elapsed_seconds": 0.8187793339602649,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 122
+            },
+            "reply_bytes": 346,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 145
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_0",
+            "tool": "query",
+            "elapsed_seconds": 1.6395773330004886,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 122
+            },
+            "reply_bytes": 346,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 145
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_1",
+            "tool": "query",
+            "elapsed_seconds": 2.4514492909656838,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 122
+            },
+            "reply_bytes": 346,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 145
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_2",
+            "tool": "query",
+            "elapsed_seconds": 2.4521238330053166,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 120,
+              "o200k_base": 122
+            },
+            "reply_bytes": 346,
+            "wire_tokens": {
+              "cl100k_base": 144,
+              "o200k_base": 145
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_window",
+            "tool": "query",
+            "elapsed_seconds": 0.7305327909998596,
+            "request_tokens": {
+              "cl100k_base": 94,
+              "o200k_base": 95
+            },
+            "reply_tokens": {
+              "cl100k_base": 371,
+              "o200k_base": 373
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 397,
+              "o200k_base": 398
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_saved",
+            "tool": "query",
+            "elapsed_seconds": 0.018059958005324006,
+            "request_tokens": {
+              "cl100k_base": 109,
+              "o200k_base": 110
+            },
+            "reply_tokens": {
+              "cl100k_base": 116,
+              "o200k_base": 118
+            },
+            "reply_bytes": 340,
+            "wire_tokens": {
+              "cl100k_base": 140,
+              "o200k_base": 141
+            },
+            "is_error": false
+          },
+          {
+            "phase": "saved_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.001281042001210153,
+            "request_tokens": {
+              "cl100k_base": 32,
+              "o200k_base": 32
+            },
+            "reply_tokens": {
+              "cl100k_base": 177,
+              "o200k_base": 177
+            },
+            "reply_bytes": 494,
+            "wire_tokens": {
+              "cl100k_base": 199,
+              "o200k_base": 199
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.00242416700348258,
+            "request_tokens": {
+              "cl100k_base": 75,
+              "o200k_base": 76
+            },
+            "reply_tokens": {
+              "cl100k_base": 50,
+              "o200k_base": 50
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 66,
+              "o200k_base": 67
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume",
+            "tool": "resume",
+            "elapsed_seconds": 0.0011449590092524886,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 164,
+              "o200k_base": 165
+            },
+            "reply_bytes": 563,
+            "wire_tokens": {
+              "cl100k_base": 187,
+              "o200k_base": 188
+            },
+            "is_error": false
+          },
+          {
+            "phase": "update_source",
+            "tool": "import",
+            "elapsed_seconds": 0.2547872089780867,
+            "request_tokens": {
+              "cl100k_base": 53,
+              "o200k_base": 54
+            },
+            "reply_tokens": {
+              "cl100k_base": 44,
+              "o200k_base": 46
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 60,
+              "o200k_base": 63
+            },
+            "is_error": false
+          },
+          {
+            "phase": "stale_saved",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0013985829427838326,
+            "request_tokens": {
+              "cl100k_base": 28,
+              "o200k_base": 28
+            },
+            "reply_tokens": {
+              "cl100k_base": 70,
+              "o200k_base": 71
+            },
+            "reply_bytes": 198,
+            "wire_tokens": {
+              "cl100k_base": 90,
+              "o200k_base": 91
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_stale",
+            "tool": "resume",
+            "elapsed_seconds": 0.0010168750304728746,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 164,
+              "o200k_base": 165
+            },
+            "reply_bytes": 561,
+            "wire_tokens": {
+              "cl100k_base": 187,
+              "o200k_base": 188
+            },
+            "is_error": false
+          },
+          {
+            "phase": "reject_stale_query",
+            "tool": "query",
+            "elapsed_seconds": 0.0009377499809488654,
+            "request_tokens": {
+              "cl100k_base": 109,
+              "o200k_base": 110
+            },
+            "reply_tokens": {
+              "cl100k_base": 34,
+              "o200k_base": 34
+            },
+            "reply_bytes": 120,
+            "wire_tokens": {
+              "cl100k_base": 50,
+              "o200k_base": 51
+            },
+            "is_error": true
+          },
+          {
+            "phase": "explicit_historical_query",
+            "tool": "query",
+            "elapsed_seconds": 0.018840624950826168,
+            "request_tokens": {
+              "cl100k_base": 115,
+              "o200k_base": 116
+            },
+            "reply_tokens": {
+              "cl100k_base": 116,
+              "o200k_base": 118
+            },
+            "reply_bytes": 340,
+            "wire_tokens": {
+              "cl100k_base": 140,
+              "o200k_base": 141
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refresh",
+            "tool": "refresh",
+            "elapsed_seconds": 0.744133458007127,
+            "request_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 12
+            },
+            "reply_tokens": {
+              "cl100k_base": 369,
+              "o200k_base": 373
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 395,
+              "o200k_base": 398
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_refreshed",
+            "tool": "query",
+            "elapsed_seconds": 0.018559333053417504,
+            "request_tokens": {
+              "cl100k_base": 108,
+              "o200k_base": 109
+            },
+            "reply_tokens": {
+              "cl100k_base": 115,
+              "o200k_base": 117
+            },
+            "reply_bytes": 340,
+            "wire_tokens": {
+              "cl100k_base": 139,
+              "o200k_base": 140
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refreshed_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0011731249978765845,
+            "request_tokens": {
+              "cl100k_base": 31,
+              "o200k_base": 31
+            },
+            "reply_tokens": {
+              "cl100k_base": 192,
+              "o200k_base": 194
+            },
+            "reply_bytes": 527,
+            "wire_tokens": {
+              "cl100k_base": 214,
+              "o200k_base": 216
+            },
+            "is_error": false
+          },
+          {
+            "phase": "old_checkpoint_stays_pinned",
+            "tool": "resume",
+            "elapsed_seconds": 0.0017941250698640943,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 164,
+              "o200k_base": 165
+            },
+            "reply_bytes": 562,
+            "wire_tokens": {
+              "cl100k_base": 187,
+              "o200k_base": 188
+            },
+            "is_error": false
+          },
+          {
+            "phase": "advance_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.0017519999528303742,
+            "request_tokens": {
+              "cl100k_base": 78,
+              "o200k_base": 80
+            },
+            "reply_tokens": {
+              "cl100k_base": 47,
+              "o200k_base": 47
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_current",
+            "tool": "resume",
+            "elapsed_seconds": 0.0011714160209521651,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 159,
+              "o200k_base": 160
+            },
+            "reply_bytes": 563,
+            "wire_tokens": {
+              "cl100k_base": 182,
+              "o200k_base": 183
+            },
+            "is_error": false
+          },
+          {
+            "phase": "bounded_pathological_query",
+            "tool": "query",
+            "elapsed_seconds": 0.06955733406357467,
+            "request_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 47
+            },
+            "reply_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 11
+            },
+            "reply_bytes": 57,
+            "wire_tokens": {
+              "cl100k_base": 28,
+              "o200k_base": 28
+            },
+            "is_error": true
+          },
+          {
+            "phase": "timeout_recovery",
+            "tool": "query",
+            "elapsed_seconds": 0.03330749995075166,
+            "request_tokens": {
+              "cl100k_base": 24,
+              "o200k_base": 25
+            },
+            "reply_tokens": {
+              "cl100k_base": 40,
+              "o200k_base": 44
+            },
+            "reply_bytes": 112,
+            "wire_tokens": {
+              "cl100k_base": 64,
+              "o200k_base": 67
+            },
+            "is_error": false
+          }
+        ],
+        "server_memory": {
+          "primary": {
+            "status": "exited",
+            "peak_process_rss_bytes": 409042944,
+            "peak_sampled_server_rss_bytes": 408977408,
+            "samples": 468,
+            "sampling_seconds": 0.025
+          },
+          "timeout_probe": {
+            "status": "exited",
+            "peak_process_rss_bytes": 115638272,
+            "peak_sampled_server_rss_bytes": 115294208,
+            "samples": 4,
+            "sampling_seconds": 0.025
+          }
+        },
+        "worker_peak_rss_bytes": 582565888,
+        "workspace_bytes": 1304173428
+      },
+      "rows": 25000000
+    },
+    {
+      "guard": {
+        "status": "ok",
+        "exit_code": 0,
+        "elapsed_seconds": 21.9756425418891,
+        "peak_sampled_tree_rss_bytes": 1188200448,
+        "rss_samples": 354,
+        "rss_sampling_seconds": 0.05,
+        "output_bytes_after_exit": 5659046998,
+        "free_disk_bytes_after_exit": 707169013760
+      },
+      "result": {
+        "status": "passed",
+        "rows": 34015435,
+        "prepared_bytes": 862965562,
+        "updated_rows": 34015434,
+        "verified": {
+          "aggregate": true,
+          "concurrent_reads": true,
+          "saved_rows": {
+            "rows": 528697,
+            "multiset_sha256_sum": "7c1fbbcaaaefb927bfd94721e7def4efeee509f0fa75308fbcf0d68f626b3484",
+            "sequence_verified": true
+          },
+          "direct_saved_rows": {
+            "rows": 528697,
+            "multiset_sha256_sum": "7c1fbbcaaaefb927bfd94721e7def4efeee509f0fa75308fbcf0d68f626b3484",
+            "sequence_verified": true
+          },
+          "refreshed_rows": {
+            "rows": 528697,
+            "multiset_sha256_sum": "7c1fbbcaaaefb927bfd94721e7def4efeee509f0fa75308fbcf0d68f626b3484",
+            "sequence_verified": true
+          },
+          "staleness_refresh_and_manual_checkpoint_advance": true,
+          "timeout_and_same_server_recovery": true
+        },
+        "direct_duckdb": {
+          "aggregate": {
+            "result": {
+              "columns": [
+                "row_count",
+                "ticker_count",
+                "first_t",
+                "last_t",
+                "total_volume",
+                "total_trades",
+                "min_low",
+                "max_high",
+                "up_rows"
+              ],
+              "rows": [
+                [
+                  34015435,
+                  131,
+                  1704186000000,
+                  1767229140000,
+                  "1160177301319.835000000000",
+                  "10371506375.000000000000",
+                  "3.020000000000",
+                  "1219.939900000000",
+                  13941398
+                ]
+              ],
+              "preview_truncated": false
+            },
+            "elapsed_seconds": 1.11358200001996,
+            "peak_process_rss_bytes": 435175424
+          },
+          "save_window": {
+            "result": {
+              "columns": [
+                "ticker",
+                "t",
+                "o",
+                "h",
+                "l",
+                "c",
+                "v",
+                "n",
+                "sequence"
+              ],
+              "preview_truncated": true,
+              "source_preview_omitted": true
+            },
+            "elapsed_seconds": 0.9968250000383705,
+            "peak_process_rss_bytes": 680935424,
+            "saved_bytes": 22904382,
+            "saved_sha256": "9a8fa2d5ee8cd6fa4eafab9636bae1486a43a56fe6c25561a57e9215692a4462"
+          }
+        },
+        "concurrent_reads": {
+          "requests": 3,
+          "elapsed_seconds": 3.3525672079995275,
+          "scope": "Concurrent requests to one server; current runtime serializes SQL using QUERY_SLOT."
+        },
+        "tokens": {
+          "tool_calls": 23,
+          "cold_setup_tokens": {
+            "cl100k_base": 1386,
+            "o200k_base": 1454
+          },
+          "request_tokens": {
+            "cl100k_base": 1477,
+            "o200k_base": 1494
+          },
+          "reply_tokens": {
+            "cl100k_base": 2982,
+            "o200k_base": 3004
+          },
+          "maximum_reply_bytes": 978
+        },
+        "phases": [
+          {
+            "phase": "import",
+            "tool": "import",
+            "elapsed_seconds": 0.32960108295083046,
+            "request_tokens": {
+              "cl100k_base": 48,
+              "o200k_base": 49
+            },
+            "reply_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 45
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 61,
+              "o200k_base": 62
+            },
+            "is_error": false
+          },
+          {
+            "phase": "aggregate",
+            "tool": "query",
+            "elapsed_seconds": 1.1193870829883963,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 121,
+              "o200k_base": 123
+            },
+            "reply_bytes": 349,
+            "wire_tokens": {
+              "cl100k_base": 145,
+              "o200k_base": 146
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_0",
+            "tool": "query",
+            "elapsed_seconds": 2.233271999983117,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 121,
+              "o200k_base": 123
+            },
+            "reply_bytes": 349,
+            "wire_tokens": {
+              "cl100k_base": 145,
+              "o200k_base": 146
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_1",
+            "tool": "query",
+            "elapsed_seconds": 3.351480957935564,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 121,
+              "o200k_base": 123
+            },
+            "reply_bytes": 349,
+            "wire_tokens": {
+              "cl100k_base": 145,
+              "o200k_base": 146
+            },
+            "is_error": false
+          },
+          {
+            "phase": "concurrent_2",
+            "tool": "query",
+            "elapsed_seconds": 3.352062459103763,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 121,
+              "o200k_base": 123
+            },
+            "reply_bytes": 349,
+            "wire_tokens": {
+              "cl100k_base": 145,
+              "o200k_base": 146
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_window",
+            "tool": "query",
+            "elapsed_seconds": 0.9958510409342125,
+            "request_tokens": {
+              "cl100k_base": 94,
+              "o200k_base": 95
+            },
+            "reply_tokens": {
+              "cl100k_base": 372,
+              "o200k_base": 374
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 398,
+              "o200k_base": 399
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_saved",
+            "tool": "query",
+            "elapsed_seconds": 0.020951999933458865,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 117,
+              "o200k_base": 119
+            },
+            "reply_bytes": 341,
+            "wire_tokens": {
+              "cl100k_base": 141,
+              "o200k_base": 142
+            },
+            "is_error": false
+          },
+          {
+            "phase": "saved_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0012322920374572277,
+            "request_tokens": {
+              "cl100k_base": 33,
+              "o200k_base": 33
+            },
+            "reply_tokens": {
+              "cl100k_base": 180,
+              "o200k_base": 179
+            },
+            "reply_bytes": 494,
+            "wire_tokens": {
+              "cl100k_base": 202,
+              "o200k_base": 201
+            },
+            "is_error": false
+          },
+          {
+            "phase": "save_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.002592792036011815,
+            "request_tokens": {
+              "cl100k_base": 76,
+              "o200k_base": 77
+            },
+            "reply_tokens": {
+              "cl100k_base": 47,
+              "o200k_base": 47
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 63,
+              "o200k_base": 64
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume",
+            "tool": "resume",
+            "elapsed_seconds": 0.0012451250804588199,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 163,
+              "o200k_base": 164
+            },
+            "reply_bytes": 563,
+            "wire_tokens": {
+              "cl100k_base": 186,
+              "o200k_base": 187
+            },
+            "is_error": false
+          },
+          {
+            "phase": "update_source",
+            "tool": "import",
+            "elapsed_seconds": 0.3392512499121949,
+            "request_tokens": {
+              "cl100k_base": 53,
+              "o200k_base": 54
+            },
+            "reply_tokens": {
+              "cl100k_base": 49,
+              "o200k_base": 49
+            },
+            "reply_bytes": 124,
+            "wire_tokens": {
+              "cl100k_base": 65,
+              "o200k_base": 66
+            },
+            "is_error": false
+          },
+          {
+            "phase": "stale_saved",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0013720000861212611,
+            "request_tokens": {
+              "cl100k_base": 29,
+              "o200k_base": 29
+            },
+            "reply_tokens": {
+              "cl100k_base": 71,
+              "o200k_base": 72
+            },
+            "reply_bytes": 198,
+            "wire_tokens": {
+              "cl100k_base": 91,
+              "o200k_base": 92
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_stale",
+            "tool": "resume",
+            "elapsed_seconds": 0.0011610410874709487,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 163,
+              "o200k_base": 164
+            },
+            "reply_bytes": 561,
+            "wire_tokens": {
+              "cl100k_base": 186,
+              "o200k_base": 187
+            },
+            "is_error": false
+          },
+          {
+            "phase": "reject_stale_query",
+            "tool": "query",
+            "elapsed_seconds": 0.001000415999442339,
+            "request_tokens": {
+              "cl100k_base": 110,
+              "o200k_base": 111
+            },
+            "reply_tokens": {
+              "cl100k_base": 35,
+              "o200k_base": 35
+            },
+            "reply_bytes": 120,
+            "wire_tokens": {
+              "cl100k_base": 51,
+              "o200k_base": 52
+            },
+            "is_error": true
+          },
+          {
+            "phase": "explicit_historical_query",
+            "tool": "query",
+            "elapsed_seconds": 0.019906249945051968,
+            "request_tokens": {
+              "cl100k_base": 116,
+              "o200k_base": 117
+            },
+            "reply_tokens": {
+              "cl100k_base": 117,
+              "o200k_base": 119
+            },
+            "reply_bytes": 341,
+            "wire_tokens": {
+              "cl100k_base": 141,
+              "o200k_base": 142
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refresh",
+            "tool": "refresh",
+            "elapsed_seconds": 0.9938464580336586,
+            "request_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 12
+            },
+            "reply_tokens": {
+              "cl100k_base": 380,
+              "o200k_base": 382
+            },
+            "reply_bytes": 978,
+            "wire_tokens": {
+              "cl100k_base": 406,
+              "o200k_base": 407
+            },
+            "is_error": false
+          },
+          {
+            "phase": "check_refreshed",
+            "tool": "query",
+            "elapsed_seconds": 0.020476542063988745,
+            "request_tokens": {
+              "cl100k_base": 114,
+              "o200k_base": 115
+            },
+            "reply_tokens": {
+              "cl100k_base": 121,
+              "o200k_base": 123
+            },
+            "reply_bytes": 341,
+            "wire_tokens": {
+              "cl100k_base": 145,
+              "o200k_base": 146
+            },
+            "is_error": false
+          },
+          {
+            "phase": "refreshed_metadata",
+            "tool": "inspect",
+            "elapsed_seconds": 0.0012454160023480654,
+            "request_tokens": {
+              "cl100k_base": 37,
+              "o200k_base": 37
+            },
+            "reply_tokens": {
+              "cl100k_base": 206,
+              "o200k_base": 205
+            },
+            "reply_bytes": 527,
+            "wire_tokens": {
+              "cl100k_base": 228,
+              "o200k_base": 227
+            },
+            "is_error": false
+          },
+          {
+            "phase": "old_checkpoint_stays_pinned",
+            "tool": "resume",
+            "elapsed_seconds": 0.0035129159223288298,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 163,
+              "o200k_base": 164
+            },
+            "reply_bytes": 562,
+            "wire_tokens": {
+              "cl100k_base": 186,
+              "o200k_base": 187
+            },
+            "is_error": false
+          },
+          {
+            "phase": "advance_checkpoint",
+            "tool": "save",
+            "elapsed_seconds": 0.001735124969854951,
+            "request_tokens": {
+              "cl100k_base": 84,
+              "o200k_base": 86
+            },
+            "reply_tokens": {
+              "cl100k_base": 44,
+              "o200k_base": 44
+            },
+            "reply_bytes": 130,
+            "wire_tokens": {
+              "cl100k_base": 60,
+              "o200k_base": 61
+            },
+            "is_error": false
+          },
+          {
+            "phase": "resume_current",
+            "tool": "resume",
+            "elapsed_seconds": 0.0011302089551463723,
+            "request_tokens": {
+              "cl100k_base": 13,
+              "o200k_base": 13
+            },
+            "reply_tokens": {
+              "cl100k_base": 168,
+              "o200k_base": 169
+            },
+            "reply_bytes": 563,
+            "wire_tokens": {
+              "cl100k_base": 191,
+              "o200k_base": 192
+            },
+            "is_error": false
+          },
+          {
+            "phase": "bounded_pathological_query",
+            "tool": "query",
+            "elapsed_seconds": 0.0781594590516761,
+            "request_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 47
+            },
+            "reply_tokens": {
+              "cl100k_base": 12,
+              "o200k_base": 11
+            },
+            "reply_bytes": 57,
+            "wire_tokens": {
+              "cl100k_base": 28,
+              "o200k_base": 28
+            },
+            "is_error": true
+          },
+          {
+            "phase": "timeout_recovery",
+            "tool": "query",
+            "elapsed_seconds": 0.042826499906368554,
+            "request_tokens": {
+              "cl100k_base": 24,
+              "o200k_base": 25
+            },
+            "reply_tokens": {
+              "cl100k_base": 45,
+              "o200k_base": 47
+            },
+            "reply_bytes": 112,
+            "wire_tokens": {
+              "cl100k_base": 69,
+              "o200k_base": 70
+            },
+            "is_error": false
+          }
+        ],
+        "server_memory": {
+          "primary": {
+            "status": "exited",
+            "peak_process_rss_bytes": 507363328,
+            "peak_sampled_server_rss_bytes": 507346944,
+            "samples": 638,
+            "sampling_seconds": 0.025
+          },
+          "timeout_probe": {
+            "status": "exited",
+            "peak_process_rss_bytes": 121454592,
+            "peak_sampled_server_rss_bytes": 121110528,
+            "samples": 5,
+            "sampling_seconds": 0.025
+          }
+        },
+        "worker_peak_rss_bytes": 683196416,
+        "workspace_bytes": 1748888727
+      },
+      "rows": 34015435
+    }
+  ],
+  "publication_note": "Reviewed aggregate evidence. Source previews, local filesystem paths, process IDs, and raw MCP transcripts are excluded. Complete local measurements retain these fields for audit."
+}

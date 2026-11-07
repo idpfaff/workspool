@@ -1,0 +1,1336 @@
+{
+  "source": "Massive adjusted 1-minute aggregates",
+  "endpoint_template": "https://api.massive.com/v2/aggs/ticker/{ticker}/range/1/minute/2024-01-01/2025-12-31",
+  "requested_from": "2024-01-01",
+  "requested_to": "2025-12-31",
+  "symbol_count": 131,
+  "rows": 34015435,
+  "csv_bytes": 1855955557,
+  "provider_response_bytes": 3185562397,
+  "api_requests": 755,
+  "canonical_columns": [
+    "ticker",
+    "t",
+    "o",
+    "h",
+    "l",
+    "c",
+    "v",
+    "n"
+  ],
+  "download_complete": true,
+  "all_file_hashes_rechecked": true,
+  "symbols": [
+    {
+      "ticker": "AAPL",
+      "rows": 375619,
+      "bytes": 21412983,
+      "sha256": "4436e1d4a37df778cfc3871dad251d72b5b7d3a0bc0ecf3db6b32cb9e9cca2c3",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229080000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "ABBV",
+      "rows": 203576,
+      "bytes": 11572604,
+      "sha256": "0c6b43bb6cada0f9f04f57c9c4b21b12da9896b8411ad58a6c848f300d85666d",
+      "first_timestamp": 1704196800000,
+      "last_timestamp": 1767216900000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "ABNB",
+      "rows": 213455,
+      "bytes": 12030882,
+      "sha256": "8476814c4634f9a3faf55f6733564353124ccda766a9e13bf21f98c90734928d",
+      "first_timestamp": 1704194100000,
+      "last_timestamp": 1767227040000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "ADBE",
+      "rows": 214464,
+      "bytes": 12091042,
+      "sha256": "98dc51f4e00439615b772a48195d0be72ddec42d98018e2592887c90ca4c56f9",
+      "first_timestamp": 1704186180000,
+      "last_timestamp": 1767229080000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "AFRM",
+      "rows": 256481,
+      "bytes": 13442855,
+      "sha256": "3953f804bab2d5f3e9aa57ac2b7bef0fe8991c3bcf07ba6b3055bda9038b4145",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767227940000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "AMAT",
+      "rows": 224676,
+      "bytes": 12679355,
+      "sha256": "e474307c779e3ab72907d6b98b50d7ed249c9d9a58df00d0b2b8e7d5febfdc37",
+      "first_timestamp": 1704194520000,
+      "last_timestamp": 1767220980000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "AMD",
+      "rows": 403780,
+      "bytes": 22510831,
+      "sha256": "f3c5e532e8967a7f8298b6480f6191528b8231895d417cdef62d4ccf61220594",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 9,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "AMGN",
+      "rows": 196661,
+      "bytes": 11067509,
+      "sha256": "fcfecec069441ddc9610577d6b4eae74fe1c1aa4c7e3f87e529fe00cdeaa6a28",
+      "first_timestamp": 1704194940000,
+      "last_timestamp": 1767226620000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "AMZN",
+      "rows": 374430,
+      "bytes": 21300495,
+      "sha256": "db044e7a6007b8dadca6de150ac4d22a6491493118752e3820968809ffbe814b",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "ARKK",
+      "rows": 241403,
+      "bytes": 12696190,
+      "sha256": "7593f62830eff553484e56edd20c38911d06b49d5fe420a265ab8576a4dffaf5",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767226080000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "ARM",
+      "rows": 278233,
+      "bytes": 15220144,
+      "sha256": "2b56db1f2f85bcb050f7372db1d02a66c7b339d75d08fd2b9de9fc59f1bf199c",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767229020000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "ASML",
+      "rows": 204345,
+      "bytes": 11483389,
+      "sha256": "cbac1ff93f2f7d5140e9e5b1652493bcf60269a2cfa0b440994f18854fd3ea59",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767226620000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "AVGO",
+      "rows": 305896,
+      "bytes": 17495120,
+      "sha256": "6cfd09625dc1d2e0da4cb520dfcb10b3748ad5f72b3c0e172f43daed8cd449f4",
+      "first_timestamp": 1704190320000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "BA",
+      "rows": 263091,
+      "bytes": 14377674,
+      "sha256": "f92f219f0106331eb29e76b139260e6930bf6c394eebffb5c245c18df399628f",
+      "first_timestamp": 1704188280000,
+      "last_timestamp": 1767228120000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "BABA",
+      "rows": 352692,
+      "bytes": 19220428,
+      "sha256": "cf9ee13875c41d2915cfc6e790d488bc76927ced1d01258efd58c9f57d2ca149",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "BAC",
+      "rows": 254082,
+      "bytes": 13488980,
+      "sha256": "25000ccc61aac9bf5c2db6e2424079ec41c92fe2c955d14115179d2e63e1c3af",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228960000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "BIDU",
+      "rows": 254223,
+      "bytes": 13539092,
+      "sha256": "8db82a3edc133f26fcc132d97dc13db549b8f555e4cb9c034be503fb437f86e9",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767222840000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "BLK",
+      "rows": 140647,
+      "bytes": 7884192,
+      "sha256": "69d45c53f0ce145593eba9db498dfe77931b144904554123c7e2b2edb5036446",
+      "first_timestamp": 1704205800000,
+      "last_timestamp": 1767218400000,
+      "requests": 3,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "C",
+      "rows": 227847,
+      "bytes": 11607529,
+      "sha256": "9e7b2a3ddbb4cb1e5634bf888afa7368f0713d06da150e0fc1a29b40d02a6a5a",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767223920000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "CAT",
+      "rows": 201318,
+      "bytes": 11111206,
+      "sha256": "94f07daaa7329e6eb5cec589854c895771c085020a6b9f1b068024c72b39965a",
+      "first_timestamp": 1704195480000,
+      "last_timestamp": 1767222360000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "CMCSA",
+      "rows": 218988,
+      "bytes": 12138182,
+      "sha256": "8728783f88e0e3314bbe4978c8bdb203711f66bed92fad3ad9cf3cfcbd00b967",
+      "first_timestamp": 1704194580000,
+      "last_timestamp": 1767224940000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "COIN",
+      "rows": 339979,
+      "bytes": 18965076,
+      "sha256": "84b7318ceed75093399e525041c988682784b3a9b92f2de45b718b55cc900628",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "COP",
+      "rows": 205982,
+      "bytes": 11108781,
+      "sha256": "41d497414df13e69067d21d8b6ba15a82390ed2e822bd54850391773dc8de72d",
+      "first_timestamp": 1704186480000,
+      "last_timestamp": 1767225420000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "COST",
+      "rows": 200618,
+      "bytes": 11417837,
+      "sha256": "feab142aef8bf74d2119e3bac5d10e16ffed96bda2bcca46acc326b322d4fc4c",
+      "first_timestamp": 1704196980000,
+      "last_timestamp": 1767229080000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "CRM",
+      "rows": 224467,
+      "bytes": 12482854,
+      "sha256": "ed4a536954235000d09fe5d4a2b6ede7855a8701c904920dac8d97f5de36a12c",
+      "first_timestamp": 1704194760000,
+      "last_timestamp": 1767227760000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "CRWD",
+      "rows": 232502,
+      "bytes": 13681763,
+      "sha256": "0c007fe4cb48570ef76bd5fda4f051bd1cfb46e4f63ea3e66f471bfbbb83b3de",
+      "first_timestamp": 1704196800000,
+      "last_timestamp": 1767227940000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "CVS",
+      "rows": 218111,
+      "bytes": 11398858,
+      "sha256": "f077a1cb86df34834719ef630ecb9ff4a8d2209c44b9366e5c0577285d304411",
+      "first_timestamp": 1704196980000,
+      "last_timestamp": 1767222900000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "CVX",
+      "rows": 220292,
+      "bytes": 12317363,
+      "sha256": "555a84eb9f8b02c3cb2490a250a8ebbc48a694482a96beefbe1c3c8003afa42c",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767227580000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "DASH",
+      "rows": 206392,
+      "bytes": 11581030,
+      "sha256": "aeae309151e769c40c1406782dfe1c4b0f86276630106768194b099a4dca2cda",
+      "first_timestamp": 1704196800000,
+      "last_timestamp": 1767224400000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "DDOG",
+      "rows": 213004,
+      "bytes": 11939089,
+      "sha256": "7b0c79b893b7d712f936af8297228fd6234a234056133514f65aadd9171a4d4d",
+      "first_timestamp": 1704197160000,
+      "last_timestamp": 1767227160000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "DE",
+      "rows": 183471,
+      "bytes": 9880334,
+      "sha256": "61d0a4929ec73d83d55df5a0e889327b8a4364eebae0e7e48430ab2a4c228a6d",
+      "first_timestamp": 1704199800000,
+      "last_timestamp": 1767219660000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "DIA",
+      "rows": 242031,
+      "bytes": 13174257,
+      "sha256": "8a3b44e99a686dc23e453d8e040fc5d69347b791e047645811efdbd7072e327f",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767226320000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "DIS",
+      "rows": 236893,
+      "bytes": 12990021,
+      "sha256": "7cee5dd6ffcbd82532c59122fa8b6a69d78e7bb7a1ae1be52a773d95b948b222",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228060000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "F",
+      "rows": 301187,
+      "bytes": 15152367,
+      "sha256": "fb11af294a733f5c0868ab0380c75082bb1a877c116c026c80c984f08a943d9d",
+      "first_timestamp": 1704186300000,
+      "last_timestamp": 1767229080000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "FDX",
+      "rows": 193411,
+      "bytes": 10615181,
+      "sha256": "2fe281de5a9834187fd41690b447378a8cc3df40a4297c1b1b9b33cf91fc1784",
+      "first_timestamp": 1704200040000,
+      "last_timestamp": 1767215520000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GDX",
+      "rows": 298874,
+      "bytes": 15520044,
+      "sha256": "40ecbb8ba8a818c0d1341868ff2352558bc3ade7de6623278352a6c2444f2e35",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GE",
+      "rows": 211972,
+      "bytes": 11862832,
+      "sha256": "1a66bc2a667ac7af6ffae1f9bfef3e7d35916bc3febf96fcea6637c3d4dad0e5",
+      "first_timestamp": 1704196080000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GILD",
+      "rows": 207407,
+      "bytes": 11319336,
+      "sha256": "d7d788807ab162fc9cc9c220ba4a6fe47ff05875ce78b67ceea4fa1e547cbb55",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767226260000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GLD",
+      "rows": 293184,
+      "bytes": 16144075,
+      "sha256": "7a267ab21f93fcad0350d3b3a55340422a1c35615e31e280bc1f011622e707e3",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GM",
+      "rows": 222245,
+      "bytes": 11468815,
+      "sha256": "3fb4d7f18a2f750751f929db71cb71d4055edc3a3efe70966ef214f5f530da81",
+      "first_timestamp": 1704186300000,
+      "last_timestamp": 1767217320000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GOOG",
+      "rows": 319893,
+      "bytes": 18071343,
+      "sha256": "8f106fc665dadff0728b5b3067a97cdcdbec8ef6a05950ff0ffe8973e7bab5c0",
+      "first_timestamp": 1704186720000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GOOGL",
+      "rows": 342625,
+      "bytes": 19772434,
+      "sha256": "c5803bdf98ad8443ce145089c9e241d82b592af99e45607840b6a24bc0345622",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228960000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "GS",
+      "rows": 201468,
+      "bytes": 10870608,
+      "sha256": "f6b44ddfc5dc558568ce1663588eb4ad005d8cb804065217310b547a6a0e3a7d",
+      "first_timestamp": 1704195360000,
+      "last_timestamp": 1767227940000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "HD",
+      "rows": 205641,
+      "bytes": 11233168,
+      "sha256": "97dd8b301b2b685aa98f8777f0f884e96b3eabf95e970c0944754fa4452adc22",
+      "first_timestamp": 1704195120000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "HOOD",
+      "rows": 357058,
+      "bytes": 19254033,
+      "sha256": "24bd46bbf3d682b473ae9d90e1417b3dd154838b59330d65e6d38d12bd0101bb",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "HYG",
+      "rows": 206117,
+      "bytes": 10955452,
+      "sha256": "181ae5b1388d85d31b7a82bae9423065b27450f155575b3fe6793adf54ad58db",
+      "first_timestamp": 1704194340000,
+      "last_timestamp": 1767227280000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "INTC",
+      "rows": 408156,
+      "bytes": 21805140,
+      "sha256": "cbbc4b84892c893360a3c616c27a4cb9659a93062e6404b708e15598f557f8e1",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 9,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "INTU",
+      "rows": 184536,
+      "bytes": 10305987,
+      "sha256": "574000ede50eb57f421055c6396ede6cb7b26940ad9a7172a6f977b1184eb1bc",
+      "first_timestamp": 1704201420000,
+      "last_timestamp": 1767216600000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "IWM",
+      "rows": 375462,
+      "bytes": 20615467,
+      "sha256": "bad2a4de2f629c8abe928007a46a50d1e2ab059d0cb38e7dabbe854edd74ffb3",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "JD",
+      "rows": 298323,
+      "bytes": 15185236,
+      "sha256": "3efc9e6a9f592189e5880f18100aca5f72d60ddf76aaa1b2074688bf4e64a3ad",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "JNJ",
+      "rows": 208364,
+      "bytes": 11683523,
+      "sha256": "e203bacfc1ca5805464d0a81eb2dc313b71873ddf311199da253ee07f28745ed",
+      "first_timestamp": 1704200400000,
+      "last_timestamp": 1767217560000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "JPM",
+      "rows": 223503,
+      "bytes": 12508189,
+      "sha256": "35f82cce1b4ff43ad263e378f0c06d7a7f3ca73d371d54bf3deba82347866f10",
+      "first_timestamp": 1704186180000,
+      "last_timestamp": 1767223440000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "KLAC",
+      "rows": 163317,
+      "bytes": 9287075,
+      "sha256": "934be5a309b8340cf571d7f5a3c429ab759f980c6dff3cb2efa6be502ae31e80",
+      "first_timestamp": 1704195960000,
+      "last_timestamp": 1767216600000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "KO",
+      "rows": 235750,
+      "bytes": 12277958,
+      "sha256": "77f5a635eada87cca8aca552857c3b5109c2ddb7ecdd134f11b98e6b3bb9716e",
+      "first_timestamp": 1704186900000,
+      "last_timestamp": 1767228180000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "LCID",
+      "rows": 359639,
+      "bytes": 17988930,
+      "sha256": "b9efdd584cd7584b2c6e9b3b64c64a3edb2b723db50b054cb80532689879133c",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "LLY",
+      "rows": 218120,
+      "bytes": 12116971,
+      "sha256": "18625dd8051746c4d7217811b07ec947b85d66bda51bca382bd09d1b6318696d",
+      "first_timestamp": 1704189060000,
+      "last_timestamp": 1767228780000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "LMT",
+      "rows": 183590,
+      "bytes": 10097592,
+      "sha256": "aedf23ca820c3f4665dff7c349b70cd61460812100f9fbb7f883ac6408b2f516",
+      "first_timestamp": 1704205740000,
+      "last_timestamp": 1767227880000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "LOW",
+      "rows": 197829,
+      "bytes": 10925327,
+      "sha256": "17ec02136bcb97ec008d4be01fc15f46d94fa56ff06123fade47b39e34db9025",
+      "first_timestamp": 1704200760000,
+      "last_timestamp": 1767217740000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "LRCX",
+      "rows": 209589,
+      "bytes": 11487275,
+      "sha256": "1c67aea54b86464cb1bd64eb6fddfc81b389612a32fc377048ffb1dd01ffae20",
+      "first_timestamp": 1704188580000,
+      "last_timestamp": 1767228060000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "MA",
+      "rows": 196638,
+      "bytes": 10687507,
+      "sha256": "14ddd88ac02fccf2ec0000b9e49f83618d807e82830e1284a778bd9c1173aa8c",
+      "first_timestamp": 1704203640000,
+      "last_timestamp": 1767225960000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "MCD",
+      "rows": 205373,
+      "bytes": 11399390,
+      "sha256": "37576a651122e389f07389735d19281866f939d7754a59284aa9c66c8ed0d8e5",
+      "first_timestamp": 1704190560000,
+      "last_timestamp": 1767219540000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "MDB",
+      "rows": 200493,
+      "bytes": 10955620,
+      "sha256": "7882139058531e7fcaa6a91a504765410bf71227b349e452b032a04ea431bf8e",
+      "first_timestamp": 1704193560000,
+      "last_timestamp": 1767228720000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "META",
+      "rows": 307366,
+      "bytes": 17332088,
+      "sha256": "c07f4973fcf8406b3bc4cd394494958bce6837831eaace42709adc8cdfcfebd0",
+      "first_timestamp": 1704186420000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "MRK",
+      "rows": 216844,
+      "bytes": 11766370,
+      "sha256": "bbe2e111789f4d547627153179c4e0cd38efdbd78057ac1f62fe32bfd1b5c83a",
+      "first_timestamp": 1704189960000,
+      "last_timestamp": 1767228780000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "MS",
+      "rows": 207187,
+      "bytes": 11119279,
+      "sha256": "7d41b4c792488cd9d432818aa233fb48841d78a3f9c8156eb8096d07a26964ba",
+      "first_timestamp": 1704200400000,
+      "last_timestamp": 1767225900000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "MSFT",
+      "rows": 309944,
+      "bytes": 17534096,
+      "sha256": "c55086f4c7ce71f69b3097f90c1b7f4d4e33d54feb509b4401028c820ac1a8b6",
+      "first_timestamp": 1704186120000,
+      "last_timestamp": 1767229020000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "MU",
+      "rows": 340444,
+      "bytes": 18048503,
+      "sha256": "9a778537df665c239de29665655e897d36df4b857a311cafd7cada1b596bc903",
+      "first_timestamp": 1704186600000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "NET",
+      "rows": 212233,
+      "bytes": 11293221,
+      "sha256": "0d9475eefe9b8e5ce6ab4bf28b557c035d53b551fc8a23c7a0c773cf937439e0",
+      "first_timestamp": 1704186120000,
+      "last_timestamp": 1767228780000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "NFLX",
+      "rows": 241652,
+      "bytes": 13927073,
+      "sha256": "11e967e8f83f411a3f519a901915d4d36c24524540b00e72835ed1e1522ac540",
+      "first_timestamp": 1704187800000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "NIO",
+      "rows": 385486,
+      "bytes": 18574755,
+      "sha256": "3ac18bbc05fc5684536427784bf05c67a3a1e3ecca7e224d09262aa7312069fa",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "NKE",
+      "rows": 261755,
+      "bytes": 13737109,
+      "sha256": "73b5030adfe8a0863da2f3db62ea6c4628a6521589170ab2b551faa4e3d08e93",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "NOW",
+      "rows": 186135,
+      "bytes": 10791518,
+      "sha256": "69326ff7dfaf65d2783df53e3a66116dde1fc26f20a648ed38c506938f8b1684",
+      "first_timestamp": 1704199860000,
+      "last_timestamp": 1767229020000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "NVDA",
+      "rows": 466480,
+      "bytes": 27086606,
+      "sha256": "9b4f7e308dbe00b628d6b86c2f31d6184665dd7b7eb77929dfb1dccb7a47bed5",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 10,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "NVO",
+      "rows": 295064,
+      "bytes": 15640340,
+      "sha256": "d2f242e77a5c315de1fc6b36c3d4db0bf961df2c200cb82fe2acf8dd26b23897",
+      "first_timestamp": 1704186240000,
+      "last_timestamp": 1767229080000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "ORCL",
+      "rows": 262714,
+      "bytes": 14879255,
+      "sha256": "d7d269eb2656b1d972a5c4ca15dd628bd17b3707118dbd43aef0560976c1f9b0",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767229140000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "OXY",
+      "rows": 267661,
+      "bytes": 13973220,
+      "sha256": "d45a9870f00afdf6f2822b1a9d3e1cc7d2eb6c548107e75bd69249462301aa6d",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767229020000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PANW",
+      "rows": 222276,
+      "bytes": 12840189,
+      "sha256": "9f3cc1ca9bbe7022dbd409f6b8b20263cfa84c660584d09a2958019afa1c9fd5",
+      "first_timestamp": 1704186720000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PDD",
+      "rows": 270367,
+      "bytes": 14671559,
+      "sha256": "aa99e4f2819859ae2fe73336d75f647385c9c53287c996e4a00d3a922e3275df",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767227580000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PEP",
+      "rows": 213711,
+      "bytes": 11936419,
+      "sha256": "e4be4c59ddb0d0b562e16de03e3ed7fa598d319255e8f78beaf9c984ebbbce02",
+      "first_timestamp": 1704196620000,
+      "last_timestamp": 1767223140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PFE",
+      "rows": 315224,
+      "bytes": 16612370,
+      "sha256": "c8d1824933ea7896c84789667b1e855512de2c410d05be1d8993c7191dda5e96",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228960000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PG",
+      "rows": 207208,
+      "bytes": 11388732,
+      "sha256": "e7e41d5ae2a42b12e1b93fe4b4572fed3ce6dc3e93e22202f5d133d3f1937494",
+      "first_timestamp": 1704195300000,
+      "last_timestamp": 1767228480000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PLTR",
+      "rows": 433655,
+      "bytes": 23757476,
+      "sha256": "af5dac0159d8df5f26ea186900d2cc11b8962727c5cb1bbb20b1c9463a85dacd",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 9,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PM",
+      "rows": 202252,
+      "bytes": 10884474,
+      "sha256": "931e7ff84ae82a3056ef99a91febb5c815673fd7b43d124fe23be24734bdf8b3",
+      "first_timestamp": 1704189780000,
+      "last_timestamp": 1767216600000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "PYPL",
+      "rows": 269467,
+      "bytes": 14291302,
+      "sha256": "731d2ebe6a117d8c84dcd643ea683c62d180d06afd457e79106aea96a5519c3a",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "QCOM",
+      "rows": 239425,
+      "bytes": 13534626,
+      "sha256": "fddb91ea55e186fb4a0735cdce27a7dce233b9f7a5712f58a0547edfea1cad62",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767225480000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "QQQ",
+      "rows": 431329,
+      "bytes": 23839989,
+      "sha256": "0714e5ecfa90edc0779fecce2ae8d8db3cd973cfe5091bc0f4a89c76ef90b1f4",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 9,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "RIVN",
+      "rows": 342376,
+      "bytes": 18274172,
+      "sha256": "8190e391a20bde1cf9ef1034bafdbc61459d16e38335d170b3c487100de1ac06",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "RTX",
+      "rows": 205233,
+      "bytes": 11350031,
+      "sha256": "2cffc6f85460ff915dde1352fcc720a99ec85aad6b75ae738c129035459e552a",
+      "first_timestamp": 1704196320000,
+      "last_timestamp": 1767216600000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SBUX",
+      "rows": 230213,
+      "bytes": 12318907,
+      "sha256": "27512383e871da151e61393ddd12a1bbad891da11a7d8eb4c575b653db916d33",
+      "first_timestamp": 1704196560000,
+      "last_timestamp": 1767229080000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SCHW",
+      "rows": 206760,
+      "bytes": 11014067,
+      "sha256": "ad142c7da08c4f73df2e9e30facdc35a972948ef23d277bfc1b1790ec4da92a3",
+      "first_timestamp": 1704195300000,
+      "last_timestamp": 1767221220000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SHOP",
+      "rows": 243296,
+      "bytes": 13240886,
+      "sha256": "6142d2db740e467ef386911959631aca4346d19805d6cbce5fa9bb9144615df0",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767229080000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SLB",
+      "rows": 216978,
+      "bytes": 11501500,
+      "sha256": "504acc392dab866bc5cbf4911ca78604bd1b540fb00d51bed0e94e2c9d5cf9f9",
+      "first_timestamp": 1704186840000,
+      "last_timestamp": 1767228960000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SLV",
+      "rows": 328539,
+      "bytes": 17105766,
+      "sha256": "c5d95c43d04ddb7308b7a2cb1ef2a238bda00c37bd9b7701ac7348eb14118728",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SMH",
+      "rows": 248682,
+      "bytes": 13639035,
+      "sha256": "908a233232c501cc7bb76bf0800856aef7c98b7e56e3afba1fab719df07ae0f5",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SNOW",
+      "rows": 244804,
+      "bytes": 13769266,
+      "sha256": "7c2404a9b6a6f52a531ef2f7fefda834de2b2f57d8056b6738f15899da4c9a93",
+      "first_timestamp": 1704188100000,
+      "last_timestamp": 1767228960000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SOFI",
+      "rows": 394602,
+      "bytes": 20459817,
+      "sha256": "342a57f9b4e92bb14b752b4c20c9b130d71f68e6268de442e447c2af09bbf6b7",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SOXX",
+      "rows": 238135,
+      "bytes": 13711123,
+      "sha256": "3278d7634a3108f43950e2bd5982607c84108d9ad7b739b66eb8110eaac41c77",
+      "first_timestamp": 1704186300000,
+      "last_timestamp": 1767229020000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SPXU",
+      "rows": 305366,
+      "bytes": 16551385,
+      "sha256": "e03ce42239820db2739eebe642112717244d4c3d7138eba8a28fb9fbc65dfa85",
+      "first_timestamp": 1704186180000,
+      "last_timestamp": 1767228720000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SPY",
+      "rows": 407850,
+      "bytes": 22665147,
+      "sha256": "f33e5088786f2d5e2c1a08f0ee8008af66cd2adb160672bf87446c4726f89a5d",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 9,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "SQQQ",
+      "rows": 457686,
+      "bytes": 25448978,
+      "sha256": "0346a39b309d8128fddbc613c2acc1422583f0a3eae186ae9967826fdae07e2f",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 10,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "T",
+      "rows": 249467,
+      "bytes": 12758765,
+      "sha256": "1c5d5b5a645d60dfc24a89bfb0fe86d49b97ab79f5ad7373217f5ed62b7f7294",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228480000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "TGT",
+      "rows": 221397,
+      "bytes": 12045102,
+      "sha256": "bea5f3d2343db396a0e0f89362af139f44df2c6375e7cc4d759621524a04b02d",
+      "first_timestamp": 1704195840000,
+      "last_timestamp": 1767229020000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "TLT",
+      "rows": 359919,
+      "bytes": 18669631,
+      "sha256": "1ed04c25b8508cc61a79a9f31472076254e0dcfccb3bc117ba1b5d3862d09105",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 8,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "TMUS",
+      "rows": 203251,
+      "bytes": 11440311,
+      "sha256": "0a2ee8cdc877bf8a83de3e3746063982e40485c1270fec1816d68fa5d473338c",
+      "first_timestamp": 1704200520000,
+      "last_timestamp": 1767224760000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "TQQQ",
+      "rows": 462999,
+      "bytes": 25718329,
+      "sha256": "a1aa0e41c5cbb393a24350324d85cbf56025dd74714be1ae6b51a6d1347df0df",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 10,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "TSLA",
+      "rows": 462813,
+      "bytes": 26581103,
+      "sha256": "20c91f7f745e51f6227c6a7c64efd26fa6d86e6bc3cb050363b13969f5d8880c",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 10,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "TSM",
+      "rows": 325563,
+      "bytes": 17928624,
+      "sha256": "d52f19596e08d8dbc29109bcae9ca1e9df7acddd221b1122ed6c125a1ab8f6ba",
+      "first_timestamp": 1704186060000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "UBER",
+      "rows": 272162,
+      "bytes": 14456312,
+      "sha256": "dddad782c74537654eb142e9c19c5d7d8dc10d80c5b47c8d6a03197a36dff8e0",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229020000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "UNH",
+      "rows": 245920,
+      "bytes": 13652415,
+      "sha256": "38405b525ca27a900e0a22bf3a122607966e25472134e07204f6b73b9ffe9cab",
+      "first_timestamp": 1704200400000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "UPRO",
+      "rows": 314178,
+      "bytes": 16522758,
+      "sha256": "66b0783e1f2be1ee0170d290fd96b6e5141567ce86b4eca77458ab2199fc7dfd",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 7,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "UPS",
+      "rows": 217197,
+      "bytes": 11864808,
+      "sha256": "a07184a99bd26dc18ed2aa95675b9c654f77d1b18e4442fc73bfb71389c73ff9",
+      "first_timestamp": 1704197820000,
+      "last_timestamp": 1767220260000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "USO",
+      "rows": 262373,
+      "bytes": 13182401,
+      "sha256": "2ba0efe16b762d57d3b19180fe454d9e5ed9028c8165ddf5c3b0e836fbc67ece",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228840000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "V",
+      "rows": 208347,
+      "bytes": 11218474,
+      "sha256": "2770c083443c7a9d5b09e1a8264516aff5fd486a4759cc83375822e59f21053b",
+      "first_timestamp": 1704197280000,
+      "last_timestamp": 1767228420000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "VOO",
+      "rows": 270618,
+      "bytes": 15047426,
+      "sha256": "7b4ebe44b7f0e5d77d5c8bd110236baa595f40c441b1f4b661c9df21cbb679bf",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229020000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "VTI",
+      "rows": 209331,
+      "bytes": 11784378,
+      "sha256": "05dded168882af653436f14f3b26ba7a6209f719ae48ddf81f26d81512886c94",
+      "first_timestamp": 1704196800000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "VZ",
+      "rows": 243629,
+      "bytes": 12714456,
+      "sha256": "1a65c9b85b3da497286b3e9d50551d1d7f061d716b17c9655d4a38f921220df0",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228900000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "WBD",
+      "rows": 243359,
+      "bytes": 12444418,
+      "sha256": "70eb8673dbe1c6c8dbded1b5a71f74cdc5d25ebae456005f42156b43748a31ef",
+      "first_timestamp": 1704186960000,
+      "last_timestamp": 1767228960000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "WFC",
+      "rows": 219008,
+      "bytes": 11581678,
+      "sha256": "c895b4e711a2bff04ed2ea9f0afd70f007d7e079466f5a76e4adcea6533c3693",
+      "first_timestamp": 1704194220000,
+      "last_timestamp": 1767228840000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "WMT",
+      "rows": 248243,
+      "bytes": 13367077,
+      "sha256": "6f251f319f726f4744e4075244760c2f9458dd52128efb4e4a3bf62229e54fc1",
+      "first_timestamp": 1704195180000,
+      "last_timestamp": 1767227880000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLB",
+      "rows": 199427,
+      "bytes": 10857018,
+      "sha256": "a4c67a6dfce71136ce5e7df3402a206cd4626620cb7a5c5ef2af19c142b5916e",
+      "first_timestamp": 1704200100000,
+      "last_timestamp": 1767228480000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLC",
+      "rows": 199709,
+      "bytes": 10628226,
+      "sha256": "af698bc76f6341e84f29a87ea8af2c9cb70bc5039dcac22573b65c60f6d846dd",
+      "first_timestamp": 1704205380000,
+      "last_timestamp": 1767214800000,
+      "requests": 4,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLE",
+      "rows": 234419,
+      "bytes": 12905656,
+      "sha256": "4bf0881732bdcfe43ca75853314f7db2621580f92917ac83f386fdbb93da23d3",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229020000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLF",
+      "rows": 257614,
+      "bytes": 13652773,
+      "sha256": "19bdadb2766f9fb4c56c11176cc1abe23ba6cc4d173a04f3fd3e121d6f599320",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228900000,
+      "requests": 6,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLI",
+      "rows": 203054,
+      "bytes": 11412550,
+      "sha256": "0743e683498c53bb786ededd8bf2036b6ffbab41c210c4d9283a46c63f2c0350",
+      "first_timestamp": 1704186600000,
+      "last_timestamp": 1767227280000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLK",
+      "rows": 226473,
+      "bytes": 12971518,
+      "sha256": "5f60c71c962041d3c7a64295ac28d7b0d285fc164b56b55c952dbafbdf3f59de",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767228900000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLP",
+      "rows": 205351,
+      "bytes": 10815860,
+      "sha256": "f2ab0c6c4a24cda08f36fb56c19be53364a2b1d6fdf88ed2cbf6186ab4d1e251",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767229140000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLRE",
+      "rows": 200898,
+      "bytes": 10709279,
+      "sha256": "a3171acfec883b87a98f21d0add421de9f7bc01df80388cdc2ed5be009600f7b",
+      "first_timestamp": 1704196800000,
+      "last_timestamp": 1767215400000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLU",
+      "rows": 210890,
+      "bytes": 11670914,
+      "sha256": "b7abdc4da9246186926784e1883a11e29b74b4f8472f7723ce070447b5de9dc0",
+      "first_timestamp": 1704195240000,
+      "last_timestamp": 1767224760000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLV",
+      "rows": 207419,
+      "bytes": 11650997,
+      "sha256": "604772ad51861a6717762cd7a1ecab2c64af3eae4a17f76897049a5d2881c942",
+      "first_timestamp": 1704194040000,
+      "last_timestamp": 1767223020000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XLY",
+      "rows": 201192,
+      "bytes": 11187461,
+      "sha256": "3be429e391a7ef38bae1a758ca4e06f1465dc4b879d153f602ef6f1887b7ad89",
+      "first_timestamp": 1704197160000,
+      "last_timestamp": 1767223080000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    },
+    {
+      "ticker": "XOM",
+      "rows": 233403,
+      "bytes": 13129370,
+      "sha256": "c9ae36522507a9f58c202f03c8fbd75bd9278d4f6963f5aa1a591e32c02af673",
+      "first_timestamp": 1704186000000,
+      "last_timestamp": 1767224460000,
+      "requests": 5,
+      "missing_transaction_count": 0
+    }
+  ],
+  "scope": "Selected liquid stocks and ETFs; real distinct bars, not a complete market census or duplicated scale-up. Raw data stays local. Provider responses are normalized to eight CSV columns; optional VWAP is excluded."
+}

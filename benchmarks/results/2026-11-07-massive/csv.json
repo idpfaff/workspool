@@ -1,0 +1,417 @@
+{
+  "dataset": {
+    "source": "Massive adjusted 1-minute stock aggregates",
+    "from_date": "2024-01-01",
+    "to_date": "2025-12-31",
+    "rows": 34015435,
+    "tickers": 131,
+    "csv_bytes": 1855952827,
+    "csv_sha256": "167f9a542e30e491b323f38a3900009e2230ffc3144ed402d308c99d2a3634cc",
+    "selection": "All downloaded rows, sorted by ticker file; no replication or truncation",
+    "raw_data_published": false
+  },
+  "sql": "SELECT count(*) AS row_count, count(DISTINCT ticker) AS ticker_count,\nmin(t) AS first_t, max(t) AS last_t,\nsum(CAST(v AS DECIMAL(38,12))) AS total_volume,\nsum(CAST(n AS DECIMAL(38,12))) AS total_trades,\nmin(CAST(l AS DECIMAL(38,12))) AS min_low,\nmax(CAST(h AS DECIMAL(38,12))) AS max_high,\ncount(*) FILTER (WHERE CAST(c AS DECIMAL(38,12)) > CAST(o AS DECIMAL(38,12))) AS up_rows\nFROM input1",
+  "limits": {
+    "external_seconds": 180,
+    "tree_rss_bytes": 4294967296,
+    "query_threads": 2
+  },
+  "oracle": {
+    "aggregate": [
+      34015435,
+      131,
+      1704186000000,
+      1767229140000,
+      "1160177301319.835000000000",
+      "10371506375.000000000000",
+      "3.020000000000",
+      "1219.939900000000",
+      13941398
+    ],
+    "columns": [
+      "row_count",
+      "ticker_count",
+      "first_t",
+      "last_t",
+      "total_volume",
+      "total_trades",
+      "min_low",
+      "max_high",
+      "up_rows"
+    ],
+    "rows": 34015435,
+    "batches": 111,
+    "maximum_batch_rows": 341603,
+    "elapsed_seconds": 6.881735375034623,
+    "peak_process_rss_bytes": 948027392,
+    "validation": "All rows parsed as explicit Arrow types; nonnull identities/OHLC/volume, OHLC bounds, nonnegative volume/integer transaction counts, strict ordered ticker/timestamp pairs"
+  },
+  "preparation_watchdog": {
+    "status": "ok",
+    "exit_code": 0,
+    "elapsed_seconds": 8.211485042003915,
+    "peak_sampled_tree_rss_bytes": 947896320,
+    "rss_samples": 131,
+    "rss_sampling_seconds": 0.05
+  },
+  "cases": [
+    {
+      "label": "mcp-default",
+      "arm": "mcp",
+      "exact_validation_passed": false,
+      "computation_completed": true,
+      "status": "validation_failed",
+      "query_settings": {
+        "timeout_seconds": 15,
+        "memory_limit": "1GB",
+        "threads": 2
+      },
+      "watchdog": {
+        "status": "worker_failed",
+        "exit_code": 1,
+        "elapsed_seconds": 4.9616511249914765,
+        "peak_sampled_tree_rss_bytes": 342917120,
+        "rss_samples": 79,
+        "rss_sampling_seconds": 0.05
+      },
+      "observed": {
+        "columns": [
+          "row_count",
+          "ticker_count",
+          "first_t",
+          "last_t",
+          "total_volume",
+          "total_trades",
+          "min_low",
+          "max_high",
+          "up_rows"
+        ],
+        "rows": [
+          [
+            34015435,
+            131,
+            1704186000000,
+            1767229140000,
+            "1160177301319.835000003911",
+            "10371506375.000000000000",
+            "3.020000000000",
+            "1219.939900000000",
+            13941398
+          ]
+        ],
+        "preview_truncated": false
+      },
+      "validation": {
+        "success": false,
+        "mismatches": [
+          {
+            "column": "total_volume",
+            "actual": "1160177301319.835000003911",
+            "expected": "1160177301319.835000000000",
+            "difference": "3.911E-9"
+          }
+        ]
+      },
+      "peak_host_process_rss_bytes": 179519488,
+      "setup_tokens": {
+        "cl100k_base": 240,
+        "o200k_base": 250
+      },
+      "payload_tokens": {
+        "cl100k_base": 615,
+        "o200k_base": 629
+      },
+      "tool_calls": [
+        {
+          "tool": "import",
+          "elapsed_seconds": 0.7241548330057412,
+          "request_tokens": {
+            "cl100k_base": 40,
+            "o200k_base": 41
+          },
+          "reply_tokens": {
+            "cl100k_base": 45,
+            "o200k_base": 45
+          }
+        },
+        {
+          "tool": "query",
+          "elapsed_seconds": 3.712389292079024,
+          "request_tokens": {
+            "cl100k_base": 170,
+            "o200k_base": 171
+          },
+          "reply_tokens": {
+            "cl100k_base": 120,
+            "o200k_base": 122
+          }
+        }
+      ]
+    },
+    {
+      "label": "direct-default",
+      "arm": "direct",
+      "exact_validation_passed": false,
+      "computation_completed": true,
+      "status": "validation_failed",
+      "query_settings": {
+        "timeout_seconds": 15,
+        "memory_limit": "1GB",
+        "threads": 2
+      },
+      "watchdog": {
+        "status": "worker_failed",
+        "exit_code": 1,
+        "elapsed_seconds": 3.7709007079247385,
+        "peak_sampled_tree_rss_bytes": 132775936,
+        "rss_samples": 60,
+        "rss_sampling_seconds": 0.05
+      },
+      "observed": {
+        "columns": [
+          "row_count",
+          "ticker_count",
+          "first_t",
+          "last_t",
+          "total_volume",
+          "total_trades",
+          "min_low",
+          "max_high",
+          "up_rows"
+        ],
+        "rows": [
+          [
+            34015435,
+            131,
+            1704186000000,
+            1767229140000,
+            "1160177301319.835000003911",
+            "10371506375.000000000000",
+            "3.020000000000",
+            "1219.939900000000",
+            13941398
+          ]
+        ],
+        "preview_truncated": false
+      },
+      "validation": {
+        "success": false,
+        "mismatches": [
+          {
+            "column": "total_volume",
+            "actual": "1160177301319.835000003911",
+            "expected": "1160177301319.835000000000",
+            "difference": "3.911E-9"
+          }
+        ]
+      },
+      "elapsed_seconds": 3.694694667006843,
+      "peak_process_rss_bytes": 133873664,
+      "tool_calls": []
+    },
+    {
+      "label": "mcp-tuned",
+      "arm": "mcp",
+      "exact_validation_passed": false,
+      "computation_completed": true,
+      "status": "validation_failed",
+      "query_settings": {
+        "timeout_seconds": 120,
+        "memory_limit": "4GB",
+        "threads": 2
+      },
+      "watchdog": {
+        "status": "worker_failed",
+        "exit_code": 1,
+        "elapsed_seconds": 5.087492082966492,
+        "peak_sampled_tree_rss_bytes": 343244800,
+        "rss_samples": 81,
+        "rss_sampling_seconds": 0.05
+      },
+      "observed": {
+        "columns": [
+          "row_count",
+          "ticker_count",
+          "first_t",
+          "last_t",
+          "total_volume",
+          "total_trades",
+          "min_low",
+          "max_high",
+          "up_rows"
+        ],
+        "rows": [
+          [
+            34015435,
+            131,
+            1704186000000,
+            1767229140000,
+            "1160177301319.835000003911",
+            "10371506375.000000000000",
+            "3.020000000000",
+            "1219.939900000000",
+            13941398
+          ]
+        ],
+        "preview_truncated": false
+      },
+      "validation": {
+        "success": false,
+        "mismatches": [
+          {
+            "column": "total_volume",
+            "actual": "1160177301319.835000003911",
+            "expected": "1160177301319.835000000000",
+            "difference": "3.911E-9"
+          }
+        ]
+      },
+      "peak_host_process_rss_bytes": 179699712,
+      "setup_tokens": {
+        "cl100k_base": 240,
+        "o200k_base": 250
+      },
+      "payload_tokens": {
+        "cl100k_base": 621,
+        "o200k_base": 632
+      },
+      "tool_calls": [
+        {
+          "tool": "import",
+          "elapsed_seconds": 0.736935833003372,
+          "request_tokens": {
+            "cl100k_base": 40,
+            "o200k_base": 41
+          },
+          "reply_tokens": {
+            "cl100k_base": 47,
+            "o200k_base": 46
+          }
+        },
+        {
+          "tool": "query",
+          "elapsed_seconds": 3.7940276250010356,
+          "request_tokens": {
+            "cl100k_base": 172,
+            "o200k_base": 172
+          },
+          "reply_tokens": {
+            "cl100k_base": 122,
+            "o200k_base": 123
+          }
+        }
+      ]
+    },
+    {
+      "label": "direct-tuned",
+      "arm": "direct",
+      "exact_validation_passed": false,
+      "computation_completed": true,
+      "status": "validation_failed",
+      "query_settings": {
+        "timeout_seconds": 120,
+        "memory_limit": "4GB",
+        "threads": 2
+      },
+      "watchdog": {
+        "status": "worker_failed",
+        "exit_code": 1,
+        "elapsed_seconds": 3.8198855000082403,
+        "peak_sampled_tree_rss_bytes": 132988928,
+        "rss_samples": 61,
+        "rss_sampling_seconds": 0.05
+      },
+      "observed": {
+        "columns": [
+          "row_count",
+          "ticker_count",
+          "first_t",
+          "last_t",
+          "total_volume",
+          "total_trades",
+          "min_low",
+          "max_high",
+          "up_rows"
+        ],
+        "rows": [
+          [
+            34015435,
+            131,
+            1704186000000,
+            1767229140000,
+            "1160177301319.835000003911",
+            "10371506375.000000000000",
+            "3.020000000000",
+            "1219.939900000000",
+            13941398
+          ]
+        ],
+        "preview_truncated": false
+      },
+      "validation": {
+        "success": false,
+        "mismatches": [
+          {
+            "column": "total_volume",
+            "actual": "1160177301319.835000003911",
+            "expected": "1160177301319.835000000000",
+            "difference": "3.911E-9"
+          }
+        ]
+      },
+      "elapsed_seconds": 3.722431040951051,
+      "peak_process_rss_bytes": 134103040,
+      "tool_calls": []
+    }
+  ],
+  "precision_diagnosis": {
+    "inferred_csv_types": {
+      "ticker": "VARCHAR",
+      "t": "BIGINT",
+      "o": "DOUBLE",
+      "h": "DOUBLE",
+      "l": "DOUBLE",
+      "c": "DOUBLE",
+      "v": "DOUBLE",
+      "n": "BIGINT"
+    },
+    "field": "total_volume",
+    "observed_all_four": "1160177301319.835000003911",
+    "exact_arrow_oracle": "1160177301319.835000000000",
+    "difference": "3.911E-9",
+    "mechanism": "read_csv_auto parses volume as DOUBLE before the benchmark SQL casts each value to DECIMAL(38,12). The DOUBLE-to-DECIMAL conversion can retain binary floating-point artifacts. Both Workspool and direct DuckDB return the same mismatch. This exact decimal query failed; resource tuning did not correct it.",
+    "independent_typed_csv_control": {
+      "sql": "SELECT SUM(v) FROM read_csv_auto(<same CSV>, types={'v':'DECIMAL(38,12)'})",
+      "threads": 2,
+      "memory_limit": "1GB",
+      "query_timeout_seconds": 15,
+      "actual": "1160177301319.835000000000",
+      "matches_arrow_oracle": true,
+      "elapsed_seconds": 10.463715916965157,
+      "scope": "Separate read-only diagnostic over every row of the same CSV; different explicit parsing, not a replacement benchmark arm or runtime change."
+    },
+    "minimal_synthetic_reproduction": {
+      "double_then_decimal_sql": "CAST(CAST('10000000.001' AS DOUBLE) AS DECIMAL(38,12))",
+      "double_then_decimal": "10000000.000999999488",
+      "direct_decimal_sql": "CAST('10000000.001' AS DECIMAL(38,12))",
+      "direct_decimal": "10000000.001000000000"
+    }
+  },
+  "scope": "One diagnostic observation per arm/settings, not statistical latency evidence. Full dataset and exact oracle checks retained. All four executions complete computation and fail exact decimal validation; none counts as a successful performance result. Default settings run first, then tuned settings after failure. No runtime precision fix or relaxed numeric tolerance. Cache/order and concurrent-machine activity uncontrolled. MCP tokens count original instructions, schemas, requests and text replies once; no model call, provider billing, full-CSV token estimate or token-savings claim.",
+  "publication": "Aggregate values, resource/timing measurements and token trace metrics only. Raw market rows, source paths, workbook IDs, import arguments and original MCP content omitted. Token counts were measured before publication redaction, so public metrics alone are not a byte-complete token recount trace.",
+  "private_result_sha256": "1c6c4efe9a5b91d37c0401da4ae719bf6a58ab5a429192880120642681441797",
+  "source_sha256_at_publication": {
+    "benchmarks/massive_csv_stress.py": "f410ada1b12a0d71a605eca6841935d4ed6e117d07f5aa266fb7fe310f96304c",
+    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
+  },
+  "checks": {
+    "all_four_observed_aggregate_rows_identical": true,
+    "all_34015435_rows_counted": true,
+    "other_eight_aggregate_fields_match_exact_oracle": true,
+    "all_previews_complete": true,
+    "token_components_sum_to_payload_totals": true,
+    "no_timeout_or_rss_limit_triggered": true,
+    "explicit_decimal_csv_parsing_matches_exact_oracle": true
+  }
+}

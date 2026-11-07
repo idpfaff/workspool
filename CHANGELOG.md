@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.1 — 2026-11-07
+
+- Expand the README with everyday uses: document questions, spreadsheet analysis, writing, debugging, project follow-ups, and handoffs between agents.
+- Add a resumable Massive downloader and bounded stress tests for CSV and typed Parquet, with independent exact-answer checks, actual MCP calls, resource measurements, and direct DuckDB controls.
+- Publish a run over 34,015,435 real records: all five Parquet scales pass, including saved results and refresh; preserve the CSV decimal-inference difference as a failed exactness check.
+- Exercise malformed inputs, nulls, large integers, oversized cells, query interruption, concurrent updates, freshness, and interrupted imports. Publish the observed limits alongside the results.
+- Add optional benchmark dependencies for streaming data preparation and process-memory measurement. The Workspool runtime and core dependencies are unchanged.
+
 ## 0.5.0 — 2026-11-07
 
 - Add `sync`: return unchanged status, complete line edits, or full source pages in one call. Accept retained version numbers or IDs; resolve initial reads to the current version and pin continuation pages to their original snapshot.

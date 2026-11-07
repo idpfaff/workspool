@@ -1,0 +1,30 @@
+{
+  "source": "Massive connected API + independent SQLite aggregate",
+  "path": "/v2/aggs/ticker/AAPL/range/1/minute/2025-01-02/2025-01-10",
+  "params": {
+    "adjusted": true,
+    "sort": "asc",
+    "limit": 50000
+  },
+  "expected": {
+    "rows": 4340,
+    "first_t": 1735808400000,
+    "last_t": 1736557140000,
+    "volume": "219275017.0",
+    "trades": 3206133,
+    "low": "233.0",
+    "high": "251.9",
+    "up_bars": 1690
+  },
+  "local_csv_check": {
+    "rows": 4340,
+    "first_t": 1735808400000,
+    "last_t": 1736557140000,
+    "volume": "219275017",
+    "trades": 3206133,
+    "low": "233",
+    "high": "251.9",
+    "up_bars": 1690
+  },
+  "passed": true
+}

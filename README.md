@@ -13,35 +13,27 @@ Works with local or hosted models through an MCP-compatible agent. Your workbook
 
 ## What you can save
 
-Workspool reduces how much source material your agent needs in its conversation. Here are measured examples compared with sending the full source text:
+Workspool reduces the material your agent needs to read again. Use it for everyday work that grows across files, questions, and sessions:
 
-| Task | Full source in the conversation | With Workspool | Fewer tokens |
-| --- | ---: | ---: | ---: |
-| Calculate an aggregate from 2,000 data rows | 19,039 | 823 | **95.7%** |
-| Calculate market statistics from 250 daily bars | 9,827 | 814 | **91.7%** |
-| Retrieve three known excerpts from a 120-document collection | 92,674 | 1,101 | **98.8%** |
-
-These examples use already-imported files and include default tool setup, requests, and replies. Actual savings depend on the task and your agent's configuration. [Measurement details](benchmarks/EFFICIENCY.md#what-was-measured).
-
-Workspool is especially useful for substantial files and ongoing work: querying the same dataset, returning to a document collection, revising a draft, or handing a project to another agent.
-
-## What goes in a workbook
-
-| Work | Save | Pick it up later |
+| Common task | Keep in Workspool | Where you save tokens |
 | --- | --- | --- |
-| Fix a bug | The patch or commit reference, test output, and the next step | Verify exactly what changed and where review stands |
-| Research a question | Source excerpts, findings, and open questions | Read the evidence behind a finding and continue the research |
-| Revise a document | Draft versions and the decisions behind them | Open the right draft and see why earlier choices were made |
-| Analyze data | CSV or Parquet snapshots, SQL, and saved results | Run a follow-up query against the same inputs or refresh the result with new data |
+| **Answer questions about documents** | Reference material, research notes, and supporting passages | Retrieve the passages for each question instead of repeatedly sending entire documents. |
+| **Analyze spreadsheets and reports** | CSV or Parquet exports of sales, spending, customer activity, or operations | Calculate totals, trends, and comparisons locally; send the answer or selected rows to your agent. |
+| **Write and revise long documents** | Drafts, review comments, and editing decisions | Read the section being edited; receive only the changes when your agent still retains the previous draft. |
+| **Develop and debug software** | Relevant code, error logs, test results, and attempted fixes | Carry the useful evidence into the next session without replaying the full debugging conversation. |
+| **Manage projects and follow-ups** | Meeting notes, decisions, action items, and progress checkpoints | Start from the current status and next action, then open the supporting details when needed. |
+| **Switch agents or resume later** | The objective, verified results, supporting files, and next step | Give the next agent a focused handoff instead of rebuilding the task history. |
 
-Each saved item has a version and a stable reference, so agents can return to the same evidence and build on previous results.
+Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not automatically add its contents to the conversation.
+
+**Large files, small answers.** We downloaded **34 million real records** from Massive—**1.86 GB of CSV data**—and queried a typed Parquet copy through Workspool. A nine-field summary took **1.12 seconds** on the test machine and returned **121 tokens of answer text**. The records stayed local. Saving and refreshing a **528,697-row** filtered result each took about one second. [See the full stress-test results](benchmarks/MASSIVE_STRESS.md), including tool overhead, exact-answer checks, memory use, and the limits found.
 
 ## Quick start
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.5.0 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.5.1 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 

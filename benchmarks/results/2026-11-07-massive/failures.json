@@ -1,0 +1,196 @@
+{
+  "scope": "Six failure/recovery probes on a bounded real CSV sample; synthetic faults and edge values are not large-data scale evidence.",
+  "sample": {
+    "source_name": "AAPL.csv",
+    "source_bytes": 21412983,
+    "sample_rows": 100000,
+    "sample_bytes": 5816347,
+    "sample_sha256": "7b7280ea519d481f39ca1469312d080c3251536885054ee4bc6110ae7c462496",
+    "numeric_column": "v",
+    "nonnull_numeric_rows": 100000
+  },
+  "duckdb_version": "1.5.6",
+  "all_checks_passed": true,
+  "cases": {
+    "csv_faults": {
+      "status": "pass",
+      "observations": {
+        "malformed": {
+          "rejected": true,
+          "error_type": "InvalidInputException",
+          "message": "Invalid Input Error: CSV Error on Line: 100002"
+        },
+        "nonnumeric": {
+          "rejected": true,
+          "error_type": "ConversionException",
+          "message": "Conversion Error: CSV Error on Line: 100002"
+        },
+        "null": {
+          "rows": [
+            [
+              100001,
+              100000,
+              100000
+            ]
+          ],
+          "expected": [
+            [
+              100001,
+              100000,
+              100000
+            ]
+          ]
+        }
+      },
+      "fault_position": "one appended row after the sample",
+      "wall_seconds": 0.5326,
+      "peak_tree_rss_bytes_sampled": 73433088,
+      "limits": {
+        "wall_seconds": 30,
+        "tree_rss_mib": 2048,
+        "poll_seconds": 0.02
+      }
+    },
+    "parquet_and_integers": {
+      "status": "pass",
+      "truncated_parquet": {
+        "rejected": true,
+        "error_type": "InvalidInputException",
+        "message": "Invalid Input Error: No magic bytes found at end of file '<local-path>'"
+      },
+      "synthetic_integer_values": [
+        -9007199254740993,
+        9007199254740993,
+        9223372036854775807
+      ],
+      "preview_and_saved_rows": [
+        [
+          "-9007199254740993"
+        ],
+        [
+          "9007199254740993"
+        ],
+        [
+          "9223372036854775807"
+        ]
+      ],
+      "wall_seconds": 0.2679,
+      "peak_tree_rss_bytes_sampled": 92946432,
+      "limits": {
+        "wall_seconds": 30,
+        "tree_rss_mib": 2048,
+        "poll_seconds": 0.02
+      }
+    },
+    "giant_cell": {
+      "status": "pass",
+      "synthetic_cell_bytes": 16777216,
+      "reply_bytes": 361,
+      "note": "Clipping bounds the reply, not the engine's full-cell allocation.",
+      "wall_seconds": 0.1689,
+      "peak_tree_rss_bytes_sampled": 70762496,
+      "limits": {
+        "wall_seconds": 30,
+        "tree_rss_mib": 2048,
+        "poll_seconds": 0.02
+      }
+    },
+    "timeout_recovery": {
+      "status": "pass",
+      "configured_query_timeout_seconds": 0.1,
+      "timed_query_wall_seconds": 0.1436,
+      "timeout": {
+        "rejected": true,
+        "error_type": "InterruptException",
+        "message": "INTERRUPT Error: Interrupted!"
+      },
+      "recovery_rows": [
+        [
+          100000
+        ]
+      ],
+      "note": "Synthetic expensive SQL; subprocess deadline also covers setup outside the SQL timer.",
+      "wall_seconds": 0.334,
+      "peak_tree_rss_bytes_sampled": 78774272,
+      "limits": {
+        "wall_seconds": 30,
+        "tree_rss_mib": 2048,
+        "poll_seconds": 0.02
+      }
+    },
+    "concurrency_lineage": {
+      "status": "pass",
+      "writers": [
+        {
+          "status": "pass",
+          "won": true,
+          "version": 2
+        },
+        {
+          "status": "pass",
+          "won": false
+        }
+      ],
+      "pinned_query_rows": [
+        [
+          100000
+        ]
+      ],
+      "stale_inputs_before_refresh": true,
+      "refreshed_rows": [
+        [
+          1
+        ]
+      ],
+      "interleaving": "controlled source update after table_inputs snapshot, before DuckDB opens the pinned file",
+      "wall_seconds": 0.3609,
+      "peak_tree_rss_bytes_sampled": 169476096,
+      "limits": {
+        "wall_seconds": 30,
+        "tree_rss_mib": 2048,
+        "poll_seconds": 0.02
+      }
+    },
+    "interrupted_import": {
+      "status": "pass",
+      "catalog_atomic": true,
+      "interruption": {
+        "status": "interrupted",
+        "reason": "intentional_interruption",
+        "exit_code": -9,
+        "wall_seconds": 0.0758,
+        "peak_tree_rss_bytes_sampled": 53690368,
+        "limits": {
+          "wall_seconds": 10,
+          "tree_rss_mib": 2048,
+          "poll_seconds": 0.02
+        }
+      },
+      "residue_before_prune": {
+        "files": 1,
+        "bytes": 65536
+      },
+      "residue_after_prune": {
+        "files": 1,
+        "bytes": 65536
+      },
+      "cleanup": {
+        "removed": [],
+        "dry_run": false,
+        "blobs_removed": 0,
+        "bytes_freed": 0
+      },
+      "recovery_version": 1,
+      "limitation": "Unreferenced staging files remain after hard termination.",
+      "wall_seconds": 0.1686,
+      "peak_tree_rss_bytes_sampled": 108593152,
+      "limits": {
+        "wall_seconds": 30,
+        "tree_rss_mib": 2048,
+        "poll_seconds": 0.02
+      }
+    }
+  },
+  "resource_notes": "512 MB DuckDB memory and one thread per normal worker; sampled RSS includes descendants, may overshoot between polls, and is not an allocation cap. Known cleanup residue is reported separately from catalog/recovery assertions.",
+  "publication_notes": "Error messages retain only their first line with local paths removed. Six passed correctness/recovery checks do not imply residue-free cleanup; interrupted-import staging residue is reported explicitly."
+}
