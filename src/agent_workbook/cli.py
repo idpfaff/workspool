@@ -26,6 +26,16 @@ TOOL_CHOICES = [
     "task_run",
     "task_status",
     "context",
+    "recall",
+    "remember",
+    "session_status",
+    "claim",
+    "claim_renew",
+    "claim_release",
+    "claim_owner",
+    "provenance",
+    "changes",
+    "approve",
 ]
 
 
@@ -74,7 +84,7 @@ def main() -> None:
     serve.add_argument("--port", type=int, default=8731)
     serve.add_argument(
         "--profile",
-        choices=["compatible", "efficient", "agent"],
+        choices=["compatible", "efficient", "agent", "runtime"],
         default="compatible",
         help="agent adds durable tasks and indexed context with text-only replies; efficient enables retrieval and synchronization",
     )
@@ -107,6 +117,46 @@ def main() -> None:
             "resume query refresh; import and delete must be listed to be exposed)"
         ),
     )
+    serve.add_argument(
+        "--agent-id",
+        default="local",
+        help="trusted identity for this server; never taken from tool input",
+    )
+    serve.add_argument(
+        "--role", choices=["reader", "writer", "approver"], default="writer"
+    )
+    serve.add_argument(
+        "--goal",
+        help="restore relevant context automatically on startup; requires --tokenizer",
+    )
+    serve.add_argument("--recall-tokens", type=int, default=1500)
+    serve.add_argument(
+        "--model-dir",
+        type=Path,
+        help="provisioned local embedding model; omitted means lexical recall",
+    )
+    serve.add_argument(
+        "--require-claims",
+        action="store_true",
+        help="persistently require fenced task claims in this workspace",
+    )
+
+    model = commands.add_parser(
+        "model-download",
+        help="Explicitly download and pin the optional local embedding model",
+    )
+    model.add_argument("directory", type=Path)
+    hook = commands.add_parser(
+        "hook",
+        help="Host integration: session lifecycle and explicit JSON events on stdin",
+    )
+    hook.add_argument(
+        "kind", choices=["session_start", "decision", "tool_result", "session_end"]
+    )
+    hook.add_argument("--agent-id", default="local")
+    hook.add_argument("--session-id")
+    hook.add_argument("--event-id")
+    hook.add_argument("--goal", default="Workspace activity")
 
     ingest = commands.add_parser(
         "import", help="Save a local file in its native format"
@@ -187,9 +237,17 @@ def main() -> None:
     context.add_argument("query")
     context.add_argument("--ref", action="append")
     context.add_argument("--limit", type=int, default=8)
+    recall = commands.add_parser(
+        "recall", help="Budgeted local hybrid recall with exact source citations"
+    )
+    recall.add_argument("query")
+    recall.add_argument("--ref", action="append")
+    recall.add_argument("--limit", type=int, default=6)
+    recall.add_argument("--model-dir", type=Path)
+    recall.add_argument("--max-bytes", type=int, default=16384)
     for bounded in (task_run, task_status, context):
         bounded.add_argument("--max-bytes", type=int, default=16384)
-    for bounded in (sync, retrieve, task_run, task_status, context):
+    for bounded in (sync, retrieve, task_run, task_status, context, recall):
         bounded.add_argument("--max-tokens", type=int)
         bounded.add_argument(
             "--tokenizer", help="encoding name or local tokenizer.json"
@@ -245,7 +303,11 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        if args.command == "bench":
+        if args.command == "model-download":
+            from .semantic import provision_model
+
+            result = provision_model(args.directory)
+        elif args.command == "bench":
             from .bench import benchmark
 
             result = benchmark(args.tokenizer)
@@ -264,6 +326,7 @@ def main() -> None:
                 "task-run",
                 "task-status",
                 "context",
+                "recall",
             }:
                 from .budget import token_counter, validate_limit
 
@@ -287,7 +350,7 @@ def main() -> None:
                 case "serve":
                     from .server import server_for
 
-                    server_for(
+                    app = server_for(
                         workbook,
                         args.port,
                         response_format=args.response_format,
@@ -296,8 +359,54 @@ def main() -> None:
                         tools=args.tools,
                         profile=args.profile,
                         tokenizer=args.tokenizer,
-                    ).run(transport=args.transport)
+                        agent_id=args.agent_id,
+                        role=args.role,
+                        goal=args.goal,
+                        recall_tokens=args.recall_tokens,
+                        model_dir=args.model_dir,
+                        require_claims=args.require_claims,
+                    )
+                    try:
+                        app.run(transport=args.transport)
+                    finally:
+                        app.finish_session()
                     return
+                case "hook":
+                    from .continuity import Session, capture_event, start_session
+                    from .coordination import Principal
+
+                    principal = Principal(args.agent_id)
+                    if args.kind == "session_start":
+                        result = start_session(
+                            workbook, principal, args.goal, args.session_id
+                        ).as_dict()
+                    else:
+                        if not args.session_id:
+                            raise ValueError("This hook requires --session-id")
+                        raw = sys.stdin.buffer.read(16385)
+                        if len(raw) > 16384:
+                            raise ValueError("Hook event exceeds 16 KiB")
+                        data = json.loads(raw or b"{}")
+                        if not isinstance(data, dict):
+                            raise ValueError("Hook event must be a JSON object")
+                        result = capture_event(
+                            Session(workbook, principal, args.session_id),
+                            args.kind,
+                            data,
+                            event_id=args.event_id,
+                        )
+                case "recall":
+                    from .semantic import hybrid_search
+
+                    result = hybrid_search(
+                        workbook,
+                        args.query,
+                        args.ref,
+                        model_dir=args.model_dir,
+                        limit=args.limit,
+                        max_bytes=args.max_bytes,
+                        fits=fits,
+                    )
                 case "import":
                     result = workbook.import_path(
                         args.file.resolve(),

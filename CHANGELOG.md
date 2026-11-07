@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.0 — 2026-11-07
+
+- Add an opt-in runtime profile that automatically captures bounded tool observations, task results, failures, and source references. Restore relevant context in MCP initialization instructions for a configured goal and exact tokenizer budget; expose stdin hooks for other host integrations.
+- Add optional local BGE embeddings with hybrid lexical/vector retrieval, exact citations, persistent content/model caches, explicit coverage, and truthful lexical fallback. Model provisioning is explicit; inference workers use local assets and disable socket connections.
+- Add configured reader, writer, and approver roles; atomic expiring claims with monotonic fences; persisted claim policy; and ownership validation in the same transaction as task publication. Superseded owners cannot advance the successful-run pointer.
+- Commit artifact producer events atomically with saved artifacts, and expose immutable event pagination, approval attestations, and transitive stale-input explanations. Local filesystem owners remain trusted; this is not federated authentication.
+- Preserve execution observations separately from unverified host reports. Add redaction, bounded previews, retry-safe capture, repeated-read deduplication, and incremental session accounting with reported usage distinct from rendered-token estimates.
+- Stress public NYC taxi, NOAA weather, and Wikipedia datasets in addition to Massive. Publish exact checks, comparative overhead, failed limits, and small real-model semantic retrieval diagnostics without raw data or model weights.
+- Preserve the compatible, efficient, and agent profiles; semantic dependencies remain optional. Keep the MIT License with Commons Clause.
+
 ## 0.6.0 — 2026-11-07
 
 - Add durable tasks: versioned definitions, dependent SQL steps, a coherent snapshot of all inputs, reusable materialized results, explicit partial recovery, and generation-checked publication across concurrent agents.

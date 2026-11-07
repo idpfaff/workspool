@@ -10,11 +10,31 @@ import json
 import re
 import time
 from dataclasses import asdict
+from functools import wraps
+from inspect import signature
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from uuid import uuid4
 
 from .store import TABLE_TYPES, is_text
+
+
+def _as_actor(function):
+    parameters = signature(function)
+
+    @wraps(function)
+    def execute(*args, **kwargs):
+        from .coordination import acting_as, current_principal
+
+        principal = (
+            parameters.bind(*args, **kwargs).arguments.get("principal")
+            or current_principal()
+        )
+        with acting_as(principal):
+            return function(*args, **kwargs)
+
+    return execute
+
 
 ALIAS = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,39}\Z")
 SCHEMA = """
@@ -158,6 +178,7 @@ def _validate(objective, sources, steps, searches, csv_types=None):
     return plan
 
 
+@_as_actor
 def define_task(
     workbook,
     name,
@@ -168,8 +189,13 @@ def define_task(
     expected_version=None,
     csv_types=None,
     pin_sources=False,
+    principal=None,
 ):
     """Save a versioned plan; this does not execute queries or acquire sources."""
+    from .coordination import authorize, current_principal, record_event
+
+    principal = principal or current_principal()
+    authorize(principal, "write")
     artifact_name = _name(name)
     plan = _validate(objective, sources, steps, searches, csv_types)
     if type(pin_sources) is not bool:
@@ -206,6 +232,17 @@ def define_task(
         media_type="application/json",
         summary=plan["objective"],
         expected_version=expected_version,
+    )
+    record_event(
+        workbook,
+        principal,
+        "task.defined",
+        saved["artifact_id"],
+        {
+            "task": name,
+            "version": saved["version"],
+            "sources": plan["sources"],
+        },
     )
     return {
         "name": name,
@@ -465,7 +502,9 @@ def _evidence(workbook, plan, payload):
     payload["citations"] = list(found.values())
 
 
-def _finish(workbook, payload, anchor_id):
+def _finish(workbook, payload, anchor_id, principal, claim_ticket):
+    from .coordination import ClaimLost, append_event, validate_claim
+
     failures = {
         "no_text_sources",
         "no_matching_evidence",
@@ -509,6 +548,18 @@ def _finish(workbook, payload, anchor_id):
         ).fetchone()
         if head["success_generation"] > payload["generation"]:
             payload["current"] = False
+        try:
+            validate_claim(
+                db,
+                principal,
+                claim_ticket,
+                resource="task:" + payload["task"],
+                required=False,
+            )
+        except ClaimLost:
+            successful = False
+            payload["state"] = "partial"
+            payload["omitted"].append({"reason": "claim_lost"})
         if successful and not payload["current"]:
             payload["state"] = "superseded"
         if successful and payload["current"]:
@@ -527,6 +578,32 @@ def _finish(workbook, payload, anchor_id):
         db.execute(
             "UPDATE task_runs SET state=?,payload=?,finished=? WHERE run_id=? AND state='running'",
             (payload["state"], _json(payload), time.time(), payload["run_id"]),
+        )
+        append_event(
+            db,
+            principal,
+            "task.published" if successful and payload["current"] else "task.finished",
+            "task:" + payload["task"],
+            {
+                "run_id": payload["run_id"],
+                "artifact_id": report["artifact_id"],
+                "definition_id": payload["definition_id"],
+                "state": payload["state"],
+                "current": payload["current"],
+                "fence": claim_ticket["fence"] if claim_ticket else None,
+            },
+        )
+        append_event(
+            db,
+            principal,
+            "artifact.publication",
+            report["artifact_id"],
+            {
+                "run_id": payload["run_id"],
+                "kind": "computation_snapshot",
+                "state": payload["state"],
+                "inputs": [s["artifact_id"] for s in payload["sources"].values()],
+            },
         )
     return payload
 
@@ -626,6 +703,7 @@ def _deliver(workbook, payload, max_bytes, fits, base_run):
                     "requires_retained_base": True,
                     "brief_complete": False,
                     "omitted": payload["omitted"],
+                    "producer": payload.get("producer"),
                 }
             )
             if len(_json(receipt).encode()) <= max_bytes and (
@@ -635,6 +713,7 @@ def _deliver(workbook, payload, max_bytes, fits, base_run):
     return _brief(payload, max_bytes, fits)
 
 
+@_as_actor
 def run_task(
     workbook,
     name,
@@ -643,8 +722,20 @@ def run_task(
     max_bytes=16384,
     fits=None,
     base_run=None,
+    principal=None,
+    claim_ticket=None,
 ):
+    from .coordination import authorize, current_principal, initialize, validate_claim
+
     _name(name)
+    principal = principal or current_principal()
+    authorize(principal, "write")
+    initialize(workbook)
+    with workbook.connect() as db:
+        db.execute("BEGIN IMMEDIATE")
+        validate_claim(
+            db, principal, claim_ticket, resource="task:" + name, required=False
+        )
     _initialize(workbook)
     if type(force) is not bool:
         raise ValueError("force must be boolean")
@@ -653,6 +744,8 @@ def run_task(
     if type(max_bytes) is not int or not 256 <= max_bytes <= 131072:
         raise ValueError("Brief max_bytes must be between 256 and 131072")
     plan, payload, anchor_id = _pin(workbook, name, resume_from)
+    payload["producer"] = {"identity": principal.identity, "role": principal.role}
+    _progress(workbook, payload)
     try:
         if base_run is None:
             _brief(payload, max_bytes, fits)
@@ -735,7 +828,11 @@ def run_task(
             {"reason": "evidence_failed", "error": str(error)[:500]}
         )
     return _deliver(
-        workbook, _finish(workbook, payload, anchor_id), max_bytes, fits, base_run
+        workbook,
+        _finish(workbook, payload, anchor_id, principal, claim_ticket),
+        max_bytes,
+        fits,
+        base_run,
     )
 
 

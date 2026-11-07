@@ -1,0 +1,1646 @@
+{
+  "format": 1,
+  "dataset": "wikipedia",
+  "recorded_on": "2026-11-07",
+  "recorded_private_result_sha256": "1670fca2bf645843e6f675fe8eae9f0374ab1c22f1f996b57cce47048a3190e9",
+  "method": "Single local lifecycle over real UTF8 sources; indexed FTS5 control plus separate literal exact-anchor diagnostics. Lexical recall is not semantic equivalence.",
+  "acquisition": {
+    "source_archive": {
+      "url": "https://dumps.wikimedia.org/enwiki/20261001/enwiki-20261001-pages-articles-multistream1.xml-p1p41242.bz2",
+      "sha256": "b41f70467dcd50289ded032873999a8c71087281d845ad27a63addc742431848",
+      "selection": "First 8192 nonempty, namespace-0, nonredirect pages in archive order",
+      "format": "UTF-8 wikitext extracted from revision text"
+    },
+    "total_bytes": 463555655
+  },
+  "official_archive_sha1_verified": "353bf6ce69fb0ba5e47a5cc13464523e95edb9f7",
+  "document_manifest_sha256": "d38d2a0e8010b05a5d12fdc95c4a182fc5d0aa9cc096d03622df335a7cc9cef8",
+  "source_bytes": 463555655,
+  "document_count": 8192,
+  "minimum_source_bytes_requested": 104857600,
+  "queries_requested": 6,
+  "queries_generated": 5,
+  "query_selection_note": "The six largest documents were inspected. Five had an eligible actual complete passage; query terms were chosen by measured document rarity. This is targeted lexical recall, not an independent natural-language semantic benchmark.",
+  "tokenizer": "o200k_base",
+  "token_accounting": "Compact native API JSON; excludes MCP envelopes and provider/model usage.",
+  "queries": [
+    {
+      "title": "India",
+      "start_byte": 224993,
+      "end_byte": 225090,
+      "query": "agiary maneckji",
+      "term_document_counts": {
+        "agiary": 1,
+        "maneckji": 2
+      },
+      "beyond_64kib": true,
+      "source_url": "https://en.wikipedia.org/w/index.php?oldid=1378878145",
+      "source_sha256": "d2f7742563afdbe6463c5321d07aac9af0c236f6146e3bd737ddcc3cb60e348e",
+      "source_bytes": 395324,
+      "page_id": "14533",
+      "revision_id": "1378878145"
+    },
+    {
+      "title": "Foreign relations of India",
+      "start_byte": 285204,
+      "end_byte": 285347,
+      "query": "tobgay tshering",
+      "term_document_counts": {
+        "tobgay": 1,
+        "tshering": 3
+      },
+      "beyond_64kib": true,
+      "source_url": "https://en.wikipedia.org/w/index.php?oldid=1377088275",
+      "source_sha256": "1fd3f0e270a5a55e0d3527e24b025e3eae62b29c1afa4ddd39ab26f4ae453e1d",
+      "source_bytes": 523953,
+      "page_id": "14604",
+      "revision_id": "1377088275"
+    },
+    {
+      "title": "Foreign relations of Iraq",
+      "start_byte": 244074,
+      "end_byte": 244261,
+      "query": "mcdade fallujah",
+      "term_document_counts": {
+        "mcdade": 3,
+        "fallujah": 9
+      },
+      "beyond_64kib": true,
+      "source_url": "https://en.wikipedia.org/w/index.php?oldid=1377726096",
+      "source_sha256": "69fc23a3cc89d867278dc7a95b35d2723668e9a3aba2ff09ab2946a0c830bc94",
+      "source_bytes": 443717,
+      "page_id": "14672",
+      "revision_id": "1377726096"
+    },
+    {
+      "title": "Overview of gun laws by nation",
+      "start_byte": 265088,
+      "end_byte": 265222,
+      "query": "revolvers shotguns",
+      "term_document_counts": {
+        "revolvers": 10,
+        "shotguns": 25
+      },
+      "beyond_64kib": true,
+      "source_url": "https://en.wikipedia.org/w/index.php?oldid=1378292778",
+      "source_sha256": "46ba3fcc90a29ec7df43623a2192ef6664ddd3c28dc597095617647fc8809b49",
+      "source_bytes": 490244,
+      "page_id": "12686",
+      "revision_id": "1378292778"
+    },
+    {
+      "title": "Detroit Tigers",
+      "start_byte": 235431,
+      "end_byte": 235477,
+      "query": "galarraga armando",
+      "term_document_counts": {
+        "galarraga": 8,
+        "armando": 75
+      },
+      "beyond_64kib": true,
+      "source_url": "https://en.wikipedia.org/w/index.php?oldid=1378673947",
+      "source_sha256": "b96947cd4106886b5e82af5218632654151699807f774a66d834c7bfc3dfc526",
+      "source_bytes": 425091,
+      "page_id": "8579",
+      "revision_id": "1378673947"
+    }
+  ],
+  "cold": {
+    "direct_cold": {
+      "passes": 64,
+      "elapsed_seconds": 20.113358663977124,
+      "indexed_versions": 8192,
+      "indexed_bytes": 463555655,
+      "complete": true
+    },
+    "workspool_cold": {
+      "passes": 64,
+      "elapsed_seconds": 52.72590937174391,
+      "indexed_versions": 8192,
+      "indexed_bytes": 463555655,
+      "complete": true
+    }
+  },
+  "index_passes": [
+    {
+      "phase": "direct_cold",
+      "pass": 1,
+      "elapsed_seconds": 0.2744697919115424,
+      "indexed_versions": 128,
+      "indexed_bytes": 10338905,
+      "pending_versions": 8064,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 2,
+      "elapsed_seconds": 0.27959812490735203,
+      "indexed_versions": 128,
+      "indexed_bytes": 8198162,
+      "pending_versions": 7936,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 3,
+      "elapsed_seconds": 0.24372145894449204,
+      "indexed_versions": 128,
+      "indexed_bytes": 7497443,
+      "pending_versions": 7808,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 4,
+      "elapsed_seconds": 0.2189023750834167,
+      "indexed_versions": 128,
+      "indexed_bytes": 5479608,
+      "pending_versions": 7680,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 5,
+      "elapsed_seconds": 0.17686620797030628,
+      "indexed_versions": 128,
+      "indexed_bytes": 4375446,
+      "pending_versions": 7552,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 6,
+      "elapsed_seconds": 0.3377089579589665,
+      "indexed_versions": 128,
+      "indexed_bytes": 7614395,
+      "pending_versions": 7424,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 7,
+      "elapsed_seconds": 0.3227449159603566,
+      "indexed_versions": 128,
+      "indexed_bytes": 7441926,
+      "pending_versions": 7296,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 8,
+      "elapsed_seconds": 0.24784025002736598,
+      "indexed_versions": 128,
+      "indexed_bytes": 7336104,
+      "pending_versions": 7168,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 9,
+      "elapsed_seconds": 0.18953254097141325,
+      "indexed_versions": 128,
+      "indexed_bytes": 4060785,
+      "pending_versions": 7040,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 10,
+      "elapsed_seconds": 0.1829105409560725,
+      "indexed_versions": 128,
+      "indexed_bytes": 5632741,
+      "pending_versions": 6912,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 11,
+      "elapsed_seconds": 0.2692092499928549,
+      "indexed_versions": 128,
+      "indexed_bytes": 5443984,
+      "pending_versions": 6784,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 12,
+      "elapsed_seconds": 0.40402495907619596,
+      "indexed_versions": 128,
+      "indexed_bytes": 9835681,
+      "pending_versions": 6656,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 13,
+      "elapsed_seconds": 0.2300276670139283,
+      "indexed_versions": 128,
+      "indexed_bytes": 6438651,
+      "pending_versions": 6528,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 14,
+      "elapsed_seconds": 0.25088658393360674,
+      "indexed_versions": 128,
+      "indexed_bytes": 7506300,
+      "pending_versions": 6400,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 15,
+      "elapsed_seconds": 0.2748440409777686,
+      "indexed_versions": 128,
+      "indexed_bytes": 8316727,
+      "pending_versions": 6272,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 16,
+      "elapsed_seconds": 0.35757629200816154,
+      "indexed_versions": 128,
+      "indexed_bytes": 7675660,
+      "pending_versions": 6144,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 17,
+      "elapsed_seconds": 0.2670047919964418,
+      "indexed_versions": 128,
+      "indexed_bytes": 6928439,
+      "pending_versions": 6016,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 18,
+      "elapsed_seconds": 0.2835364999482408,
+      "indexed_versions": 128,
+      "indexed_bytes": 8310900,
+      "pending_versions": 5888,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 19,
+      "elapsed_seconds": 0.24104033398907632,
+      "indexed_versions": 128,
+      "indexed_bytes": 7124920,
+      "pending_versions": 5760,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 20,
+      "elapsed_seconds": 0.3543659159913659,
+      "indexed_versions": 128,
+      "indexed_bytes": 8996826,
+      "pending_versions": 5632,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 21,
+      "elapsed_seconds": 0.376537416013889,
+      "indexed_versions": 128,
+      "indexed_bytes": 7919224,
+      "pending_versions": 5504,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 22,
+      "elapsed_seconds": 0.3408774579875171,
+      "indexed_versions": 128,
+      "indexed_bytes": 6458671,
+      "pending_versions": 5376,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 23,
+      "elapsed_seconds": 0.32972312497440726,
+      "indexed_versions": 128,
+      "indexed_bytes": 5825089,
+      "pending_versions": 5248,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 24,
+      "elapsed_seconds": 0.4158103750087321,
+      "indexed_versions": 128,
+      "indexed_bytes": 8169522,
+      "pending_versions": 5120,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 25,
+      "elapsed_seconds": 0.37974420899990946,
+      "indexed_versions": 128,
+      "indexed_bytes": 7234031,
+      "pending_versions": 4992,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 26,
+      "elapsed_seconds": 0.29466374998446554,
+      "indexed_versions": 128,
+      "indexed_bytes": 5102563,
+      "pending_versions": 4864,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 27,
+      "elapsed_seconds": 0.3399602919816971,
+      "indexed_versions": 128,
+      "indexed_bytes": 6256885,
+      "pending_versions": 4736,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 28,
+      "elapsed_seconds": 0.2975241659441963,
+      "indexed_versions": 128,
+      "indexed_bytes": 5249550,
+      "pending_versions": 4608,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 29,
+      "elapsed_seconds": 0.25578779191710055,
+      "indexed_versions": 128,
+      "indexed_bytes": 7183253,
+      "pending_versions": 4480,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 30,
+      "elapsed_seconds": 0.3438367909984663,
+      "indexed_versions": 128,
+      "indexed_bytes": 7714167,
+      "pending_versions": 4352,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 31,
+      "elapsed_seconds": 0.35344662494026124,
+      "indexed_versions": 128,
+      "indexed_bytes": 7833065,
+      "pending_versions": 4224,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 32,
+      "elapsed_seconds": 0.27275775000452995,
+      "indexed_versions": 128,
+      "indexed_bytes": 8008709,
+      "pending_versions": 4096,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 33,
+      "elapsed_seconds": 0.20396637497469783,
+      "indexed_versions": 128,
+      "indexed_bytes": 5889149,
+      "pending_versions": 3968,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 34,
+      "elapsed_seconds": 0.2735842920374125,
+      "indexed_versions": 128,
+      "indexed_bytes": 8530499,
+      "pending_versions": 3840,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 35,
+      "elapsed_seconds": 0.3869982499163598,
+      "indexed_versions": 128,
+      "indexed_bytes": 7321525,
+      "pending_versions": 3712,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 36,
+      "elapsed_seconds": 0.283487124950625,
+      "indexed_versions": 128,
+      "indexed_bytes": 6175780,
+      "pending_versions": 3584,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 37,
+      "elapsed_seconds": 0.24865333293564618,
+      "indexed_versions": 128,
+      "indexed_bytes": 6718113,
+      "pending_versions": 3456,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 38,
+      "elapsed_seconds": 0.23965933290310204,
+      "indexed_versions": 128,
+      "indexed_bytes": 6663008,
+      "pending_versions": 3328,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 39,
+      "elapsed_seconds": 0.17921349999960512,
+      "indexed_versions": 128,
+      "indexed_bytes": 4738044,
+      "pending_versions": 3200,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 40,
+      "elapsed_seconds": 0.2909402090590447,
+      "indexed_versions": 128,
+      "indexed_bytes": 6508033,
+      "pending_versions": 3072,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 41,
+      "elapsed_seconds": 0.3642718750052154,
+      "indexed_versions": 128,
+      "indexed_bytes": 6743309,
+      "pending_versions": 2944,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 42,
+      "elapsed_seconds": 0.4318282080348581,
+      "indexed_versions": 128,
+      "indexed_bytes": 8263387,
+      "pending_versions": 2816,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 43,
+      "elapsed_seconds": 0.34443699999246746,
+      "indexed_versions": 128,
+      "indexed_bytes": 5999183,
+      "pending_versions": 2688,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 44,
+      "elapsed_seconds": 0.4329559999750927,
+      "indexed_versions": 128,
+      "indexed_bytes": 8204131,
+      "pending_versions": 2560,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 45,
+      "elapsed_seconds": 0.38188866700511426,
+      "indexed_versions": 128,
+      "indexed_bytes": 7566993,
+      "pending_versions": 2432,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 46,
+      "elapsed_seconds": 0.4115009580273181,
+      "indexed_versions": 128,
+      "indexed_bytes": 7416106,
+      "pending_versions": 2304,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 47,
+      "elapsed_seconds": 0.36268379201646894,
+      "indexed_versions": 128,
+      "indexed_bytes": 6751385,
+      "pending_versions": 2176,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 48,
+      "elapsed_seconds": 0.21296012494713068,
+      "indexed_versions": 128,
+      "indexed_bytes": 5957950,
+      "pending_versions": 2048,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 49,
+      "elapsed_seconds": 0.2545408330624923,
+      "indexed_versions": 128,
+      "indexed_bytes": 6277570,
+      "pending_versions": 1920,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 50,
+      "elapsed_seconds": 0.4115495419828221,
+      "indexed_versions": 128,
+      "indexed_bytes": 9286326,
+      "pending_versions": 1792,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 51,
+      "elapsed_seconds": 0.3562485419679433,
+      "indexed_versions": 128,
+      "indexed_bytes": 8094697,
+      "pending_versions": 1664,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 52,
+      "elapsed_seconds": 0.29999937501270324,
+      "indexed_versions": 128,
+      "indexed_bytes": 8554313,
+      "pending_versions": 1536,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 53,
+      "elapsed_seconds": 0.283628125092946,
+      "indexed_versions": 128,
+      "indexed_bytes": 7769665,
+      "pending_versions": 1408,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 54,
+      "elapsed_seconds": 0.30283108295407146,
+      "indexed_versions": 128,
+      "indexed_bytes": 7175382,
+      "pending_versions": 1280,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 55,
+      "elapsed_seconds": 0.4533930829493329,
+      "indexed_versions": 128,
+      "indexed_bytes": 10476328,
+      "pending_versions": 1152,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 56,
+      "elapsed_seconds": 0.26060883293394,
+      "indexed_versions": 128,
+      "indexed_bytes": 7280391,
+      "pending_versions": 1024,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 57,
+      "elapsed_seconds": 0.2228571668965742,
+      "indexed_versions": 128,
+      "indexed_bytes": 6062286,
+      "pending_versions": 896,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 58,
+      "elapsed_seconds": 0.27722399996127933,
+      "indexed_versions": 128,
+      "indexed_bytes": 8198342,
+      "pending_versions": 768,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 59,
+      "elapsed_seconds": 0.45507820800412446,
+      "indexed_versions": 128,
+      "indexed_bytes": 8811539,
+      "pending_versions": 640,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 60,
+      "elapsed_seconds": 0.5055158329196274,
+      "indexed_versions": 128,
+      "indexed_bytes": 9736193,
+      "pending_versions": 512,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 61,
+      "elapsed_seconds": 0.42124933295417577,
+      "indexed_versions": 128,
+      "indexed_bytes": 7725906,
+      "pending_versions": 384,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 62,
+      "elapsed_seconds": 0.3281852090731263,
+      "indexed_versions": 128,
+      "indexed_bytes": 5647084,
+      "pending_versions": 256,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 63,
+      "elapsed_seconds": 0.4425262500299141,
+      "indexed_versions": 128,
+      "indexed_bytes": 8472627,
+      "pending_versions": 128,
+      "index_complete": false
+    },
+    {
+      "phase": "direct_cold",
+      "pass": 64,
+      "elapsed_seconds": 0.38141295802779496,
+      "indexed_versions": 128,
+      "indexed_bytes": 7032079,
+      "pending_versions": 0,
+      "index_complete": true
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 1,
+      "elapsed_seconds": 0.8089977499330416,
+      "indexed_versions": 128,
+      "indexed_bytes": 10338905,
+      "pending_versions": 8064,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 2,
+      "elapsed_seconds": 0.6905391670297831,
+      "indexed_versions": 128,
+      "indexed_bytes": 8198162,
+      "pending_versions": 7936,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 3,
+      "elapsed_seconds": 0.7904824579600245,
+      "indexed_versions": 128,
+      "indexed_bytes": 7497443,
+      "pending_versions": 7808,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 4,
+      "elapsed_seconds": 0.5408053329447284,
+      "indexed_versions": 128,
+      "indexed_bytes": 5479608,
+      "pending_versions": 7680,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 5,
+      "elapsed_seconds": 0.43474295793566853,
+      "indexed_versions": 128,
+      "indexed_bytes": 4375446,
+      "pending_versions": 7552,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 6,
+      "elapsed_seconds": 0.6729111250024289,
+      "indexed_versions": 128,
+      "indexed_bytes": 7614395,
+      "pending_versions": 7424,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 7,
+      "elapsed_seconds": 0.8184223329881206,
+      "indexed_versions": 128,
+      "indexed_bytes": 7441926,
+      "pending_versions": 7296,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 8,
+      "elapsed_seconds": 0.6770509999478236,
+      "indexed_versions": 128,
+      "indexed_bytes": 7336104,
+      "pending_versions": 7168,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 9,
+      "elapsed_seconds": 0.423986708978191,
+      "indexed_versions": 128,
+      "indexed_bytes": 4060785,
+      "pending_versions": 7040,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 10,
+      "elapsed_seconds": 0.5723920830059797,
+      "indexed_versions": 128,
+      "indexed_bytes": 5632741,
+      "pending_versions": 6912,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 11,
+      "elapsed_seconds": 0.5616177920019254,
+      "indexed_versions": 128,
+      "indexed_bytes": 5443984,
+      "pending_versions": 6784,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 12,
+      "elapsed_seconds": 1.0159298330545425,
+      "indexed_versions": 128,
+      "indexed_bytes": 9835681,
+      "pending_versions": 6656,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 13,
+      "elapsed_seconds": 0.6097893340047449,
+      "indexed_versions": 128,
+      "indexed_bytes": 6438651,
+      "pending_versions": 6528,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 14,
+      "elapsed_seconds": 0.7086524169426411,
+      "indexed_versions": 128,
+      "indexed_bytes": 7506300,
+      "pending_versions": 6400,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 15,
+      "elapsed_seconds": 1.3585079159820452,
+      "indexed_versions": 128,
+      "indexed_bytes": 8316727,
+      "pending_versions": 6272,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 16,
+      "elapsed_seconds": 0.7503350409679115,
+      "indexed_versions": 128,
+      "indexed_bytes": 7675660,
+      "pending_versions": 6144,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 17,
+      "elapsed_seconds": 0.6612941249040887,
+      "indexed_versions": 128,
+      "indexed_bytes": 6928439,
+      "pending_versions": 6016,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 18,
+      "elapsed_seconds": 0.9040680000325665,
+      "indexed_versions": 128,
+      "indexed_bytes": 8310900,
+      "pending_versions": 5888,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 19,
+      "elapsed_seconds": 0.6721630829852074,
+      "indexed_versions": 128,
+      "indexed_bytes": 7124920,
+      "pending_versions": 5760,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 20,
+      "elapsed_seconds": 0.8446390409953892,
+      "indexed_versions": 128,
+      "indexed_bytes": 8996826,
+      "pending_versions": 5632,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 21,
+      "elapsed_seconds": 0.8766139999497682,
+      "indexed_versions": 128,
+      "indexed_bytes": 7919224,
+      "pending_versions": 5504,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 22,
+      "elapsed_seconds": 0.6505553750321269,
+      "indexed_versions": 128,
+      "indexed_bytes": 6458671,
+      "pending_versions": 5376,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 23,
+      "elapsed_seconds": 0.61633562494535,
+      "indexed_versions": 128,
+      "indexed_bytes": 5825089,
+      "pending_versions": 5248,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 24,
+      "elapsed_seconds": 0.7702274579787627,
+      "indexed_versions": 128,
+      "indexed_bytes": 8169522,
+      "pending_versions": 5120,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 25,
+      "elapsed_seconds": 0.8621407089522108,
+      "indexed_versions": 128,
+      "indexed_bytes": 7234031,
+      "pending_versions": 4992,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 26,
+      "elapsed_seconds": 0.5644780420698225,
+      "indexed_versions": 128,
+      "indexed_bytes": 5102563,
+      "pending_versions": 4864,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 27,
+      "elapsed_seconds": 0.658107207971625,
+      "indexed_versions": 128,
+      "indexed_bytes": 6256885,
+      "pending_versions": 4736,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 28,
+      "elapsed_seconds": 0.5873005830217153,
+      "indexed_versions": 128,
+      "indexed_bytes": 5249550,
+      "pending_versions": 4608,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 29,
+      "elapsed_seconds": 1.2843932500109076,
+      "indexed_versions": 128,
+      "indexed_bytes": 7183253,
+      "pending_versions": 4480,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 30,
+      "elapsed_seconds": 0.7510785829508677,
+      "indexed_versions": 128,
+      "indexed_bytes": 7714167,
+      "pending_versions": 4352,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 31,
+      "elapsed_seconds": 0.7877243340481073,
+      "indexed_versions": 128,
+      "indexed_bytes": 7833065,
+      "pending_versions": 4224,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 32,
+      "elapsed_seconds": 0.8996404169593006,
+      "indexed_versions": 128,
+      "indexed_bytes": 8008709,
+      "pending_versions": 4096,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 33,
+      "elapsed_seconds": 0.6367020830512047,
+      "indexed_versions": 128,
+      "indexed_bytes": 5889149,
+      "pending_versions": 3968,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 34,
+      "elapsed_seconds": 0.8538618340389803,
+      "indexed_versions": 128,
+      "indexed_bytes": 8530499,
+      "pending_versions": 3840,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 35,
+      "elapsed_seconds": 0.7271290000062436,
+      "indexed_versions": 128,
+      "indexed_bytes": 7321525,
+      "pending_versions": 3712,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 36,
+      "elapsed_seconds": 0.8084179159486666,
+      "indexed_versions": 128,
+      "indexed_bytes": 6175780,
+      "pending_versions": 3584,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 37,
+      "elapsed_seconds": 0.6955363339511678,
+      "indexed_versions": 128,
+      "indexed_bytes": 6718113,
+      "pending_versions": 3456,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 38,
+      "elapsed_seconds": 0.7720884169684723,
+      "indexed_versions": 128,
+      "indexed_bytes": 6663008,
+      "pending_versions": 3328,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 39,
+      "elapsed_seconds": 0.5287719579646364,
+      "indexed_versions": 128,
+      "indexed_bytes": 4738044,
+      "pending_versions": 3200,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 40,
+      "elapsed_seconds": 0.8248402089811862,
+      "indexed_versions": 128,
+      "indexed_bytes": 6508033,
+      "pending_versions": 3072,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 41,
+      "elapsed_seconds": 0.7026409999234602,
+      "indexed_versions": 128,
+      "indexed_bytes": 6743309,
+      "pending_versions": 2944,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 42,
+      "elapsed_seconds": 0.8830852500395849,
+      "indexed_versions": 128,
+      "indexed_bytes": 8263387,
+      "pending_versions": 2816,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 43,
+      "elapsed_seconds": 0.8767171659274027,
+      "indexed_versions": 128,
+      "indexed_bytes": 5999183,
+      "pending_versions": 2688,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 44,
+      "elapsed_seconds": 1.204706707969308,
+      "indexed_versions": 128,
+      "indexed_bytes": 8204131,
+      "pending_versions": 2560,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 45,
+      "elapsed_seconds": 0.748132708016783,
+      "indexed_versions": 128,
+      "indexed_bytes": 7566993,
+      "pending_versions": 2432,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 46,
+      "elapsed_seconds": 0.7654095420148224,
+      "indexed_versions": 128,
+      "indexed_bytes": 7416106,
+      "pending_versions": 2304,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 47,
+      "elapsed_seconds": 0.8801189169753343,
+      "indexed_versions": 128,
+      "indexed_bytes": 6751385,
+      "pending_versions": 2176,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 48,
+      "elapsed_seconds": 0.6848413329571486,
+      "indexed_versions": 128,
+      "indexed_bytes": 5957950,
+      "pending_versions": 2048,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 49,
+      "elapsed_seconds": 0.6912639589281753,
+      "indexed_versions": 128,
+      "indexed_bytes": 6277570,
+      "pending_versions": 1920,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 50,
+      "elapsed_seconds": 1.0992988749640062,
+      "indexed_versions": 128,
+      "indexed_bytes": 9286326,
+      "pending_versions": 1792,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 51,
+      "elapsed_seconds": 0.8396038749488071,
+      "indexed_versions": 128,
+      "indexed_bytes": 8094697,
+      "pending_versions": 1664,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 52,
+      "elapsed_seconds": 0.8755989170167595,
+      "indexed_versions": 128,
+      "indexed_bytes": 8554313,
+      "pending_versions": 1536,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 53,
+      "elapsed_seconds": 0.9292708749417216,
+      "indexed_versions": 128,
+      "indexed_bytes": 7769665,
+      "pending_versions": 1408,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 54,
+      "elapsed_seconds": 0.7707974159857258,
+      "indexed_versions": 128,
+      "indexed_bytes": 7175382,
+      "pending_versions": 1280,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 55,
+      "elapsed_seconds": 1.028935374924913,
+      "indexed_versions": 128,
+      "indexed_bytes": 10476328,
+      "pending_versions": 1152,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 56,
+      "elapsed_seconds": 1.1585249579511583,
+      "indexed_versions": 128,
+      "indexed_bytes": 7280391,
+      "pending_versions": 1024,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 57,
+      "elapsed_seconds": 1.9628179999999702,
+      "indexed_versions": 128,
+      "indexed_bytes": 6062286,
+      "pending_versions": 896,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 58,
+      "elapsed_seconds": 1.6631879160413519,
+      "indexed_versions": 128,
+      "indexed_bytes": 8198342,
+      "pending_versions": 768,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 59,
+      "elapsed_seconds": 0.8888198749627918,
+      "indexed_versions": 128,
+      "indexed_bytes": 8811539,
+      "pending_versions": 640,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 60,
+      "elapsed_seconds": 1.1075234579620883,
+      "indexed_versions": 128,
+      "indexed_bytes": 9736193,
+      "pending_versions": 512,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 61,
+      "elapsed_seconds": 0.841125916922465,
+      "indexed_versions": 128,
+      "indexed_bytes": 7725906,
+      "pending_versions": 384,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 62,
+      "elapsed_seconds": 0.6669022080022842,
+      "indexed_versions": 128,
+      "indexed_bytes": 5647084,
+      "pending_versions": 256,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 63,
+      "elapsed_seconds": 1.0492491249460727,
+      "indexed_versions": 128,
+      "indexed_bytes": 8472627,
+      "pending_versions": 128,
+      "index_complete": false
+    },
+    {
+      "phase": "workspool_cold",
+      "pass": 64,
+      "elapsed_seconds": 0.7340651670238003,
+      "indexed_versions": 128,
+      "indexed_bytes": 7032079,
+      "pending_versions": 0,
+      "index_complete": true
+    }
+  ],
+  "query_results": [
+    {
+      "phase": "warm",
+      "query": "agiary maneckji",
+      "workspool_seconds": 0.12562574993353337,
+      "direct_seconds": 0.08361895906273276,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 1383,
+      "direct_tokens": 1185,
+      "target_title": "India",
+      "workspool_hits": 2,
+      "direct_hits": 2,
+      "index_complete": true,
+      "literal_corpus": {
+        "elapsed_seconds": 0.9550153339514509,
+        "calls": 8,
+        "scanned_bytes": 134217728,
+        "exact_citations": true,
+        "target_found": false,
+        "search_complete": false,
+        "stopped_after_hit": false,
+        "page_limit_reached": true,
+        "hit_count": 0
+      },
+      "literal_pinned": {
+        "elapsed_seconds": 0.0025389580987393856,
+        "calls": 1,
+        "scanned_bytes": 396231,
+        "exact_citations": true,
+        "target_found": true,
+        "search_complete": true,
+        "stopped_after_hit": false,
+        "page_limit_reached": false,
+        "hit_count": 1
+      }
+    },
+    {
+      "phase": "warm",
+      "query": "tobgay tshering",
+      "workspool_seconds": 0.12559433409478515,
+      "direct_seconds": 0.0809102919884026,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 2388,
+      "direct_tokens": 2034,
+      "target_title": "Foreign relations of India",
+      "workspool_hits": 4,
+      "direct_hits": 4,
+      "index_complete": true,
+      "literal_corpus": {
+        "elapsed_seconds": 0.49105974996928126,
+        "calls": 8,
+        "scanned_bytes": 134217728,
+        "exact_citations": true,
+        "target_found": false,
+        "search_complete": false,
+        "stopped_after_hit": false,
+        "page_limit_reached": true,
+        "hit_count": 0
+      },
+      "literal_pinned": {
+        "elapsed_seconds": 0.0008542499272152781,
+        "calls": 1,
+        "scanned_bytes": 525044,
+        "exact_citations": true,
+        "target_found": true,
+        "search_complete": true,
+        "stopped_after_hit": false,
+        "page_limit_reached": false,
+        "hit_count": 1
+      }
+    },
+    {
+      "phase": "warm",
+      "query": "mcdade fallujah",
+      "workspool_seconds": 0.12393779202830046,
+      "direct_seconds": 0.08287270797882229,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 3299,
+      "direct_tokens": 2849,
+      "target_title": "Foreign relations of Iraq",
+      "workspool_hits": 5,
+      "direct_hits": 5,
+      "index_complete": true,
+      "literal_corpus": {
+        "elapsed_seconds": 0.49021600000560284,
+        "calls": 8,
+        "scanned_bytes": 134217728,
+        "exact_citations": true,
+        "target_found": false,
+        "search_complete": false,
+        "stopped_after_hit": false,
+        "page_limit_reached": true,
+        "hit_count": 0
+      },
+      "literal_pinned": {
+        "elapsed_seconds": 0.001033041044138372,
+        "calls": 1,
+        "scanned_bytes": 444984,
+        "exact_citations": true,
+        "target_found": true,
+        "search_complete": true,
+        "stopped_after_hit": false,
+        "page_limit_reached": false,
+        "hit_count": 1
+      }
+    },
+    {
+      "phase": "warm",
+      "query": "revolvers shotguns",
+      "workspool_seconds": 0.12645504192914814,
+      "direct_seconds": 0.08359004196245223,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 2758,
+      "direct_tokens": 2321,
+      "target_title": "Overview of gun laws by nation",
+      "workspool_hits": 5,
+      "direct_hits": 5,
+      "index_complete": true,
+      "literal_corpus": {
+        "elapsed_seconds": 0.4870030420133844,
+        "calls": 8,
+        "scanned_bytes": 134217728,
+        "exact_citations": true,
+        "target_found": false,
+        "search_complete": false,
+        "stopped_after_hit": false,
+        "page_limit_reached": true,
+        "hit_count": 0
+      },
+      "literal_pinned": {
+        "elapsed_seconds": 0.0008052500197663903,
+        "calls": 1,
+        "scanned_bytes": 491299,
+        "exact_citations": true,
+        "target_found": true,
+        "search_complete": true,
+        "stopped_after_hit": false,
+        "page_limit_reached": false,
+        "hit_count": 1
+      }
+    },
+    {
+      "phase": "warm",
+      "query": "galarraga armando",
+      "workspool_seconds": 0.12551366596017033,
+      "direct_seconds": 0.08382058306597173,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 3299,
+      "direct_tokens": 2881,
+      "target_title": "Detroit Tigers",
+      "workspool_hits": 5,
+      "direct_hits": 5,
+      "index_complete": true,
+      "literal_corpus": {
+        "elapsed_seconds": 0.4883446670137346,
+        "calls": 8,
+        "scanned_bytes": 134217728,
+        "exact_citations": true,
+        "target_found": false,
+        "search_complete": false,
+        "stopped_after_hit": false,
+        "page_limit_reached": true,
+        "hit_count": 0
+      },
+      "literal_pinned": {
+        "elapsed_seconds": 0.0011089580366387963,
+        "calls": 1,
+        "scanned_bytes": 425794,
+        "exact_citations": true,
+        "target_found": true,
+        "search_complete": true,
+        "stopped_after_hit": false,
+        "page_limit_reached": false,
+        "hit_count": 1
+      }
+    },
+    {
+      "phase": "reopened",
+      "query": "agiary maneckji",
+      "workspool_seconds": 0.12668175005819649,
+      "direct_seconds": 0.08425183303188533,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 1383,
+      "direct_tokens": 1185,
+      "target_title": "India",
+      "workspool_hits": 2,
+      "direct_hits": 2,
+      "index_complete": true
+    },
+    {
+      "phase": "reopened",
+      "query": "tobgay tshering",
+      "workspool_seconds": 0.12980799993965775,
+      "direct_seconds": 0.08273987495340407,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 2388,
+      "direct_tokens": 2034,
+      "target_title": "Foreign relations of India",
+      "workspool_hits": 4,
+      "direct_hits": 4,
+      "index_complete": true
+    },
+    {
+      "phase": "reopened",
+      "query": "mcdade fallujah",
+      "workspool_seconds": 0.12800525000784546,
+      "direct_seconds": 0.08309766591992229,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 3299,
+      "direct_tokens": 2849,
+      "target_title": "Foreign relations of Iraq",
+      "workspool_hits": 5,
+      "direct_hits": 5,
+      "index_complete": true
+    },
+    {
+      "phase": "reopened",
+      "query": "revolvers shotguns",
+      "workspool_seconds": 0.12782504106871784,
+      "direct_seconds": 0.08229529100935906,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 2758,
+      "direct_tokens": 2321,
+      "target_title": "Overview of gun laws by nation",
+      "workspool_hits": 5,
+      "direct_hits": 5,
+      "index_complete": true
+    },
+    {
+      "phase": "reopened",
+      "query": "galarraga armando",
+      "workspool_seconds": 0.12516245793085545,
+      "direct_seconds": 0.08518929197452962,
+      "workspool_target_found": true,
+      "direct_target_found": true,
+      "exact_citations": true,
+      "workspool_tokens": 3299,
+      "direct_tokens": 2881,
+      "target_title": "Detroit Tigers",
+      "workspool_hits": 5,
+      "direct_hits": 5,
+      "index_complete": true
+    }
+  ],
+  "latency_summary": {
+    "warm": {
+      "workspool": {
+        "min_seconds": 0.12393779202830046,
+        "median_seconds": 0.12559433409478515,
+        "max_seconds": 0.12645504192914814
+      },
+      "direct": {
+        "min_seconds": 0.0809102919884026,
+        "median_seconds": 0.08359004196245223,
+        "max_seconds": 0.08382058306597173
+      }
+    },
+    "reopened": {
+      "workspool": {
+        "min_seconds": 0.12516245793085545,
+        "median_seconds": 0.12782504106871784,
+        "max_seconds": 0.12980799993965775
+      },
+      "direct": {
+        "min_seconds": 0.08229529100935906,
+        "median_seconds": 0.08309766591992229,
+        "max_seconds": 0.08518929197452962
+      }
+    }
+  },
+  "preparation_seconds": 37.189568042056635,
+  "peak_process_rss_bytes": 495583232,
+  "memory_measure": "Cumulative harness-process high-water RSS; not a per-call increment or process-tree sample.",
+  "direct_cold_coverage_complete": true,
+  "workspool_cold_coverage_complete": true,
+  "changed_source": {
+    "method": "Controlled replacement with another real corpus document, not an authentic new public revision.",
+    "workspool_seconds": 0.14160095795523375,
+    "workspool_indexed_versions": 1,
+    "direct_indexed_versions": 1,
+    "historical_citations_exact": true,
+    "historical_target_found": true
+  },
+  "task_context": {
+    "state": "complete",
+    "fresh_reset_tokens": 9004,
+    "reset_citations_exact": true,
+    "retained_delivery": "unchanged",
+    "retained_tokens": 178,
+    "budget_checks": [
+      {
+        "budget": 1000,
+        "status": "budget_error",
+        "error": "Brief budget cannot hold required run status and provenance; increase the budget"
+      },
+      {
+        "budget": 2000,
+        "status": "ok",
+        "tokens": 1983,
+        "brief_complete": false,
+        "citations": 2,
+        "omission_counts": {
+          "ranked_limit": 1,
+          "brief_budget": 12
+        }
+      }
+    ]
+  },
+  "bundle_probe": {
+    "derived_not_original_document": true,
+    "bytes": 463563847,
+    "sha256": "dd53b3195130c0f4dd1f1f22caf93931a7d0019ea6e5a90a091f3d2889c45b57",
+    "sources": 8192,
+    "default_index_complete": false,
+    "default_pending": 1,
+    "default_seconds": 0.002648458001203835,
+    "explicit_index_complete": false,
+    "explicit_seconds": 30.15542516601272,
+    "explicit_tokens": 90
+  },
+  "bundle_outcome": "Incomplete single-version build is retained as a limit finding, not counted as full-source index coverage. The explicit budget run still hit the build time limit.",
+  "source_hashes_for_recorded_run": {
+    "benchmarks/public_text_stress.py": "b09cff31b6b523face3bc91a8e865c0de1a50326f28fe11ae69acdc74ee441fe",
+    "src/agent_workbook/context_index.py": "25dd9b0fa3c1f05c7ae75ba23e66aea9b72b1614e260ff53aac32bb976d2a980",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/tasks.py": "10d2c25b053b64680679b5b2671b8f45efa9392fcff8b7e78c109c455103e466"
+  },
+  "source_hash_note": "Index/retrieval/tasks completion hashes match the table-run snapshots taken at the start of this concurrent batch. The text harness records its fingerprint at completion, not a formal start/end stability assertion.",
+  "run_guard": {
+    "exit_code": 0,
+    "termination_reason": null,
+    "wall_seconds": 161.24835220898967,
+    "peak_waited_child_rss_bytes": 495583232,
+    "rss_measurement": "RUSAGE_CHILDREN high-water statistic, not simultaneous tree RSS or an enforced RSS ceiling.",
+    "limits": {
+      "wall_seconds": 1200.0,
+      "per_file_bytes": 4294967296,
+      "output_bytes": 10737418240,
+      "free_disk_floor_bytes": 4294967296
+    }
+  },
+  "concurrency_note": "Final three suites launched together while an independent local semantic-model probe was also running. One fixed-order local trial; concurrent load and filesystem caches are not controlled.",
+  "target_recall": {
+    "workspool": 1.0,
+    "direct": 1.0
+  },
+  "success": true,
+  "success_scope": "Corpus cold/warm/reopened/update citation checks and task reset/receipt passed. Does not imply the derived single-file bundle completed or every requested context budget succeeded.",
+  "recorded_candidate_version": "0.7.0",
+  "later_change_not_remeasured": "After these runs, server automatic capture was fixed for failed MCP results with non-JSON error text. This failure-path-only change was separately regression-tested; these measured fingerprints and metrics were preserved. The runtime demo was rerun separately against that later revision."
+}

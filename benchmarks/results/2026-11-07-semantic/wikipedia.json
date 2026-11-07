@@ -1,0 +1,806 @@
+{
+  "format": 1,
+  "method": "Five natural-language queries manually authored after reading the named source articles and before retrieval. Gold is a target article, not answer correctness. Fixed first32 acquisition-manifest articles; source is uncleaned Wikipedia wikitext. Real local quantized BGE ONNX; offline worker blocks socket connects. No API calls, billing claims, rank tuning, or model changes after seeing results.",
+  "selection": {
+    "rule": "first N acquisition-manifest entries in original order",
+    "count": 32,
+    "available_articles": 8192,
+    "bytes": 2961912,
+    "selection_bias": "Early manifest/page-ID articles, mostly A titles; not a random or representative benchmark."
+  },
+  "documents": [
+    {
+      "title": "Anarchism",
+      "page_id": "12",
+      "revision_id": "1378247183",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378247183",
+      "sha256": "f4a6a3c1cdca2eb9987a763efdb0dcb12a17c103f1528684d8d9d1ef98803e28",
+      "bytes": 114294
+    },
+    {
+      "title": "Albedo",
+      "page_id": "39",
+      "revision_id": "1374562957",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1374562957",
+      "sha256": "03edb3eeb5b6a9f1164911d07b7e12331d69be8a5549fac1ee0218cecc6f57cf",
+      "bytes": 71840
+    },
+    {
+      "title": "A",
+      "page_id": "290",
+      "revision_id": "1378357571",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378357571",
+      "sha256": "62d980647d0f67735ae820e6d4b0a26c11e1a38da75584b244fe61627ffe0c0d",
+      "bytes": 35904
+    },
+    {
+      "title": "Alabama",
+      "page_id": "303",
+      "revision_id": "1378810569",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378810569",
+      "sha256": "4ce3af36a6ab088d94748106a2e4e5a471f4a3501783d570994929da1a6b2991",
+      "bytes": 223292
+    },
+    {
+      "title": "Achilles",
+      "page_id": "305",
+      "revision_id": "1377070946",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377070946",
+      "sha256": "d80765bf34e6d8dd81f610098aebb2d4469c0e34d21eaaeac0a244d3291fe33e",
+      "bytes": 93948
+    },
+    {
+      "title": "Abraham Lincoln",
+      "page_id": "307",
+      "revision_id": "1378752235",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378752235",
+      "sha256": "b7797c01f1cc4e4f8c76affcdfd66a38035c6ed097bd49bf2491f3fe943588ea",
+      "bytes": 159743
+    },
+    {
+      "title": "Aristotle",
+      "page_id": "308",
+      "revision_id": "1375412759",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1375412759",
+      "sha256": "d93b7b7508548c56aefcc271290019c99c84b06d54a7c9b42fded40f4f80254d",
+      "bytes": 158561
+    },
+    {
+      "title": "An American in Paris",
+      "page_id": "309",
+      "revision_id": "1378603770",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378603770",
+      "sha256": "c74632cd7daea6a66d9ed1daa508df12494b9b7bcc56b12cb49c169540a35ebb",
+      "bytes": 33064
+    },
+    {
+      "title": "Academy Award for Best Production Design",
+      "page_id": "316",
+      "revision_id": "1374921434",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1374921434",
+      "sha256": "08fde456e76d246e1520c06384ec70a6191ea0139e6747c7826cbdeaa0754978",
+      "bytes": 116001
+    },
+    {
+      "title": "Academy Awards",
+      "page_id": "324",
+      "revision_id": "1377789782",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377789782",
+      "sha256": "7ffb5b2075a57fa03a1cb8368888b4b652e8192750710d1ce55c98a45034dd9b",
+      "bytes": 218559
+    },
+    {
+      "title": "Actrius",
+      "page_id": "330",
+      "revision_id": "1329757948",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1329757948",
+      "sha256": "4ffc1aa94fc8545d763c20d18cfd3d5b623b74656150df07ae4544ac194e4191",
+      "bytes": 6622
+    },
+    {
+      "title": "Animalia (book)",
+      "page_id": "332",
+      "revision_id": "1348661002",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1348661002",
+      "sha256": "a454e6b3a41249889cef2ee4891b04999a7586048e9e965cb5f1e1c9d378b698",
+      "bytes": 6837
+    },
+    {
+      "title": "International Atomic Time",
+      "page_id": "334",
+      "revision_id": "1368713715",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1368713715",
+      "sha256": "51cc0a51de79e74e945a59778c88aadc8003bc6cc0d0e2bd7bd2976f4d8a06b7",
+      "bytes": 16378
+    },
+    {
+      "title": "Altruism",
+      "page_id": "336",
+      "revision_id": "1378292654",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378292654",
+      "sha256": "288c1a846c3d5c4bf8fc9d302a00f5346a74e8da7e22a100109403d2b924b7b3",
+      "bytes": 103383
+    },
+    {
+      "title": "Ayn Rand",
+      "page_id": "339",
+      "revision_id": "1377248846",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377248846",
+      "sha256": "b1dfef84ece6bb70d3e8bd2ce0d0f7d73aaa23a5a5aef3f58234bba9e8a591c2",
+      "bytes": 93165
+    },
+    {
+      "title": "Alain Connes",
+      "page_id": "340",
+      "revision_id": "1376907104",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1376907104",
+      "sha256": "4cdaa89f95e921079f010673c0324b3aae4d6c4b3c5c72ef22a56f20cdd8bb67",
+      "bytes": 20260
+    },
+    {
+      "title": "Allan Dwan",
+      "page_id": "344",
+      "revision_id": "1370674328",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1370674328",
+      "sha256": "4e59b7778e9d884954bf864665506aa00102116537c054c96d43fc1a0d045e1f",
+      "bytes": 14438
+    },
+    {
+      "title": "Algeria",
+      "page_id": "358",
+      "revision_id": "1378861235",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378861235",
+      "sha256": "ffac0c145ed0c76b434aaa05f58f9f880092b9d466845b7bea5f907677dfb819",
+      "bytes": 207456
+    },
+    {
+      "title": "List of Atlas Shrugged characters",
+      "page_id": "359",
+      "revision_id": "1351222476",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1351222476",
+      "sha256": "b68d73f8cda1e860b1397c3e24d61e3b9b82a70384e3de1c1621fb9aeeacc675",
+      "bytes": 33505
+    },
+    {
+      "title": "Anthropology",
+      "page_id": "569",
+      "revision_id": "1376415751",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1376415751",
+      "sha256": "9df5e0731a48f93777619675aaec3bffb47df96e9f9f6fb65c0569451738861e",
+      "bytes": 109173
+    },
+    {
+      "title": "Agricultural science",
+      "page_id": "572",
+      "revision_id": "1351186760",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1351186760",
+      "sha256": "5b9b643d93a5d41ff16d23b6c1fa9aeb98a8e35c10aa95028f1b2b9ece893360",
+      "bytes": 16170
+    },
+    {
+      "title": "Alchemy",
+      "page_id": "573",
+      "revision_id": "1377992715",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377992715",
+      "sha256": "92f8b60dc6390106e49e585de87a439d6f9447667af80e02580ca73af75894bc",
+      "bytes": 124687
+    },
+    {
+      "title": "Alien",
+      "page_id": "579",
+      "revision_id": "1376511346",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1376511346",
+      "sha256": "3e6e017923416b71e97b3debb46925ec024975f5dce1ebf8c75b231272bb67be",
+      "bytes": 8317
+    },
+    {
+      "title": "Astronomer",
+      "page_id": "580",
+      "revision_id": "1372674409",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1372674409",
+      "sha256": "6e8bb07b61ade8c0dd24c31022b95e6addbaa38fe2daa1e54d67db65ae054f72",
+      "bytes": 12002
+    },
+    {
+      "title": "ASCII",
+      "page_id": "586",
+      "revision_id": "1378626371",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378626371",
+      "sha256": "83f96a678c654a03dfcdeb79adcf83d911f7284fd6edcb00b737e87fd4fa1d7f",
+      "bytes": 111383
+    },
+    {
+      "title": "Austin",
+      "page_id": "590",
+      "revision_id": "1377393176",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377393176",
+      "sha256": "fb2de743b389d04bbedb96dfcf8cbd92511081039e527fd9ad898592665232df",
+      "bytes": 3504
+    },
+    {
+      "title": "Animation",
+      "page_id": "593",
+      "revision_id": "1378258594",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1378258594",
+      "sha256": "e3d90cdd0c5362a9d2db1e82c65e1f803792171e3780aa57e11c655f9cf2742a",
+      "bytes": 95433
+    },
+    {
+      "title": "Apollo",
+      "page_id": "594",
+      "revision_id": "1374528896",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1374528896",
+      "sha256": "42e9e4e57d932e34e2e65de5f58f578677fd64d16f2e83235290057d3fcb4ab8",
+      "bytes": 220218
+    },
+    {
+      "title": "Andre Agassi",
+      "page_id": "595",
+      "revision_id": "1374548844",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1374548844",
+      "sha256": "c3b98f05f9ea5d7925184992506af0af848d9601cb156ae6e941cd030afa66d7",
+      "bytes": 174714
+    },
+    {
+      "title": "Austroasiatic languages",
+      "page_id": "597",
+      "revision_id": "1377862347",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377862347",
+      "sha256": "b74e040977a672373aecddf7d6d318e9ac545e5244551f00e6aa60a0deaf9b79",
+      "bytes": 76966
+    },
+    {
+      "title": "Afroasiatic languages",
+      "page_id": "599",
+      "revision_id": "1377834554",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377834554",
+      "sha256": "d45b2815f534a6cd58bc8bb26ff71f2cbec31d2ea48ba2d3fec8f5104dcbd809",
+      "bytes": 115553
+    },
+    {
+      "title": "Andorra",
+      "page_id": "600",
+      "revision_id": "1377639044",
+      "url": "https://en.wikipedia.org/w/index.php?oldid=1377639044",
+      "sha256": "86ef610d1897688f0664b7d4f59f952b420f07fba49d5fe2c5c79fb2a138371b",
+      "bytes": 166542
+    }
+  ],
+  "model": {
+    "model": "BAAI/bge-small-en-v1.5",
+    "dimension": 384,
+    "manifest_sha256": "689e49ed3d5550db29f2ca5787a9cd71f0dfe8969a463be39d2933b6a04d7361",
+    "key": "b4021b655a65efeacc49f462ab315978646ae420a1c14538dcd354261d008375",
+    "engines": {
+      "fastembed": "0.9.1",
+      "onnxruntime": "1.31.1",
+      "tokenizers": "0.23.3",
+      "numpy": "2.5.4"
+    }
+  },
+  "index_build": {
+    "calls": [
+      {
+        "number": 1,
+        "elapsed_seconds": 9.834067791933194,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 128,
+          "pending_chunks": 1814,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 2,
+        "elapsed_seconds": 9.942899042041972,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 256,
+          "pending_chunks": 1686,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 3,
+        "elapsed_seconds": 10.05642966600135,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 384,
+          "pending_chunks": 1558,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 4,
+        "elapsed_seconds": 9.875756499939598,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 512,
+          "pending_chunks": 1430,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 5,
+        "elapsed_seconds": 9.926735333981924,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 640,
+          "pending_chunks": 1302,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 6,
+        "elapsed_seconds": 9.880196999991313,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 768,
+          "pending_chunks": 1174,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 7,
+        "elapsed_seconds": 9.874828292056918,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 896,
+          "pending_chunks": 1046,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 8,
+        "elapsed_seconds": 9.833827374968678,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1024,
+          "pending_chunks": 918,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 9,
+        "elapsed_seconds": 9.863406083080918,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1152,
+          "pending_chunks": 790,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 10,
+        "elapsed_seconds": 9.930086332955398,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1280,
+          "pending_chunks": 662,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 11,
+        "elapsed_seconds": 9.90212787501514,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1408,
+          "pending_chunks": 534,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 12,
+        "elapsed_seconds": 9.93695404205937,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1536,
+          "pending_chunks": 406,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 13,
+        "elapsed_seconds": 9.94484295800794,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1664,
+          "pending_chunks": 278,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 14,
+        "elapsed_seconds": 9.868948000017554,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1792,
+          "pending_chunks": 150,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 15,
+        "elapsed_seconds": 9.825733792036772,
+        "mode": "hybrid",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1920,
+          "pending_chunks": 22,
+          "built_unique_chunks": 128,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      },
+      {
+        "number": 16,
+        "elapsed_seconds": 2.0250457919901237,
+        "mode": "hybrid",
+        "dense_complete": true,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 1942,
+          "pending_chunks": 0,
+          "built_unique_chunks": 22,
+          "scan_complete": true
+        },
+        "fallback_reason": null
+      }
+    ],
+    "max_calls": 20,
+    "max_new_unique_chunks_per_call": 128,
+    "max_embedding_seconds_per_call": 60,
+    "complete": true
+  },
+  "summary": {
+    "lexical": {
+      "queries": 5,
+      "article_recall_at_1": 1.0,
+      "article_recall_at_5": 1.0,
+      "exact_citations_checked": 25
+    },
+    "hybrid": {
+      "queries": 5,
+      "article_recall_at_1": 1.0,
+      "article_recall_at_5": 1.0,
+      "exact_citations_checked": 25
+    }
+  },
+  "queries": [
+    {
+      "query": "Why do bright snowy landscapes send much more incoming sunshine back into the sky than dark road surfaces?",
+      "target": "Albedo",
+      "lexical": {
+        "target_rank": 1,
+        "returned_titles": [
+          "Albedo",
+          "Albedo",
+          "Apollo",
+          "Anthropology",
+          "Aristotle"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.00506158301141113,
+        "mode": "lexical",
+        "index_complete": true,
+        "dense_complete": null
+      },
+      "hybrid": {
+        "target_rank": 1,
+        "returned_titles": [
+          "Albedo",
+          "Albedo",
+          "Albedo",
+          "Albedo",
+          "Albedo"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.4067699160659686,
+        "mode": "hybrid",
+        "index_complete": true,
+        "dense_complete": true
+      }
+    },
+    {
+      "query": "How do laboratories combine many highly precise clocks to maintain a continuous global time reference?",
+      "target": "International Atomic Time",
+      "lexical": {
+        "target_rank": 1,
+        "returned_titles": [
+          "International Atomic Time",
+          "International Atomic Time",
+          "International Atomic Time",
+          "International Atomic Time",
+          "Academy Awards"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.004583959002047777,
+        "mode": "lexical",
+        "index_complete": true,
+        "dense_complete": null
+      },
+      "hybrid": {
+        "target_rank": 1,
+        "returned_titles": [
+          "International Atomic Time",
+          "International Atomic Time",
+          "International Atomic Time",
+          "International Atomic Time",
+          "International Atomic Time"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.4006483330158517,
+        "mode": "hybrid",
+        "index_complete": true,
+        "dense_complete": true
+      }
+    },
+    {
+      "query": "What is the idea of benefiting someone else despite a personal sacrifice and without expecting repayment?",
+      "target": "Altruism",
+      "lexical": {
+        "target_rank": 1,
+        "returned_titles": [
+          "Altruism",
+          "Academy Awards",
+          "Achilles",
+          "Anarchism",
+          "Altruism"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.005551166017539799,
+        "mode": "lexical",
+        "index_complete": true,
+        "dense_complete": null
+      },
+      "hybrid": {
+        "target_rank": 1,
+        "returned_titles": [
+          "Altruism",
+          "Altruism",
+          "Altruism",
+          "Altruism",
+          "Altruism"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.40247395797632635,
+        "mode": "hybrid",
+        "index_complete": true,
+        "dense_complete": true
+      }
+    },
+    {
+      "query": "Which computer text convention fits English letters, punctuation and nonprinting instructions into seven binary digits?",
+      "target": "ASCII",
+      "lexical": {
+        "target_rank": 1,
+        "returned_titles": [
+          "ASCII",
+          "ASCII",
+          "ASCII",
+          "ASCII",
+          "ASCII"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.00470029201824218,
+        "mode": "lexical",
+        "index_complete": true,
+        "dense_complete": null
+      },
+      "hybrid": {
+        "target_rank": 1,
+        "returned_titles": [
+          "ASCII",
+          "ASCII",
+          "ASCII",
+          "ASCII",
+          "ASCII"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.3996123749529943,
+        "mode": "hybrid",
+        "index_complete": true,
+        "dense_complete": true
+      }
+    },
+    {
+      "query": "What Gershwin orchestral work uses cab horns to evoke a tourist's walk through the French capital?",
+      "target": "An American in Paris",
+      "lexical": {
+        "target_rank": 1,
+        "returned_titles": [
+          "An American in Paris",
+          "An American in Paris",
+          "An American in Paris",
+          "An American in Paris",
+          "An American in Paris"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.005429167067632079,
+        "mode": "lexical",
+        "index_complete": true,
+        "dense_complete": null
+      },
+      "hybrid": {
+        "target_rank": 1,
+        "returned_titles": [
+          "An American in Paris",
+          "An American in Paris",
+          "An American in Paris",
+          "An American in Paris",
+          "An American in Paris"
+        ],
+        "exact_citations": 5,
+        "elapsed_seconds": 0.4031905420124531,
+        "mode": "hybrid",
+        "index_complete": true,
+        "dense_complete": true
+      }
+    }
+  ],
+  "mcp": {
+    "source_hashes": {
+      "benchmarks/semantic_probe.py": "39663ebae2c5d45209e1fd04f230502bbc4d85a624f922a13ab0202f4d18d111",
+      "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+      "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+      "src/agent_workbook/budget.py": "a754cae2b8d50c1e3347f9fca3d740276bb4103e3ca82c5142d97b9bfa528629",
+      "src/agent_workbook/cli.py": "642df7b8347a618b4d4eeb083e47fe834e669cd9c899b9f3d635b5ff20e982db",
+      "src/agent_workbook/context_index.py": "25dd9b0fa3c1f05c7ae75ba23e66aea9b72b1614e260ff53aac32bb976d2a980",
+      "src/agent_workbook/continuity.py": "4e22dcad11b20d04c6dea718cc095fa2bcd59799b17a54fccba09d4cb711b9ae",
+      "src/agent_workbook/coordination.py": "8bad5381c6dcf1bec5936722bb84b449fc2bb2c8b39a7f26295432962fc6f9c0",
+      "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+      "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+      "src/agent_workbook/materialize.py": "7b11d4174d4b7bfd81eb36a5134c2d42d5e961f6482ad8a02ef89927d1617f8c",
+      "src/agent_workbook/query.py": "c2f3778419cc2369421e0bd9a0fcc28882179879c39a9d2d74f0b8e227185ce2",
+      "src/agent_workbook/query_cache.py": "14466b8ab77f4097a0efbead7d305805728e106898406f000597fb58d7a455e3",
+      "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+      "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+      "src/agent_workbook/semantic.py": "431e1b4169a057fa3a961bdf54e979ae07142ba45560dcd65714dfe0e6464349",
+      "src/agent_workbook/server.py": "2decf8f05bc63ab9e0854d034d7fd0c2da90e246696386fe0c182002588b0fbc",
+      "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+      "src/agent_workbook/store.py": "26e1841e33f8bc4e28019f33ac8addf0e35771e512ceafac5378749759834b5a",
+      "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0",
+      "src/agent_workbook/tasks.py": "10d2c25b053b64680679b5b2671b8f45efa9392fcff8b7e78c109c455103e466"
+    },
+    "source_files_unchanged": true,
+    "scope": "Two fresh MCP processes: budgeted recall and initialize-only configured-goal restoration. Reuses the already built index; does not rerun index-build or five-question timings.",
+    "setup_tokens": {
+      "cl100k_base": 438,
+      "o200k_base": 443
+    },
+    "recall": {
+      "query": "Which computer text convention fits English letters, punctuation and nonprinting instructions into seven binary digits?",
+      "target": "ASCII",
+      "result_tokens": {
+        "cl100k_base": 894,
+        "o200k_base": 897
+      },
+      "max_tokens": 1200,
+      "exact_citations": 1,
+      "elapsed_seconds_including_server_start": 0.6906911670230329,
+      "target_rank": 1,
+      "returned_titles": [
+        "ASCII"
+      ]
+    },
+    "startup": {
+      "configured_goal": "Which computer text convention fits English letters, punctuation and nonprinting instructions into seven binary digits?",
+      "target": "ASCII",
+      "agent_tool_calls": 0,
+      "restored_context_tokens_including_prefix": {
+        "cl100k_base": 864,
+        "o200k_base": 868
+      },
+      "max_tokens": 1200,
+      "exact_citations": 1,
+      "elapsed_seconds_including_server_start": 0.6867487920681015,
+      "target_rank": 1,
+      "returned_titles": [
+        "ASCII"
+      ]
+    }
+  },
+  "source_hashes": {
+    "benchmarks/semantic_probe.py": "8403fcf26677b23175238d51970216c4ef04a623fd03257f2212f0be2bdc0e5f",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "a754cae2b8d50c1e3347f9fca3d740276bb4103e3ca82c5142d97b9bfa528629",
+    "src/agent_workbook/cli.py": "642df7b8347a618b4d4eeb083e47fe834e669cd9c899b9f3d635b5ff20e982db",
+    "src/agent_workbook/context_index.py": "25dd9b0fa3c1f05c7ae75ba23e66aea9b72b1614e260ff53aac32bb976d2a980",
+    "src/agent_workbook/continuity.py": "4e22dcad11b20d04c6dea718cc095fa2bcd59799b17a54fccba09d4cb711b9ae",
+    "src/agent_workbook/coordination.py": "8bad5381c6dcf1bec5936722bb84b449fc2bb2c8b39a7f26295432962fc6f9c0",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/materialize.py": "7b11d4174d4b7bfd81eb36a5134c2d42d5e961f6482ad8a02ef89927d1617f8c",
+    "src/agent_workbook/query.py": "c2f3778419cc2369421e0bd9a0fcc28882179879c39a9d2d74f0b8e227185ce2",
+    "src/agent_workbook/query_cache.py": "14466b8ab77f4097a0efbead7d305805728e106898406f000597fb58d7a455e3",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/semantic.py": "431e1b4169a057fa3a961bdf54e979ae07142ba45560dcd65714dfe0e6464349",
+    "src/agent_workbook/server.py": "6da2e6318ab9456a87bf195db3dd20cf902d456a21980b85b7a751a069647dc6",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "26e1841e33f8bc4e28019f33ac8addf0e35771e512ceafac5378749759834b5a",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0",
+    "src/agent_workbook/tasks.py": "10d2c25b053b64680679b5b2671b8f45efa9392fcff8b7e78c109c455103e466"
+  },
+  "source_files_unchanged": true,
+  "model_files_unchanged": true,
+  "corpus_files_unchanged": true,
+  "validation_passed": true
+}

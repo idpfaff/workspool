@@ -1,0 +1,55 @@
+{
+  "method": "Diagnostic only:20 synthetic controlled passages, manually chosen targets, genuine local quantized BGE inference with network-disabled workers. Not a representative retrieval benchmark.",
+  "model": {
+    "model": "BAAI/bge-small-en-v1.5",
+    "dimension": 384,
+    "manifest_sha256": "689e49ed3d5550db29f2ca5787a9cd71f0dfe8969a463be39d2933b6a04d7361",
+    "key": "b4021b655a65efeacc49f462ab315978646ae420a1c14538dcd354261d008375",
+    "engines": {
+      "fastembed": "0.9.1",
+      "onnxruntime": "1.31.1",
+      "tokenizers": "0.23.3",
+      "numpy": "2.5.4"
+    }
+  },
+  "queries": [
+    {
+      "query": "retirement eligibility",
+      "expected_target": "retirement",
+      "lexical_hit_names": [],
+      "elapsed_seconds": 0.3593949159840122,
+      "observed_rank": 1,
+      "exact_citations": true
+    },
+    {
+      "query": "car repair",
+      "expected_target": "automobile",
+      "lexical_hit_names": [],
+      "elapsed_seconds": 0.28183483297470957,
+      "observed_rank": 1,
+      "exact_citations": true
+    },
+    {
+      "query": "restore account access",
+      "expected_target": "password",
+      "lexical_hit_names": [],
+      "elapsed_seconds": 0.2932174170855433,
+      "observed_rank": 1,
+      "exact_citations": true
+    },
+    {
+      "query": "profits decline",
+      "expected_target": "profits",
+      "lexical_hit_names": [],
+      "elapsed_seconds": 0.30270854104310274,
+      "observed_rank": 1,
+      "exact_citations": true
+    }
+  ],
+  "stored_vectors": 20,
+  "warm_reopened_seconds": 0.28260729101020843,
+  "warm_new_vectors": 0,
+  "model_files_unchanged": true,
+  "semantic_source_sha256": "431e1b4169a057fa3a961bdf54e979ae07142ba45560dcd65714dfe0e6464349",
+  "success": true
+}

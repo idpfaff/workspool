@@ -105,6 +105,9 @@ class Workbook:
         with self.connect() as db:
             db.execute("PRAGMA journal_mode = WAL")
             db.executescript(SCHEMA)
+        from .coordination import initialize
+
+        initialize(self)
 
     @contextmanager
     def connect(self):
@@ -249,6 +252,10 @@ class Workbook:
         checkpoint: dict | None = None,
         recipe: dict | None = None,
     ) -> dict:
+        from .coordination import append_event, authorize, current_principal
+
+        principal = current_principal()
+        authorize(principal, "write")
         name = name.strip()
         if not name or len(name) > 120 or name.startswith("wb_"):
             raise ValueError("Name must be 1–120 characters and cannot start with wb_")
@@ -328,6 +335,20 @@ class Workbook:
                     db.execute(
                         "INSERT INTO artifact_search VALUES (?, ?, ?, ?)",
                         (artifact_id, name, summary + " " + source, text),
+                    )
+                    append_event(
+                        db,
+                        principal,
+                        "artifact.created",
+                        artifact_id,
+                        {
+                            "artifact_id": artifact_id,
+                            "name": name,
+                            "version": next_version,
+                            "sha256": content_hash,
+                            "size_bytes": size,
+                            "dependencies": ids,
+                        },
                     )
                     return self._summary(db, self._get(db, artifact_id))
             finally:

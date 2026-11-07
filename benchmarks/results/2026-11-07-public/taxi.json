@@ -1,0 +1,826 @@
+{
+  "format": 1,
+  "dataset": "taxi",
+  "recorded_on": "2026-11-07",
+  "recorded_private_result_sha256": "d5ccacaa16fdd5df8099b0076d338c10371d131f6586174ad6c6b7ef33ee2849",
+  "config": {
+    "name": "public-taxi",
+    "objective": "Count trips and recorded passengers by pickup zone, rank zones by trip count, retain an independent January payment summary.",
+    "sources": {
+      "trips": {
+        "files": [
+          "taxi/yellow_tripdata_2025-01.parquet",
+          "taxi/yellow_tripdata_2025-02.parquet",
+          "taxi/yellow_tripdata_2025-03.parquet",
+          "taxi/yellow_tripdata_2025-04.parquet",
+          "taxi/yellow_tripdata_2025-05.parquet",
+          "taxi/yellow_tripdata_2025-06.parquet",
+          "taxi/yellow_tripdata_2025-07.parquet",
+          "taxi/yellow_tripdata_2025-08.parquet",
+          "taxi/yellow_tripdata_2025-09.parquet",
+          "taxi/yellow_tripdata_2025-10.parquet",
+          "taxi/yellow_tripdata_2025-11.parquet",
+          "taxi/yellow_tripdata_2025-12.parquet"
+        ],
+        "updated_files": [
+          "taxi/yellow_tripdata_2025-01.parquet",
+          "taxi/yellow_tripdata_2025-02.parquet",
+          "taxi/yellow_tripdata_2025-03.parquet",
+          "taxi/yellow_tripdata_2025-04.parquet",
+          "taxi/yellow_tripdata_2025-05.parquet",
+          "taxi/yellow_tripdata_2025-06.parquet",
+          "taxi/yellow_tripdata_2025-07.parquet",
+          "taxi/yellow_tripdata_2025-08.parquet",
+          "taxi/yellow_tripdata_2025-09.parquet",
+          "taxi/yellow_tripdata_2025-10.parquet",
+          "taxi/yellow_tripdata_2025-11.parquet"
+        ],
+        "columns": [
+          "PULocationID",
+          "payment_type",
+          "passenger_count"
+        ],
+        "types": {
+          "PULocationID": "int64",
+          "payment_type": "int64",
+          "passenger_count": "int64"
+        }
+      },
+      "january": {
+        "files": [
+          "taxi/yellow_tripdata_2025-01.parquet"
+        ],
+        "columns": [
+          "PULocationID",
+          "payment_type",
+          "passenger_count"
+        ],
+        "types": {
+          "PULocationID": "int64",
+          "payment_type": "int64",
+          "passenger_count": "int64"
+        }
+      }
+    },
+    "steps": [
+      {
+        "name": "zones",
+        "inputs": [
+          "trips"
+        ],
+        "sql": "SELECT PULocationID, count(*) AS trips, count(passenger_count) AS passenger_records, sum(passenger_count) AS passengers, min(passenger_count) AS min_passengers, max(passenger_count) AS max_passengers FROM input1 GROUP BY PULocationID ORDER BY ALL",
+        "oracle": {
+          "source": "trips",
+          "group_by": [
+            "PULocationID"
+          ],
+          "aggregates": [
+            {
+              "name": "trips",
+              "op": "count_rows"
+            },
+            {
+              "name": "passenger_records",
+              "op": "count",
+              "column": "passenger_count"
+            },
+            {
+              "name": "passengers",
+              "op": "sum",
+              "column": "passenger_count"
+            },
+            {
+              "name": "min_passengers",
+              "op": "min",
+              "column": "passenger_count"
+            },
+            {
+              "name": "max_passengers",
+              "op": "max",
+              "column": "passenger_count"
+            }
+          ],
+          "sort": [
+            {
+              "column": "PULocationID"
+            }
+          ]
+        }
+      },
+      {
+        "name": "top_zones",
+        "inputs": [
+          "zones"
+        ],
+        "sql": "SELECT PULocationID, trips, passenger_records, passengers, min_passengers, max_passengers FROM input1 ORDER BY trips DESC, PULocationID, passenger_records, passengers, min_passengers, max_passengers LIMIT 5",
+        "oracle": {
+          "source": "zones",
+          "columns": [
+            "PULocationID",
+            "trips",
+            "passenger_records",
+            "passengers",
+            "min_passengers",
+            "max_passengers"
+          ],
+          "sort": [
+            {
+              "column": "trips",
+              "direction": "descending"
+            },
+            {
+              "column": "PULocationID"
+            },
+            {
+              "column": "passenger_records"
+            },
+            {
+              "column": "passengers"
+            },
+            {
+              "column": "min_passengers"
+            },
+            {
+              "column": "max_passengers"
+            }
+          ],
+          "limit": 5
+        }
+      },
+      {
+        "name": "january_payments",
+        "inputs": [
+          "january"
+        ],
+        "sql": "SELECT payment_type, count(*) AS trips, count(passenger_count) AS passenger_records, sum(passenger_count) AS passengers FROM input1 GROUP BY payment_type ORDER BY ALL",
+        "oracle": {
+          "source": "january",
+          "group_by": [
+            "payment_type"
+          ],
+          "aggregates": [
+            {
+              "name": "trips",
+              "op": "count_rows"
+            },
+            {
+              "name": "passenger_records",
+              "op": "count",
+              "column": "passenger_count"
+            },
+            {
+              "name": "passengers",
+              "op": "sum",
+              "column": "passenger_count"
+            }
+          ],
+          "sort": [
+            {
+              "column": "payment_type"
+            }
+          ]
+        }
+      }
+    ],
+    "provenance": {
+      "source": "NYC TLC yellow taxi2025",
+      "official_landing_page": "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page",
+      "selection": "All 12 monthly files; updated source excludes December. January is an independent fixed branch.",
+      "source_urls": [
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-01.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-02.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-03.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-04.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-05.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-06.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-07.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-08.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-09.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-10.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-11.parquet",
+        "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-12.parquet"
+      ],
+      "normalization": "Lossless widening of integer fields to int64; nulls, order and duplicates retained. No monetary float fields used."
+    }
+  },
+  "config_path_basis": "Write this config directly inside the acquisition output directory; file paths are relative to that directory.",
+  "prepared": {
+    "trips": {
+      "initial": {
+        "sha256": "8a8b9af30a7137b3de63d76a69d5431e9bd71aef98031ad2d8b1fff119cde30f",
+        "bytes": 49159958,
+        "rows": 48722602,
+        "largest_batch_rows": 65536,
+        "schema": "PULocationID: int64\npayment_type: int64\npassenger_count: int64",
+        "preparation_seconds": 1.3710719170048833,
+        "source_files": [
+          "taxi/yellow_tripdata_2025-01.parquet",
+          "taxi/yellow_tripdata_2025-02.parquet",
+          "taxi/yellow_tripdata_2025-03.parquet",
+          "taxi/yellow_tripdata_2025-04.parquet",
+          "taxi/yellow_tripdata_2025-05.parquet",
+          "taxi/yellow_tripdata_2025-06.parquet",
+          "taxi/yellow_tripdata_2025-07.parquet",
+          "taxi/yellow_tripdata_2025-08.parquet",
+          "taxi/yellow_tripdata_2025-09.parquet",
+          "taxi/yellow_tripdata_2025-10.parquet",
+          "taxi/yellow_tripdata_2025-11.parquet",
+          "taxi/yellow_tripdata_2025-12.parquet"
+        ]
+      },
+      "updated": {
+        "sha256": "8ea409dc00fe100175bf31ec270b41eb86962218bcc83eb695bf66bb6981cfa6",
+        "bytes": 44844809,
+        "rows": 44417596,
+        "largest_batch_rows": 65536,
+        "schema": "PULocationID: int64\npayment_type: int64\npassenger_count: int64",
+        "preparation_seconds": 1.1932679589372128,
+        "source_files": [
+          "taxi/yellow_tripdata_2025-01.parquet",
+          "taxi/yellow_tripdata_2025-02.parquet",
+          "taxi/yellow_tripdata_2025-03.parquet",
+          "taxi/yellow_tripdata_2025-04.parquet",
+          "taxi/yellow_tripdata_2025-05.parquet",
+          "taxi/yellow_tripdata_2025-06.parquet",
+          "taxi/yellow_tripdata_2025-07.parquet",
+          "taxi/yellow_tripdata_2025-08.parquet",
+          "taxi/yellow_tripdata_2025-09.parquet",
+          "taxi/yellow_tripdata_2025-10.parquet",
+          "taxi/yellow_tripdata_2025-11.parquet"
+        ]
+      }
+    },
+    "january": {
+      "initial": {
+        "sha256": "915cee298d45ea1ab401ee08c5678626f11ac238ea2cebb36baf7b648998629c",
+        "bytes": 3537556,
+        "rows": 3475226,
+        "largest_batch_rows": 65536,
+        "schema": "PULocationID: int64\npayment_type: int64\npassenger_count: int64",
+        "preparation_seconds": 0.09746791690122336,
+        "source_files": [
+          "taxi/yellow_tripdata_2025-01.parquet"
+        ]
+      }
+    }
+  },
+  "raw_source_hashes": {
+    "taxi/yellow_tripdata_2025-01.parquet": {
+      "sha256": "9af277e4c0d3f9deb30644da822981e1e7df6af58313170fd3aa8a474485488a",
+      "bytes": 59158238
+    },
+    "taxi/yellow_tripdata_2025-02.parquet": {
+      "sha256": "037cba555a73663f3a51a2c27816e40e3feb364769942bdf122b9da31e377bd3",
+      "bytes": 60343086
+    },
+    "taxi/yellow_tripdata_2025-03.parquet": {
+      "sha256": "20c4b77cce457b7cfdae77c5069ca7dc91c167f876a41467f4502ab69487a186",
+      "bytes": 69964745
+    },
+    "taxi/yellow_tripdata_2025-04.parquet": {
+      "sha256": "6f98938de9380a3f85600533816f0dc0e6d9b5b210e485d623952bac599bbe28",
+      "bytes": 67352824
+    },
+    "taxi/yellow_tripdata_2025-05.parquet": {
+      "sha256": "7ef46bcd0fceee7f8c0bb38a532be05bceefabb512d4bb0b32a7727dd862b15c",
+      "bytes": 77837865
+    },
+    "taxi/yellow_tripdata_2025-06.parquet": {
+      "sha256": "1bea7f5b09c744414451fa7fef09fbc5a393ffb1621c859be6ba0df23a14e1b6",
+      "bytes": 73542954
+    },
+    "taxi/yellow_tripdata_2025-07.parquet": {
+      "sha256": "1efa6a0458dc60341f7f81dcbb5015af731f42d1a109f4e0d594dd46970fd4ef",
+      "bytes": 66943728
+    },
+    "taxi/yellow_tripdata_2025-08.parquet": {
+      "sha256": "b982ace703e3564d92e94edae5ec93515f4f1fb07a5b95e7404c32464c1a6a89",
+      "bytes": 62293743
+    },
+    "taxi/yellow_tripdata_2025-09.parquet": {
+      "sha256": "cd39b9901f01d1fd752d45cbaec91ee5f68c4dddf9e261e938c1dbab404644c7",
+      "bytes": 72432945
+    },
+    "taxi/yellow_tripdata_2025-10.parquet": {
+      "sha256": "e1f63caf331bc6230d9c6f757cb88e55fdc2bddde185fb414d2c947abdc773c3",
+      "bytes": 75267589
+    },
+    "taxi/yellow_tripdata_2025-11.parquet": {
+      "sha256": "2cf2f3127f96d4d5dea30f8afe05119cf8e4ba57bd9e60b789d3f296fc8459ab",
+      "bytes": 71134255
+    },
+    "taxi/yellow_tripdata_2025-12.parquet": {
+      "sha256": "eaba7ff61ebb6453fc6f673fda43d621380307f869b768b124992e8486c785e1",
+      "bytes": 73701327
+    }
+  },
+  "source_hashes_for_recorded_run": {
+    "benchmarks/public_table_stress.py": "743ef255207c4eea377d7539e347eaa0f3e78ac4c922f66cd6efe559db12e907",
+    "benchmarks/task_stress.py": "52f531f74a3718a9842bbefaacac1461a82ece8b8329f062f496e019769a4ea0",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "a754cae2b8d50c1e3347f9fca3d740276bb4103e3ca82c5142d97b9bfa528629",
+    "src/agent_workbook/cli.py": "642df7b8347a618b4d4eeb083e47fe834e669cd9c899b9f3d635b5ff20e982db",
+    "src/agent_workbook/context_index.py": "25dd9b0fa3c1f05c7ae75ba23e66aea9b72b1614e260ff53aac32bb976d2a980",
+    "src/agent_workbook/continuity.py": "4e22dcad11b20d04c6dea718cc095fa2bcd59799b17a54fccba09d4cb711b9ae",
+    "src/agent_workbook/coordination.py": "8bad5381c6dcf1bec5936722bb84b449fc2bb2c8b39a7f26295432962fc6f9c0",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/materialize.py": "7b11d4174d4b7bfd81eb36a5134c2d42d5e961f6482ad8a02ef89927d1617f8c",
+    "src/agent_workbook/query.py": "c2f3778419cc2369421e0bd9a0fcc28882179879c39a9d2d74f0b8e227185ce2",
+    "src/agent_workbook/query_cache.py": "14466b8ab77f4097a0efbead7d305805728e106898406f000597fb58d7a455e3",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/semantic.py": "431e1b4169a057fa3a961bdf54e979ae07142ba45560dcd65714dfe0e6464349",
+    "src/agent_workbook/server.py": "6da2e6318ab9456a87bf195db3dd20cf902d456a21980b85b7a751a069647dc6",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "26e1841e33f8bc4e28019f33ac8addf0e35771e512ceafac5378749759834b5a",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0",
+    "src/agent_workbook/tasks.py": "10d2c25b053b64680679b5b2671b8f45efa9392fcff8b7e78c109c455103e466"
+  },
+  "source_files_unchanged": true,
+  "raw_sources_unchanged": true,
+  "imports": [
+    {
+      "source": "trips",
+      "phase": "initial",
+      "elapsed_seconds": 0.02425654197577387,
+      "size_bytes": 49159958
+    },
+    {
+      "source": "january",
+      "phase": "initial",
+      "elapsed_seconds": 0.0031951250275596976,
+      "size_bytes": 3537556
+    },
+    {
+      "source": "trips",
+      "phase": "updated",
+      "elapsed_seconds": 0.02135000005364418,
+      "size_bytes": 44844809
+    }
+  ],
+  "definition_seconds": 0.003380084061063826,
+  "oracle_seconds": 2.6552573749795556,
+  "exact_result_row_counts": {
+    "initial": {
+      "zones": 262,
+      "top_zones": 5,
+      "january_payments": 6
+    },
+    "updated": {
+      "zones": 262,
+      "top_zones": 5,
+      "january_payments": 6
+    }
+  },
+  "scenarios": [
+    {
+      "name": "cold",
+      "direct": {
+        "elapsed_seconds": 0.2581175419036299,
+        "compute_executions": 3,
+        "success": true
+      },
+      "workspool": {
+        "elapsed_seconds": 0.6281289999606088,
+        "compute_executions": 3,
+        "state": "complete",
+        "current": true,
+        "brief_complete": false,
+        "full_results_and_provenance_exact": true,
+        "failures": [],
+        "steps": [
+          {
+            "name": "zones",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "computed"
+          },
+          {
+            "name": "january_payments",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "computed"
+          },
+          {
+            "name": "top_zones",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "computed"
+          }
+        ],
+        "omission_counts": {
+          "rows_retained_in_artifact": 2
+        }
+      },
+      "validation_seconds": 0.0026250419905409217,
+      "native_context_json_tokens": {
+        "cl100k_base": 1145,
+        "o200k_base": 1164
+      }
+    },
+    {
+      "name": "warm",
+      "direct": {
+        "elapsed_seconds": 0.0003842500736936927,
+        "compute_executions": 0,
+        "success": true
+      },
+      "workspool": {
+        "elapsed_seconds": 0.023892083088867366,
+        "compute_executions": 0,
+        "state": "complete",
+        "current": true,
+        "brief_complete": false,
+        "full_results_and_provenance_exact": true,
+        "failures": [],
+        "steps": [
+          {
+            "name": "zones",
+            "state": "complete",
+            "cache_hit": true,
+            "cache_reason": "hit"
+          },
+          {
+            "name": "january_payments",
+            "state": "complete",
+            "cache_hit": true,
+            "cache_reason": "hit"
+          },
+          {
+            "name": "top_zones",
+            "state": "complete",
+            "cache_hit": true,
+            "cache_reason": "hit"
+          }
+        ],
+        "omission_counts": {
+          "rows_retained_in_artifact": 2
+        }
+      },
+      "validation_seconds": 0.0023867080453783274,
+      "native_context_json_tokens": {
+        "cl100k_base": 1147,
+        "o200k_base": 1166
+      }
+    },
+    {
+      "name": "reopened",
+      "direct": {
+        "elapsed_seconds": 0.000355791999027133,
+        "compute_executions": 0,
+        "success": true
+      },
+      "workspool": {
+        "elapsed_seconds": 0.02200662496034056,
+        "compute_executions": 0,
+        "state": "complete",
+        "current": true,
+        "brief_complete": false,
+        "full_results_and_provenance_exact": true,
+        "failures": [],
+        "steps": [
+          {
+            "name": "zones",
+            "state": "complete",
+            "cache_hit": true,
+            "cache_reason": "hit"
+          },
+          {
+            "name": "january_payments",
+            "state": "complete",
+            "cache_hit": true,
+            "cache_reason": "hit"
+          },
+          {
+            "name": "top_zones",
+            "state": "complete",
+            "cache_hit": true,
+            "cache_reason": "hit"
+          }
+        ],
+        "omission_counts": {
+          "rows_retained_in_artifact": 2
+        }
+      },
+      "validation_seconds": 0.0051457080990076065,
+      "native_context_json_tokens": {
+        "cl100k_base": 1154,
+        "o200k_base": 1171
+      }
+    },
+    {
+      "name": "source_update",
+      "direct": {
+        "elapsed_seconds": 0.19528537499718368,
+        "compute_executions": 2,
+        "success": true
+      },
+      "workspool": {
+        "elapsed_seconds": 0.4158924580551684,
+        "compute_executions": 2,
+        "state": "complete",
+        "current": true,
+        "brief_complete": false,
+        "full_results_and_provenance_exact": true,
+        "failures": [],
+        "steps": [
+          {
+            "name": "zones",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "computed"
+          },
+          {
+            "name": "january_payments",
+            "state": "complete",
+            "cache_hit": true,
+            "cache_reason": "hit"
+          },
+          {
+            "name": "top_zones",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "computed"
+          }
+        ],
+        "omission_counts": {
+          "rows_retained_in_artifact": 2
+        }
+      },
+      "validation_seconds": 0.0027811669278889894,
+      "native_context_json_tokens": {
+        "cl100k_base": 1150,
+        "o200k_base": 1166
+      }
+    },
+    {
+      "name": "forced",
+      "direct": {
+        "elapsed_seconds": 0.1986806249478832,
+        "compute_executions": 3,
+        "success": true
+      },
+      "workspool": {
+        "elapsed_seconds": 0.5353738750563934,
+        "compute_executions": 3,
+        "state": "complete",
+        "current": true,
+        "brief_complete": false,
+        "full_results_and_provenance_exact": true,
+        "failures": [],
+        "steps": [
+          {
+            "name": "zones",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "forced"
+          },
+          {
+            "name": "january_payments",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "forced"
+          },
+          {
+            "name": "top_zones",
+            "state": "complete",
+            "cache_hit": false,
+            "cache_reason": "forced"
+          }
+        ],
+        "omission_counts": {
+          "rows_retained_in_artifact": 2
+        }
+      },
+      "validation_seconds": 0.002724291058257222,
+      "native_context_json_tokens": {
+        "cl100k_base": 1154,
+        "o200k_base": 1170
+      }
+    }
+  ],
+  "stale_after_update": {
+    "current": false,
+    "state": "superseded"
+  },
+  "mcp": {
+    "measurement": "Actual MCP formatted requests and results; known operation schemas. Retained arms assume a prior full unabridged brief/results. Setup is counted separately. No model decisions, provider framing or billing. Fresh-context control reads terminal materializations; metadata-only retained control already holds their results and knows the unchanged plan.",
+    "setup_tokens": {
+      "cl100k_base": 367,
+      "o200k_base": 372
+    },
+    "calls": [
+      {
+        "arm": "full_brief",
+        "tool": "task_status",
+        "is_error": false,
+        "elapsed_seconds": 0.0025359579594805837,
+        "tokens": {
+          "cl100k_base": {
+            "request": 28,
+            "response": 1226
+          },
+          "o200k_base": {
+            "request": 29,
+            "response": 1229
+          }
+        }
+      },
+      {
+        "arm": "task_run_retained",
+        "tool": "task_run",
+        "is_error": false,
+        "elapsed_seconds": 0.02927049994468689,
+        "tokens": {
+          "cl100k_base": {
+            "request": 54,
+            "response": 267
+          },
+          "o200k_base": {
+            "request": 55,
+            "response": 269
+          }
+        }
+      },
+      {
+        "arm": "task_status_retained",
+        "tool": "task_status",
+        "is_error": false,
+        "elapsed_seconds": 0.0013096670154482126,
+        "tokens": {
+          "cl100k_base": {
+            "request": 54,
+            "response": 267
+          },
+          "o200k_base": {
+            "request": 55,
+            "response": 269
+          }
+        }
+      },
+      {
+        "arm": "terminal_retained_freshness",
+        "tool": "inspect",
+        "is_error": false,
+        "elapsed_seconds": 0.0009437080007046461,
+        "tokens": {
+          "cl100k_base": {
+            "request": 63,
+            "response": 230
+          },
+          "o200k_base": {
+            "request": 64,
+            "response": 232
+          }
+        }
+      },
+      {
+        "arm": "terminal_fresh_context",
+        "tool": "inspect",
+        "is_error": false,
+        "elapsed_seconds": 0.0008206660859286785,
+        "tokens": {
+          "cl100k_base": {
+            "request": 63,
+            "response": 230
+          },
+          "o200k_base": {
+            "request": 64,
+            "response": 232
+          }
+        }
+      },
+      {
+        "arm": "terminal_fresh_context",
+        "tool": "query",
+        "is_error": false,
+        "elapsed_seconds": 0.006159083102829754,
+        "tokens": {
+          "cl100k_base": {
+            "request": 53,
+            "response": 132
+          },
+          "o200k_base": {
+            "request": 55,
+            "response": 133
+          }
+        }
+      },
+      {
+        "arm": "terminal_fresh_context",
+        "tool": "query",
+        "is_error": false,
+        "elapsed_seconds": 0.005447042058221996,
+        "tokens": {
+          "cl100k_base": {
+            "request": 56,
+            "response": 176
+          },
+          "o200k_base": {
+            "request": 58,
+            "response": 177
+          }
+        }
+      }
+    ],
+    "totals": {
+      "full_brief": {
+        "calls": 1,
+        "errors": 0,
+        "tokens": {
+          "cl100k_base": {
+            "request": 28,
+            "response": 1226
+          },
+          "o200k_base": {
+            "request": 29,
+            "response": 1229
+          }
+        }
+      },
+      "task_run_retained": {
+        "calls": 1,
+        "errors": 0,
+        "tokens": {
+          "cl100k_base": {
+            "request": 54,
+            "response": 267
+          },
+          "o200k_base": {
+            "request": 55,
+            "response": 269
+          }
+        }
+      },
+      "task_status_retained": {
+        "calls": 1,
+        "errors": 0,
+        "tokens": {
+          "cl100k_base": {
+            "request": 54,
+            "response": 267
+          },
+          "o200k_base": {
+            "request": 55,
+            "response": 269
+          }
+        }
+      },
+      "terminal_retained_freshness": {
+        "calls": 1,
+        "errors": 0,
+        "tokens": {
+          "cl100k_base": {
+            "request": 63,
+            "response": 230
+          },
+          "o200k_base": {
+            "request": 64,
+            "response": 232
+          }
+        }
+      },
+      "terminal_fresh_context": {
+        "calls": 3,
+        "errors": 0,
+        "tokens": {
+          "cl100k_base": {
+            "request": 172,
+            "response": 538
+          },
+          "o200k_base": {
+            "request": 177,
+            "response": 542
+          }
+        }
+      }
+    },
+    "success": true,
+    "fresh_context_comparability": "Task brief includes intermediate plan/provenance/previews. Terminal control requests at most five rows per terminal materialization; these are different output scopes, not equivalent answer payloads."
+  },
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.15"
+  },
+  "method": "Fixed-order local lifecycle. Preparation, independent oracle, imports and validation are timed separately from execution. Full materialized outputs are compared in declared order, never inferred from previews. Direct control is a persistent deterministic-plan DuckDB script cache. Warm filesystem effects and orchestration differences are included; this is not a statistical latency or provider-billing claim.",
+  "run_guard": {
+    "exit_code": 0,
+    "termination_reason": null,
+    "wall_seconds": 9.42335279204417,
+    "peak_waited_child_rss_bytes": 321355776,
+    "rss_measurement": "RUSAGE_CHILDREN high-water statistic, not simultaneous tree RSS or an enforced RSS ceiling.",
+    "limits": {
+      "wall_seconds": 1200.0,
+      "per_file_bytes": 4294967296,
+      "output_bytes": 10737418240,
+      "free_disk_floor_bytes": 4294967296
+    }
+  },
+  "concurrency_note": "Final three suites launched together while an independent local semantic-model probe was also running. One fixed-order local trial; concurrent load and filesystem caches are not controlled.",
+  "success": true,
+  "recorded_candidate_version": "0.7.0",
+  "later_change_not_remeasured": "After these runs, server automatic capture was fixed for failed MCP results with non-JSON error text. This failure-path-only change was separately regression-tested; these measured fingerprints and metrics were preserved. The runtime demo was rerun separately against that later revision."
+}

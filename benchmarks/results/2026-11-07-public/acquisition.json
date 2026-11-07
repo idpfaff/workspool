@@ -1,0 +1,169 @@
+{
+  "files": [
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-01.parquet",
+      "file": "yellow_tripdata_2025-01.parquet",
+      "bytes": 59158238,
+      "etag": "\"3f99a46606c0c7e76a386f81167d8e15-12\"",
+      "last_modified": "Wed, 23 Apr 2025 16:31:58 GMT",
+      "retrieved_at": "2026-11-07T21:42:25.970425+00:00",
+      "sha256": "9af277e4c0d3f9deb30644da822981e1e7df6af58313170fd3aa8a474485488a",
+      "download_seconds": 0.9245538749964908
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-02.parquet",
+      "file": "yellow_tripdata_2025-02.parquet",
+      "bytes": 60343086,
+      "etag": "\"d19a36ff5f2728d5fb856785ff055bda-12\"",
+      "last_modified": "Wed, 23 Apr 2025 16:16:58 GMT",
+      "retrieved_at": "2026-11-07T21:44:25.708105+00:00",
+      "sha256": "037cba555a73663f3a51a2c27816e40e3feb364769942bdf122b9da31e377bd3",
+      "download_seconds": 120.686616083025
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-03.parquet",
+      "file": "yellow_tripdata_2025-03.parquet",
+      "bytes": 69964745,
+      "etag": "\"5a7b279b75549fe3c5270e995a5b8c02-14\"",
+      "last_modified": "Wed, 21 May 2025 15:29:16 GMT",
+      "retrieved_at": "2026-11-07T21:42:26.048951+00:00",
+      "sha256": "20c4b77cce457b7cfdae77c5069ca7dc91c167f876a41467f4502ab69487a186",
+      "download_seconds": 1.0068363329628482
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-04.parquet",
+      "file": "yellow_tripdata_2025-04.parquet",
+      "bytes": 67352824,
+      "etag": "\"6cb85e58a1a6db7ef4610209de63c7ff-13\"",
+      "last_modified": "Wed, 25 Jun 2025 14:52:12 GMT",
+      "retrieved_at": "2026-11-07T21:42:26.936390+00:00",
+      "sha256": "6f98938de9380a3f85600533816f0dc0e6d9b5b210e485d623952bac599bbe28",
+      "download_seconds": 0.9691368750063702
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-05.parquet",
+      "file": "yellow_tripdata_2025-05.parquet",
+      "bytes": 77837865,
+      "etag": "\"82ed0af5930f3035156cb5f8cb248725-15\"",
+      "last_modified": "Wed, 25 Jun 2025 15:52:37 GMT",
+      "retrieved_at": "2026-11-07T21:42:27.172129+00:00",
+      "sha256": "7ef46bcd0fceee7f8c0bb38a532be05bceefabb512d4bb0b32a7727dd862b15c",
+      "download_seconds": 1.1260916659375653
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-06.parquet",
+      "file": "yellow_tripdata_2025-06.parquet",
+      "bytes": 73542954,
+      "etag": "\"fc94b9119612348a42e0887bb449b155-15\"",
+      "last_modified": "Fri, 25 Jul 2025 14:02:45 GMT",
+      "retrieved_at": "2026-11-07T21:42:27.773194+00:00",
+      "sha256": "1bea7f5b09c744414451fa7fef09fbc5a393ffb1621c859be6ba0df23a14e1b6",
+      "download_seconds": 0.8447062090272084
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-07.parquet",
+      "file": "yellow_tripdata_2025-07.parquet",
+      "bytes": 66943728,
+      "etag": "\"16edd40595f73ceb5035197d0e652dbc-13\"",
+      "last_modified": "Thu, 21 Aug 2025 16:23:37 GMT",
+      "retrieved_at": "2026-11-07T21:42:28.135416+00:00",
+      "sha256": "1efa6a0458dc60341f7f81dcbb5015af731f42d1a109f4e0d594dd46970fd4ef",
+      "download_seconds": 0.9822270829463378
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-08.parquet",
+      "file": "yellow_tripdata_2025-08.parquet",
+      "bytes": 62293743,
+      "etag": "\"7e65c5d9df82665d81d51f84f1e62011-12\"",
+      "last_modified": "Wed, 24 Sep 2025 14:18:54 GMT",
+      "retrieved_at": "2026-11-07T21:42:28.577420+00:00",
+      "sha256": "b982ace703e3564d92e94edae5ec93515f4f1fb07a5b95e7404c32464c1a6a89",
+      "download_seconds": 0.8194862920790911
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-09.parquet",
+      "file": "yellow_tripdata_2025-09.parquet",
+      "bytes": 72432945,
+      "etag": "\"59e6ee2cf1cdaf10a4a380b13229c493-14\"",
+      "last_modified": "Thu, 23 Oct 2025 15:54:14 GMT",
+      "retrieved_at": "2026-11-07T21:42:29.188937+00:00",
+      "sha256": "cd39b9901f01d1fd752d45cbaec91ee5f68c4dddf9e261e938c1dbab404644c7",
+      "download_seconds": 1.0575351249426603
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-10.parquet",
+      "file": "yellow_tripdata_2025-10.parquet",
+      "bytes": 75267589,
+      "etag": "\"3bdef91e79578e57e911fccdd8e00e24-15\"",
+      "last_modified": "Tue, 25 Nov 2025 15:27:50 GMT",
+      "retrieved_at": "2026-11-07T21:42:30.047143+00:00",
+      "sha256": "e1f63caf331bc6230d9c6f757cb88e55fdc2bddde185fb414d2c947abdc773c3",
+      "download_seconds": 1.4740096669411287
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-11.parquet",
+      "file": "yellow_tripdata_2025-11.parquet",
+      "bytes": 71134255,
+      "etag": "\"53a8054ab5bedeacf3da3cd159338e2e-14\"",
+      "last_modified": "Fri, 19 Dec 2025 15:51:29 GMT",
+      "retrieved_at": "2026-11-07T21:42:30.248533+00:00",
+      "sha256": "2cf2f3127f96d4d5dea30f8afe05119cf8e4ba57bd9e60b789d3f296fc8459ab",
+      "download_seconds": 1.0570737089728937
+    },
+    {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-12.parquet",
+      "file": "yellow_tripdata_2025-12.parquet",
+      "bytes": 73701327,
+      "etag": "\"2c31ea7afe9bc1a94e01fd0833a06490-15\"",
+      "last_modified": "Wed, 25 Mar 2026 15:55:54 GMT",
+      "retrieved_at": "2026-11-07T21:43:30.773542+00:00",
+      "sha256": "eaba7ff61ebb6453fc6f673fda43d621380307f869b768b124992e8486c785e1",
+      "download_seconds": 60.72431099996902
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/ghcn/daily/by_year/2024.csv.gz",
+      "file": "2024.csv.gz",
+      "bytes": 176612851,
+      "etag": "\"a86e5f3-65fa4fb11adac\"",
+      "last_modified": "Sat, 07 Nov 2026 00:40:51 GMT",
+      "retrieved_at": "2026-11-07T21:42:34.779694+00:00",
+      "sha256": "f4614ee18d7b9af9c1db0ee0cf6a50d4c0a4353b66da748a01b3ac04fbd27188",
+      "download_seconds": 4.575231791008264
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/ghcn/daily/by_year/readme-by_year.txt",
+      "file": "readme-by_year.txt",
+      "bytes": 1106,
+      "etag": "\"452-5bd07c7e87cc0\"",
+      "last_modified": "Mon, 08 Mar 2021 15:06:39 GMT",
+      "retrieved_at": "2026-11-07T21:42:35.046540+00:00",
+      "sha256": "645e3d8a7573f734e595187d24287551ad5a58b6f4719a444b1a0d1a1d0af1a5",
+      "download_seconds": 0.16958975000306964
+    },
+    {
+      "url": "https://dumps.wikimedia.org/enwiki/20261001/enwiki-20261001-pages-articles-multistream1.xml-p1p41242.bz2",
+      "file": "enwiki-20261001-pages-articles-multistream1.xml-p1p41242.bz2",
+      "bytes": 300361909,
+      "etag": "\"6ac7354f-11e728b5\"",
+      "last_modified": "Thu, 08 Oct 2026 06:16:47 GMT",
+      "retrieved_at": "2026-11-07T21:43:34.076873+00:00",
+      "sha256": "b41f70467dcd50289ded032873999a8c71087281d845ad27a63addc742431848",
+      "download_seconds": 59.168307958054356
+    },
+    {
+      "url": "https://dumps.wikimedia.org/enwiki/20261001/enwiki-20261001-sha1sums.txt",
+      "file": "sha1sums.txt",
+      "bytes": 246307,
+      "etag": "\"6acffeea-3c223\"",
+      "last_modified": "Wed, 14 Oct 2026 22:15:06 GMT",
+      "retrieved_at": "2026-11-07T21:43:30.952842+00:00",
+      "sha256": "e3abbf62a5039dd631b55ec2b13293d7c0fb41f1d69d5f0fa81e56d004486fc3",
+      "download_seconds": 0.12250179203692824
+    }
+  ],
+  "wikipedia_official_sha1": "353bf6ce69fb0ba5e47a5cc13464523e95edb9f7",
+  "source_script_sha256": "0423d3d3e2b84921f05d850690d7af7be4c1b6ee1e9fb82e094d88a9f14c7e35",
+  "raw_data_published": false,
+  "source_script_sha256_for_recorded_download": "ef11be793495fbb2d040354efbb3f36ec56f9b74b161cc35260c9047d7c42b52",
+  "metadata_correction": "After the run, fetch was fixed to flush buffered output before hashing. The 1106-byte NOAA readme metadata hash was corrected from the empty-buffer digest; downloaded data, source archives, and recorded dataset result hashes were unchanged."
+}

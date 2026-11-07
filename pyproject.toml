@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agent-workbook"
-version = "0.6.0"
-description = "Workspool: durable tasks, reusable results, and exact evidence for AI agents"
+version = "0.7.0"
+description = "Workspool: local continuity, hybrid recall, and coordinated tasks for AI agents"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "LicenseRef-MIT-Commons-Clause"
@@ -25,6 +25,7 @@ benchmark = [
     "psutil>=6,<8",
 ]
 tokens = ["tiktoken>=0.12,<1", "tokenizers>=0.21,<1"]
+semantic = ["fastembed>=0.7,<1"]
 
 [project.scripts]
 workspool = "agent_workbook.cli:main"

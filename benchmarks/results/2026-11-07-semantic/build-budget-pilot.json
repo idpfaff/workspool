@@ -1,0 +1,49 @@
+{
+  "method": "Preserved failed index-build pilot:512 full Wikipedia wikitext chunks per worker,30-second embedding deadline. Later successful evaluation uses smaller bounded batches; no retrieval-quality claim from this incomplete index.",
+  "selection": {
+    "rule": "first N acquisition-manifest entries in original order",
+    "count": 32,
+    "available_articles": 8192,
+    "bytes": 2961912,
+    "selection_bias": "Early manifest/page-ID articles, mostly A titles; not a random or representative benchmark."
+  },
+  "index_build": {
+    "calls": [
+      {
+        "number": 1,
+        "elapsed_seconds": 30.22973437490873,
+        "mode": "lexical",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 0,
+          "pending_chunks": 1942,
+          "built_unique_chunks": 0,
+          "scan_complete": true
+        },
+        "fallback_reason": "embedding_time_budget"
+      },
+      {
+        "number": 2,
+        "elapsed_seconds": 30.0671443749452,
+        "mode": "lexical",
+        "dense_complete": false,
+        "index_complete": true,
+        "coverage": {
+          "indexed_chunks": 1942,
+          "scored_chunks": 0,
+          "pending_chunks": 1942,
+          "built_unique_chunks": 0,
+          "scan_complete": true
+        },
+        "fallback_reason": "embedding_time_budget"
+      }
+    ],
+    "max_calls": 20,
+    "max_new_unique_chunks_per_call": 512,
+    "max_embedding_seconds_per_call": 30,
+    "complete": false
+  },
+  "model_manifest_sha256": "689e49ed3d5550db29f2ca5787a9cd71f0dfe8969a463be39d2933b6a04d7361"
+}

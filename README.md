@@ -1,16 +1,18 @@
 # Workspool
 
-**Pick up a task with its sources, results, and evidence intact.**
+**Carry useful context across sessions, retrieve evidence within a budget, and coordinate shared work.**
 
-Workspool gives AI agents a shared local workspace for work that continues across sessions. Save a task's source files, SQL steps, and evidence searches once. Each run pins a coherent set of source versions, reuses eligible calculated results, and returns a brief with exact source citations and explicit freshness and omission status.
+Workspool gives AI agents a shared local workspace for work that continues across sessions. Its opt-in `runtime` profile captures compact facts from executed tools and restores relevant local context for a configured startup goal. Optional local embeddings combine semantic and keyword retrieval. Durable tasks keep source versions, calculated results, and evidence together; fenced claims coordinate agents sharing the same workspace.
 
-- **Define recurring work once.** Name the inputs and dependent SQL steps, then rerun the saved plan as sources change.
-- **Reuse verified calculations.** Eligible exact queries reuse materialized results across sessions and processes. Changes to inputs, SQL, parameters, or relevant settings invalidate reuse.
-- **Resume a coherent snapshot.** Reopen a task's results without recomputing, or retry an interrupted attempt against its original input versions.
-- **Read supporting evidence.** Rank document passages through a persistent index and return exact versioned excerpts, with incomplete coverage disclosed.
-- **Keep large inputs local.** Send selected rows, answers, and passages to the agent. Use retained-context replies only when the agent still has the required base.
+- **Capture useful work automatically.** Configured MCP hooks retain bounded result previews, artifact references, task status, and failures. Bulk source bodies and SQL literals stay out of session memory.
+- **Restore relevant context.** Supply a startup goal and tokenizer to receive a bounded recall package. Add a provisioned local embedding model for paraphrase retrieval alongside keyword matches.
+- **Run recurring work.** Save source aliases and dependent SQL steps, reuse eligible exact calculations, and recompute affected steps when inputs change.
+- **Coordinate agents.** Give each server a configured identity and role, claim a task before execution, and inspect producer events and stale dependency versions.
+- **Keep evidence inspectable.** Reopen complete task briefs after context loss, with immutable source references, exact byte citations, and explicit omissions.
 
-Works with local or hosted models through an MCP-compatible agent. Your workbook stays on your machine; you choose which excerpts and results your agent reads. Workspool executes the plan you or your agent define; it does not schedule runs or monitor external files automatically.
+Works with local or hosted models through an MCP-compatible agent. Workspace files and embedding inference stay local; the host receives selected context and tool replies. Automatic capture covers calls through the configured Workspool server. Other tools and conversations need explicit host hooks, and the MCP host must forward initialization instructions for startup recall to reach the model. Workspool does not monitor your desktop, schedule tasks, or watch external files.
+
+[Runtime setup, host hooks, roles, and claims](benchmarks/RUNTIME.md) · [Public dataset stress](benchmarks/PUBLIC_DATA.md) · [Task reference](benchmarks/TASKS.md)
 
 ## What you can save
 
@@ -26,11 +28,13 @@ Workspool reduces the material your agent needs to read again. Use it for everyd
 | **Manage projects and follow-ups** | Meeting notes, decisions, action items, and progress checkpoints | Start from the current status and next action, then open the supporting details when needed. |
 | **Switch agents or resume later** | The objective, verified results, supporting files, and next step | Give the next agent a focused handoff instead of rebuilding the task history. |
 
-Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not automatically add its contents to the conversation.
+Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not replay it into the conversation; configured startup recall or an explicit retrieval selects what the host receives.
 
-### Measured savings on continuing work
+In the local recall probe, keyword and hybrid retrieval both found **5/5 target Wikipedia articles first**. A separate four-question synthetic paraphrase diagnostic found **4/4 targets with the real local model versus no keyword hits**; it demonstrates a narrow capability, not a general accuracy gain. Fresh-session startup also delivered an exact source citation within its 1,200-token context budget without an agent tool call. [Semantic recall results and limits](benchmarks/SEMANTIC.md).
 
-In a live agent evaluation, both approaches answered correctly using local data and saved work. Workspool's task tools reduced the tokens needed to recover and update an analysis:
+### Earlier task measurements: v0.6.0
+
+In the v0.6.0 live agent evaluation, both approaches answered correctly using local data and saved work. These measurements cover task tools, not the new v0.7.0 runtime capture or semantic recall. Task tools reduced the tokens needed to recover and update an analysis:
 
 | Agent action | Existing SQL and saved-result tools | Task tools | Tokens saved |
 | --- | ---: | ---: | ---: |
@@ -41,6 +45,8 @@ These are provider-reported input plus output tokens for one small workflow, inc
 
 On **34,015,435 real market records**, a three-step task took **1.38 seconds cold and 22 ms with reusable results**. Changing one input recomputed its two affected steps and reused the independent branch. A direct cached DuckDB script was faster; Workspool supplies the shared task state, provenance, recovery, and agent interface. [Stress results and token counts](benchmarks/TASK_STRESS.md) · [Task API and limits](benchmarks/TASKS.md).
 
+Public-data tests also exercised **48.7 million NYC taxi trips**, **38.5 million NOAA observations**, and **8,192 Wikipedia articles containing 442 MiB of text**. Exact-result and recovery checks passed; capable persistent SQL and text-index controls were faster and often used fewer tokens. The report retains incomplete-index and tight-budget failures. [Public dataset results](benchmarks/PUBLIC_DATA.md).
+
 As a source-exclusion example, the recorded 1,000-row stock-data summary used **1,006 `cl100k_base` tokens**, including compatible-profile setup, import, query requests, and replies, versus **30,375 tokens** for the CSV alone. That measures text kept out of context, not a provider bill or an advantage over a local SQL script. The [Massive stress report](benchmarks/MASSIVE_STRESS.md#token-savings) also covers 34 million real rows and the limits of that comparison.
 
 ## Quick start
@@ -48,18 +54,24 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.6.0 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.7.0 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
 Run these from the project directory. The command is `workspool` (`agent-workbook` still works); the Python package is `agent-workbook`.
 
 ```sh
-uv sync --locked --python 3.12
-uv run workspool --help
+uv sync --locked --python 3.12 --extra tokens --extra semantic
+.venv/bin/workspool --help
 ```
 
-Python 3.11 or newer, SQLite with FTS5, and a supported DuckDB wheel. Runs on macOS and Linux. The first install downloads dependencies; the core workspace runs locally after installation.
+Python 3.11 or newer, SQLite with FTS5, and supported DuckDB/ONNX wheels. Runs on macOS and Linux. The first install downloads dependencies. Explicitly provision the optional embedding model once:
+
+```sh
+.venv/bin/workspool model-download "$HOME/.cache/workspool/bge-small-en-v1.5"
+```
+
+This downloads and hashes the supported local model; the destination must be new. Retrieval never downloads a model. Omit `--model-dir` below to use the disclosed lexical fallback. Named tokenizer encodings may download their ranks on first use; a local `tokenizer.json` also works.
 
 ## Connect your agent
 
@@ -70,7 +82,14 @@ Use stdio with a local MCP host. Give each host the same absolute workspace path
   "mcpServers": {
     "workspool": {
       "command": "/absolute/path/to/workspool/.venv/bin/workspool",
-      "args": ["--workspace", "/absolute/path/to/MyWorkbook", "serve", "--profile", "agent"]
+      "args": [
+        "--workspace", "/absolute/path/to/MyWorkbook",
+        "serve", "--profile", "runtime",
+        "--agent-id", "research-agent", "--role", "writer",
+        "--goal", "Continue the spending review and recover prior decisions",
+        "--tokenizer", "o200k_base", "--recall-tokens", "1500",
+        "--model-dir", "/absolute/path/to/.cache/workspool/bge-small-en-v1.5"
+      ]
     }
   }
 }
@@ -82,13 +101,19 @@ The workbook defaults to `~/.agent-workbook/default`. Set `WORKSPOOL_HOME` or pa
 
 Workspool speaks MCP and runs independently of the model. Any host that supports MCP tool calls works, with a local MLX model, another local runtime, or a hosted model. The host decides which tool responses it forwards to its model.
 
-For new agent integrations, use the `agent` profile:
+For capture and startup recall, use the `runtime` profile:
 
 ```sh
-uv run workspool --workspace ~/MyWorkbook serve --profile agent
+.venv/bin/workspool --workspace "$HOME/MyWorkbook" serve \
+  --profile runtime --agent-id research-agent --role writer \
+  --goal "Continue the spending review and recover prior decisions" \
+  --tokenizer o200k_base --recall-tokens 1500 \
+  --model-dir "$HOME/.cache/workspool/bge-small-en-v1.5"
 ```
 
-It exposes the existing storage, query, and retrieval operations plus `task_define`, `task_run`, `task_status`, and `context` through one lazy `workspool` dispatcher. Adaptive text replies carry one copy of the result. The host must support the dispatcher and text response blocks.
+It exposes storage, SQL, durable tasks, recall, session memory, claims, and provenance through one lazy `workspool` dispatcher, filtered by role. Adaptive text replies carry one copy of the result. The added startup context section, including its label and metadata, must fit the configured 1,500-token budget; ordinary server instructions and tool schemas are separate. The host must support the dispatcher, text response blocks, and initialization instructions.
+
+The `agent` profile retains durable tasks and indexed keyword context without automatic session capture. Use the [runtime guide](benchmarks/RUNTIME.md) to connect external host events or configure separate reader, writer, and approver agents.
 
 Starting `serve` without a profile still selects `compatible`: six eager tools, compact JSON, and both text and structured replies. `efficient` adds retrieval and revision operations with lazy discovery and adaptive replies, but does not add task operations and retains both response copies. `--tools`, `--tool-discovery`, `--response-format`, and `--response-content` override a profile. `import` and `delete` always require an explicit allowlist.
 
@@ -178,7 +203,7 @@ The [task reference](benchmarks/TASKS.md) covers cache eligibility, concurrency,
 
 ### Choose the tools each host gets
 
-The compatibility default exposes six tools. The `agent` profile adds task and ranked-evidence operations as well as all five retrieval and revision operations. `efficient` enables those five retrieval and revision operations alone. All can also be selected individually. Two operations require an explicit allowlist because they read or remove local files:
+The compatibility default exposes six tools. The `agent` profile adds task and ranked-evidence operations as well as all five retrieval and revision operations; `runtime` adds continuity, hybrid recall, and coordination. `efficient` enables the five retrieval and revision operations alone. All can also be selected individually, subject to role permissions. Two operations require an explicit allowlist because they read or remove local files:
 
 ```sh
 uv run workspool --workspace ~/MyWorkbook serve --tools save find inspect resume query refresh import delete
