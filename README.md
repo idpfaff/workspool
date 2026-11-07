@@ -2,60 +2,28 @@
 
 **Stop re-sending work your agent already did.**
 
-Workspool is a local, agent agnostic MCP workspace. Save a patch, a query result, a document, or a checkpoint once. A later session, on any MCP host and model with tool support, asks for the piece it needs: a short checkpoint, an excerpt from a specific version, or an aggregate computed on your machine with DuckDB. Imports keep source files outside the model's context; inline saves still send their contents once.
+Workspool gives your AI agents a shared local workspace. Save source files, query results, drafts, and checkpoints once. Your agent can retrieve the evidence it needs, calculate answers locally, and continue the work in another session or model.
 
-**License change in v0.4.0:** Workspool is source-available under the [MIT License with Commons Clause](LICENSE). Personal and internal business use, including reducing token costs, is permitted. Selling the software as defined by the Commons Clause is restricted. See [Licensing](#licensing) for the scope and the status of earlier MIT versions.
+- **Use fewer tokens on large files.** Query CSV and Parquet data locally and return a compact answer.
+- **Read the relevant passages.** Search documents and retrieve exact excerpts with their source versions.
+- **Carry work between sessions.** Save decisions, results, and the next step so another agent can pick them up.
+- **Keep reused work current.** Receive document changes and see when a saved result depends on outdated inputs.
 
-It saves the most where replaying the source costs the most, and it is not free. The numbers below are the measured ones, including the cases it loses.
+Works with local or hosted models through an MCP-compatible agent. Your workbook stays on your machine; you choose which excerpts and results your agent reads.
 
-## Where it saves tokens, and where it doesn't
+## What you can save
 
-The largest gains come from keeping irrelevant source text out of the conversation: import files once, query local tables, and retrieve only the evidence needed. Version 0.5.0 adds `sync` for a retained document, `retrieve` for combined searches and ranges, and explicit tokenizer budgets. Each has overhead.
+Workspool reduces how much source material your agent needs in its conversation. Here are measured examples compared with sending the full source text:
 
-The new benchmark compares real MCP calls with competent **v0.4.1** workflows. It counts cold instructions and schemas, scripted requests, exact replies, and answers with `cl100k_base`. Both sides use tailored tool allowlists and text-only replies; these are payload counts, not billed-token savings.
+| Task | Full source in the conversation | With Workspool | Fewer tokens |
+| --- | ---: | ---: | ---: |
+| Calculate an aggregate from 2,000 data rows | 19,039 | 823 | **95.7%** |
+| Calculate market statistics from 250 daily bars | 9,827 | 814 | **91.7%** |
+| Retrieve three known excerpts from a 120-document collection | 92,674 | 1,101 | **98.8%** |
 
-| Workflow | v0.4.1 control | v0.5.0 | Change |
-| --- | ---: | ---: | --- |
-| Maintain a complete runbook over eight checks and two small edits | 2,651 | 2,311 | **12.83% fewer** |
-| Maintain it through two extensive rewrites | 4,739 | 4,697 | 0.89% fewer; 10 tool calls → 8 |
-| Read 16 scattered ranges from one source | 3,437 | 3,308 | **3.75% fewer**; 16 tool calls → 1 |
-| Keep a tiny note current | 1,088 | 1,095 | 0.64% more |
-| Find nearby facts, reusing each search result | 1,696 | 2,151 | **26.83% more** |
-| Read complete documents | 11,014 | 12,086 | **9.73% more** |
+These examples use already-imported files and include default tool setup, requests, and replies. Actual savings depend on the task and your agent's configuration. [Measurement details](benchmarks/EFFICIENCY.md#what-was-measured).
 
-Use `sync` when you retain the complete source and need to keep it current. Use `retrieve` selectively for many independent ranges or combined requests; ordinary `inspect` and `search` remain cheaper for simple reads and neighboring facts. Combining calls does not necessarily save model turns: a capable host can already issue independent calls together. Even the 16-range case slightly increases the measured retained-input exposure despite its smaller new payload.
-
-The [roundtrip report](benchmarks/ROUNDTRIPS.md) publishes all 29 arms, both tokenizers, independent recounts, exact reconstruction checks, and losing cases. A separate [live model evaluation](benchmarks/MODEL_EVAL.md) let `gpt-6-luna` choose tools: all six final cases passed, but input-token usage increased for passage discovery and sparse edits and decreased for dense rewrites. This small diagnostic run establishes neither universal savings nor reliable latency gains. It also exposed and helped fix an old-ID synchronization ambiguity before release.
-
-The [historical workflow report](benchmarks/WORKFLOWS.md) records the earlier improvements from full-source search, table descriptions, and exact deltas, including a 95.47% payload reduction for finding evidence deep in initially unknown documents. That comparison uses an older implementation and a different task; it is not an additional v0.5.0 gain.
-
-`serve --profile efficient` enables all eleven operations through lazy discovery and adaptive replies. It preserves both MCP response representations by default. Select the tools and response content your host needs; the profile does not choose an optimal workflow automatically.
-
-<details>
-<summary>Historical known-input measurements: the earlier overhead optimization</summary>
-
-Measured in one run with `cl100k_base`. Each Workspool count includes server instructions, advertised tools, the question, request arguments, and decoded text replies. Artifacts are already imported; import costs are recorded separately. Document references are known, and reads are batched.
-
-| Workload | Raw replay | Default tools | Lazy, arguments known | Lazy, including schema discovery |
-| --- | ---: | ---: | ---: | ---: |
-| 20 synthetic rows, one aggregate | 222 | 820 | 286 | 441 |
-| 2,000 synthetic rows, one aggregate | 19,039 | 823 | 289 | 444 |
-| 250 real Massive daily bars, one aggregate | 9,827 | 814 | 280 | 435 |
-| 120 documents, read 3 excerpts | 92,674 | 1,101 | 568 | 703 |
-| 120 documents, read every word | 92,657 | 107,393 | 106,923 | 107,058 |
-
-`--tool-discovery lazy` advertises one small dispatcher instead of all six schemas. The known-arguments column assumes the caller already knows the operation's inputs; the last column pays for fetching its schema first. Setup falls from **652 to 110 tokens**. On the Massive fixture, the complete query payload falls from **814 to 280 tokens**, or **435** with discovery included. The default configuration remains unchanged.
-
-The remaining losses are useful boundaries:
-
-- **Tiny inputs still lose.** The 20-row synthetic source costs 222 tokens directly and 286 even with known lazy arguments. A short note or direct calculation can be cheaper. Row size matters: 20 market bars contain more information than 20 synthetic rows.
-- **Reading everything still costs more.** Raw excerpt blocks with `--response-format text --tools inspect` reduce the complete-document run to **102,810 tokens**, from 15.90% overhead to **10.96% overhead**. Every source word, version reference, and freshness record still has a cost. Short excerpts can be cheaper in the default JSON format.
-- **Host behavior matters.** By default MCP carries both text and structured data. A host forwarding the whole result can include both copies. `--response-content text` removes the structured copy for compatible hosts; on the complete-document run, the full-result count falls from **216,708 to 108,466** with text format and inspect-only tools. This is a different accounting view from the table.
-- **Local computation and selective retrieval do most of the work.** Import files once, query only the answer, and request only relevant excerpts. Inline saves send their source once. Plain shell commands can be cheaper for isolated work; Workspool adds versions, pinned inputs, freshness checks, and reusable handoffs.
-
-The [earlier known-input report](benchmarks/EFFICIENCY.md) includes both tokenizers, exact validation, import costs, host representations, and reproduction commands. These are historical scripted payload counts, not billed-token savings or model tool-choice tests. Massive's existing `store_as`/`query_data` workflow already avoids raw replay; this comparison does not claim to beat that workflow. The earlier [optimization report](benchmarks/OPTIMIZATION.md) and [baseline](benchmarks/RESULTS.md) retain the historical Qwen measurements and multi-session comparisons.
-
-</details>
+Workspool is especially useful for substantial files and ongoing work: querying the same dataset, returning to a document collection, revising a draft, or handing a project to another agent.
 
 ## What goes in a workbook
 
@@ -66,7 +34,7 @@ The [earlier known-input report](benchmarks/EFFICIENCY.md) includes both tokeniz
 | Revise a document | Draft versions and the decisions behind them | Open the right draft and see why earlier choices were made |
 | Analyze data | CSV or Parquet snapshots, SQL, and saved results | Run a follow-up query against the same inputs or refresh the result with new data |
 
-A short note is often enough for a one-off handoff. A workbook earns its overhead when the files matter, the numbers need to be reproduced, or several sessions will build on the same work.
+Each saved item has a version and a stable reference, so agents can return to the same evidence and build on previous results.
 
 ## Quick start
 
@@ -82,10 +50,9 @@ Run these from the project directory. The command is `workspool` (`agent-workboo
 ```sh
 uv sync --locked --python 3.12
 uv run workspool --help
-uv run workspool bench
 ```
 
-Python 3.11 or newer, SQLite with FTS5, and a supported DuckDB wheel. CI runs on macOS and Linux. The first install downloads dependencies; after that it runs offline. MacBook and MLX inference timing still needs to be measured on the target machine.
+Python 3.11 or newer, SQLite with FTS5, and a supported DuckDB wheel. Runs on macOS and Linux. The first install downloads dependencies; the core workspace runs locally after installation.
 
 ## Connect your agent
 
@@ -186,7 +153,7 @@ For an unfamiliar table, `describe` returns exact column names and SQL types wit
 {"tool":"describe","arguments":{"inputs":["replay/bars"]}}
 ```
 
-Follow each table's `next_offset` to verify its complete schema. Use its returned artifact ID in subsequent queries to keep the same version. The [workflow report](benchmarks/WORKFLOWS.md#table-schema-discovery) explains limits and the small measured gain over an already efficient SQL schema query.
+Follow each table's `next_offset` to verify its complete schema. Use its returned artifact ID in subsequent queries to keep the same version. See the [schema discovery reference](benchmarks/WORKFLOWS.md#table-schema-discovery) for pagination and limits.
 
 ### Read edits against a retained version
 
@@ -224,7 +191,7 @@ Missing or deleted bases fall back to a full read. Deltas use the existing bound
 
 Follow each unfinished query's `cursor` and each read's `next_offset`, using the returned artifact ID for continued reads. Under a tight budget, a read may be deferred with an empty span and its original offset; process the other returned progress and retry it. A response must make progress somewhere or fail explicitly. Queries use the same literal matching and cursor validation as `search`.
 
-The limits are 8 queries, 16 reads, 32,768 bytes per requested read, and 16 MiB of total scan/read work per call, including repeated search windows. The default `max_bytes` is 32,768 and caps the complete result JSON. Combining queries does not create a persistent search index or guarantee a single scan. Existing `inspect` remains the lower-overhead choice for ordinary reads in the measured cases.
+The limits are 8 queries, 16 reads, 32,768 bytes per requested read, and 16 MiB of total scan/read work per call, including repeated search windows. The default `max_bytes` is 32,768 and caps the complete result JSON. Use `inspect` for a straightforward read and `retrieve` when you need to combine independent ranges or searches.
 
 ### Set a measured output-token budget
 
@@ -430,24 +397,22 @@ The indexing limit applies when saving a new version. Existing versions keep the
 
 Fixed bounds: names up to 120 characters, summaries and source labels up to 360, at most 16 dependencies per artifact, at most 8 inputs and 6,000 characters of SQL per query, one query at a time per server process, and 8 KiB per `inspect` excerpt page. The `sync` and `retrieve` limits are documented above.
 
-## Benchmark
+## Try a local example
 
-The included benchmark uses 2,000 synthetic rows and asks for the number of positive rows and their total. The workbook runs the calculation locally; the benchmark checks the answer against a separate calculation and compares sending the raw rows in the prompt with sending a checkpoint plus the query result.
+Run a self-contained example that queries 2,000 rows and compares the size of the returned answer with the full source:
 
-| Input to the benchmark | Payload size |
-| --- | ---: |
-| Question and raw data handoff | 14,200 bytes |
-| Question, workbook checkpoint, and exact query result | 1,091 bytes |
-| Reduction on this fixture | 92.3% |
+```sh
+uv run workspool bench
+```
 
-This compact benchmark counts payload bytes only. The larger per-session tables include tool definitions, arguments, and replies. Both measurements exclude model reasoning, final-answer tokens, provider billing, and inference time. To count tokens with your model's tokenizer, pass its local `tokenizer.json`:
+To count tokens with a local model's tokenizer:
 
 ```sh
 uv sync --locked --extra benchmark
 uv run --locked --extra benchmark workspool bench --tokenizer /path/to/model/tokenizer.json
 ```
 
-The historical larger measurements, with up to one million rows, 120 documents, two tokenizers, and 56 scripted MCP sessions, are documented in [`benchmarks/`](benchmarks/). The newer [workflow suite](benchmarks/WORKFLOWS.md) covers discovery and updates with 18 traces and 177 scripted decision prefixes. Scripts, result JSON, and independent recounts are published there. Historical comparisons require a separately retained original-history baseline checkout, which is not included in this standalone snapshot; current standalone benchmarks still run without it.
+Detailed measurements, evaluation results, and reproduction instructions are available in [`benchmarks/`](benchmarks/).
 
 ## How it runs
 
