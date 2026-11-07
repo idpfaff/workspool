@@ -1,0 +1,13 @@
+{
+  "trace_counts_recomputed": 48,
+  "mcp_sessions": 47,
+  "calls_including_imports": 346,
+  "tokenizers": [
+    "qwen2.5",
+    "cl100k_base"
+  ],
+  "harness_sha256": "4ff22d946966f04c846ebaba7d66cefbe4859ec263b9cbec53561f633bb51905",
+  "all_token_counts_match": true,
+  "product_tests": "18 passed",
+  "ruff": "passed"
+}

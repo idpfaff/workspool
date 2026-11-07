@@ -1,0 +1,1960 @@
+{
+  "commits": {
+    "baseline": "bdc6561ecf759d32868dbe982e79195cf8650dd5",
+    "candidate": "bdc6561ecf759d32868dbe982e79195cf8650dd5"
+  },
+  "runtime": {
+    "python": "3.13.15",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "packages": {
+      "mcp": "1.30.0",
+      "duckdb": "1.5.6",
+      "tiktoken": "0.14.0",
+      "tokenizers": "0.23.3",
+      "pydantic": "2.14.3"
+    }
+  },
+  "candidate_source_sha256": {
+    "benchmarks/workflow_efficiency.py": "e6aa345fff9bebe0c9d24c8da6927cd3c3c15fedbfc9391cfeb9c3c5e1bd2331",
+    "benchmarks/efficiency.py": "a508c82f6ca9b1a4d636ae1f0efb300c63f9518babcce6415e1a5e835a64598b",
+    "benchmarks/token_reduction.py": "4ff22d946966f04c846ebaba7d66cefbe4859ec263b9cbec53561f633bb51905",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/cli.py": "9f714d8965be135965cf9a9376b7daeaea0b97fc304e2c059b34f7f304a67d6b",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
+    "src/agent_workbook/render.py": "2c9d4a4cd425104e3aa0b35ee275429fa9ec21dded81d4efb9e650193349ae5f",
+    "src/agent_workbook/retrieval.py": "3e9301213abbe5e173a4e9b600e7103e99653e05ef842981e8ff005c21c08c96",
+    "src/agent_workbook/server.py": "7e74f533693247b3175c53ef5f0d2b5683eb365af9b97de87e9e6a92b5c89762",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
+  },
+  "baseline_source_sha256": {
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/cli.py": "7ab6c5285879d289f57ae56b65d16f25559ca6c58c1eb9470b187e4a8c2ecf7b",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "ea863492001be1c0007e720dff419c4cc53dd252634f8014a52dfbfce28a264d",
+    "src/agent_workbook/server.py": "8fd8a337abaeb8ec19d08c4f1d5c00e0e07860511114f52d73b7ae53046f9d61",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
+  },
+  "scope": "Deterministic execution plans chosen from observed tool responses. Full cold schemas are counted. Model decisions are synthetic; cumulative exposure replays retained message payloads and static definitions before each planned tool call and each answer. No inference, provider billing, reasoning, prompt caching, or chat framing measured. Raw source is supplied once and retained, with subsequent changed snapshots supplied only when updated. Failed baseline tasks receive no savings claim.",
+  "configuration": "Per-workflow minimal eager tool allowlists, text-only responses; baseline metadata checks reuse previously read unchanged bodies. Wide baseline schema uses paged information_schema queries without table row samples.",
+  "ingestion": "Fixtures are imported locally before measurement and cloned for both implementations, preserving initial IDs. Source acquisition and local import commands are outside these retrieval sessions. Definitions are cold in every measured session.",
+  "tokenizers": {
+    "cl100k_base": {
+      "package": "tiktoken"
+    },
+    "o200k_base": {
+      "package": "tiktoken"
+    }
+  },
+  "cases": [
+    {
+      "case": "unknown-deep-documents/baseline",
+      "success": true,
+      "answers": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        },
+        "atlas4": {
+          "code": "RC-337081",
+          "name": "archive/877696",
+          "version": 1
+        },
+        "orion9": {
+          "code": "RC-628261",
+          "name": "archive/817478",
+          "version": 1
+        }
+      },
+      "expected": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        },
+        "atlas4": {
+          "code": "RC-337081",
+          "name": "archive/877696",
+          "version": 1
+        },
+        "orion9": {
+          "code": "RC-628261",
+          "name": "archive/817478",
+          "version": 1
+        }
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 20303,
+          "o200k_base": 19133
+        },
+        "final_context_tokens": {
+          "cl100k_base": 20303,
+          "o200k_base": 19133
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 142956,
+          "o200k_base": 135010
+        },
+        "setup_tokens": {
+          "cl100k_base": 198,
+          "o200k_base": 204
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 19384,
+          "o200k_base": 18204
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 629,
+          "o200k_base": 636
+        },
+        "model_decisions": 15,
+        "tool_calls": 14
+      },
+      "source_bytes": 102513,
+      "retrieval_plan": "Find the identifying key, or inspect the newest ten artifacts if it is unindexed; scan only observed references to EOF. Candidate searches complete local content for the requested marker.",
+      "failure_reason": null
+    },
+    {
+      "case": "unknown-deep-documents/candidate",
+      "success": true,
+      "answers": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        },
+        "atlas4": {
+          "code": "RC-337081",
+          "name": "archive/877696",
+          "version": 1
+        },
+        "orion9": {
+          "code": "RC-628261",
+          "name": "archive/817478",
+          "version": 1
+        }
+      },
+      "expected": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        },
+        "atlas4": {
+          "code": "RC-337081",
+          "name": "archive/877696",
+          "version": 1
+        },
+        "orion9": {
+          "code": "RC-628261",
+          "name": "archive/817478",
+          "version": 1
+        }
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 920,
+          "o200k_base": 904
+        },
+        "final_context_tokens": {
+          "cl100k_base": 920,
+          "o200k_base": 904
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 1993,
+          "o200k_base": 1973
+        },
+        "setup_tokens": {
+          "cl100k_base": 120,
+          "o200k_base": 125
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 633,
+          "o200k_base": 616
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 75,
+          "o200k_base": 74
+        },
+        "model_decisions": 4,
+        "tool_calls": 3
+      },
+      "source_bytes": 102513,
+      "retrieval_plan": "Find the identifying key, or inspect the newest ten artifacts if it is unindexed; scan only observed references to EOF. Candidate searches complete local content for the requested marker.",
+      "failure_reason": null
+    },
+    {
+      "case": "unknown-deep-documents/raw-retained",
+      "success": true,
+      "answers": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        },
+        "atlas4": {
+          "code": "RC-337081",
+          "name": "archive/877696",
+          "version": 1
+        },
+        "orion9": {
+          "code": "RC-628261",
+          "name": "archive/817478",
+          "version": 1
+        }
+      },
+      "expected": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        },
+        "atlas4": {
+          "code": "RC-337081",
+          "name": "archive/877696",
+          "version": 1
+        },
+        "orion9": {
+          "code": "RC-628261",
+          "name": "archive/817478",
+          "version": 1
+        }
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 19774,
+          "o200k_base": 18468
+        },
+        "final_context_tokens": {
+          "cl100k_base": 19774,
+          "o200k_base": 18468
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 19706,
+          "o200k_base": 18402
+        },
+        "setup_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "model_decisions": 1,
+        "tool_calls": 0
+      },
+      "assumption": "Counterfactual exact answering from all supplied sources in one decision; no model reliability claimed."
+    },
+    {
+      "case": "beyond-index/baseline",
+      "success": false,
+      "answers": {
+        "zephyr7": null
+      },
+      "expected": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        }
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 4038,
+          "o200k_base": 3877
+        },
+        "final_context_tokens": {
+          "cl100k_base": 4038,
+          "o200k_base": 3877
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 5189,
+          "o200k_base": 5044
+        },
+        "setup_tokens": {
+          "cl100k_base": 198,
+          "o200k_base": 204
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 3562,
+          "o200k_base": 3396
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 253,
+          "o200k_base": 254
+        },
+        "model_decisions": 4,
+        "tool_calls": 3
+      },
+      "source_bytes": 113727,
+      "retrieval_plan": "Find the identifying key, or inspect the newest ten artifacts if it is unindexed; scan only observed references to EOF. Candidate searches complete local content for the requested marker.",
+      "failure_reason": "Bounded fallback could not discover the relevant unindexed artifact; this is an inconclusive retrieval, not proof of no match."
+    },
+    {
+      "case": "beyond-index/candidate",
+      "success": true,
+      "answers": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        }
+      },
+      "expected": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        }
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 397,
+          "o200k_base": 393
+        },
+        "final_context_tokens": {
+          "cl100k_base": 397,
+          "o200k_base": 393
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 510,
+          "o200k_base": 511
+        },
+        "setup_tokens": {
+          "cl100k_base": 120,
+          "o200k_base": 125
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 210,
+          "o200k_base": 204
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 26,
+          "o200k_base": 25
+        },
+        "model_decisions": 2,
+        "tool_calls": 1
+      },
+      "source_bytes": 113727,
+      "retrieval_plan": "Find the identifying key, or inspect the newest ten artifacts if it is unindexed; scan only observed references to EOF. Candidate searches complete local content for the requested marker.",
+      "failure_reason": null
+    },
+    {
+      "case": "beyond-index/raw-retained",
+      "success": true,
+      "answers": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        }
+      },
+      "expected": {
+        "zephyr7": {
+          "code": "RC-766200",
+          "name": "archive/178426",
+          "version": 1
+        }
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 21956,
+          "o200k_base": 20501
+        },
+        "final_context_tokens": {
+          "cl100k_base": 21956,
+          "o200k_base": 20501
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 21932,
+          "o200k_base": 20478
+        },
+        "setup_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "model_decisions": 1,
+        "tool_calls": 0
+      },
+      "assumption": "Counterfactual exact answering from all supplied sources in one decision; no model reliability claimed."
+    },
+    {
+      "case": "unknown-wide-table/baseline",
+      "success": true,
+      "answers": [
+        {
+          "schema": {
+            "columns": [
+              "row_id",
+              "feature_01",
+              "feature_02",
+              "feature_03",
+              "feature_04",
+              "feature_05",
+              "feature_06",
+              "feature_07",
+              "feature_08",
+              "feature_09",
+              "feature_10",
+              "feature_11",
+              "feature_12",
+              "feature_13",
+              "feature_14",
+              "feature_15",
+              "feature_16",
+              "feature_17",
+              "feature_18",
+              "feature_19",
+              "feature_20",
+              "feature_21",
+              "feature_22",
+              "feature_23",
+              "feature_24",
+              "feature_25",
+              "feature_26",
+              "feature_27",
+              "feature_28",
+              "feature_29",
+              "feature_30",
+              "feature_31",
+              "feature_32",
+              "feature_33",
+              "actual_return_bp"
+            ],
+            "types": [
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT"
+            ]
+          },
+          "answer": 200
+        },
+        1009,
+        -296,
+        297,
+        137,
+        101,
+        66,
+        33
+      ],
+      "expected": [
+        {
+          "schema": {
+            "columns": [
+              "row_id",
+              "feature_01",
+              "feature_02",
+              "feature_03",
+              "feature_04",
+              "feature_05",
+              "feature_06",
+              "feature_07",
+              "feature_08",
+              "feature_09",
+              "feature_10",
+              "feature_11",
+              "feature_12",
+              "feature_13",
+              "feature_14",
+              "feature_15",
+              "feature_16",
+              "feature_17",
+              "feature_18",
+              "feature_19",
+              "feature_20",
+              "feature_21",
+              "feature_22",
+              "feature_23",
+              "feature_24",
+              "feature_25",
+              "feature_26",
+              "feature_27",
+              "feature_28",
+              "feature_29",
+              "feature_30",
+              "feature_31",
+              "feature_32",
+              "feature_33",
+              "actual_return_bp"
+            ],
+            "types": [
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT"
+            ]
+          },
+          "answer": 200
+        },
+        1009,
+        -296,
+        297,
+        137,
+        101,
+        66,
+        33
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1852,
+          "o200k_base": 1902
+        },
+        "final_context_tokens": {
+          "cl100k_base": 1852,
+          "o200k_base": 1902
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 23371,
+          "o200k_base": 24148
+        },
+        "setup_tokens": {
+          "cl100k_base": 202,
+          "o200k_base": 208
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 705,
+          "o200k_base": 748
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 529,
+          "o200k_base": 529
+        },
+        "model_decisions": 19,
+        "tool_calls": 11
+      },
+      "schema_columns_verified": 35,
+      "schema_contains_row_samples": false
+    },
+    {
+      "case": "unknown-wide-table/candidate",
+      "success": true,
+      "answers": [
+        {
+          "schema": {
+            "columns": [
+              "row_id",
+              "feature_01",
+              "feature_02",
+              "feature_03",
+              "feature_04",
+              "feature_05",
+              "feature_06",
+              "feature_07",
+              "feature_08",
+              "feature_09",
+              "feature_10",
+              "feature_11",
+              "feature_12",
+              "feature_13",
+              "feature_14",
+              "feature_15",
+              "feature_16",
+              "feature_17",
+              "feature_18",
+              "feature_19",
+              "feature_20",
+              "feature_21",
+              "feature_22",
+              "feature_23",
+              "feature_24",
+              "feature_25",
+              "feature_26",
+              "feature_27",
+              "feature_28",
+              "feature_29",
+              "feature_30",
+              "feature_31",
+              "feature_32",
+              "feature_33",
+              "actual_return_bp"
+            ],
+            "types": [
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT"
+            ]
+          },
+          "answer": 200
+        },
+        1009,
+        -296,
+        297,
+        137,
+        101,
+        66,
+        33
+      ],
+      "expected": [
+        {
+          "schema": {
+            "columns": [
+              "row_id",
+              "feature_01",
+              "feature_02",
+              "feature_03",
+              "feature_04",
+              "feature_05",
+              "feature_06",
+              "feature_07",
+              "feature_08",
+              "feature_09",
+              "feature_10",
+              "feature_11",
+              "feature_12",
+              "feature_13",
+              "feature_14",
+              "feature_15",
+              "feature_16",
+              "feature_17",
+              "feature_18",
+              "feature_19",
+              "feature_20",
+              "feature_21",
+              "feature_22",
+              "feature_23",
+              "feature_24",
+              "feature_25",
+              "feature_26",
+              "feature_27",
+              "feature_28",
+              "feature_29",
+              "feature_30",
+              "feature_31",
+              "feature_32",
+              "feature_33",
+              "actual_return_bp"
+            ],
+            "types": [
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT"
+            ]
+          },
+          "answer": 200
+        },
+        1009,
+        -296,
+        297,
+        137,
+        101,
+        66,
+        33
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1848,
+          "o200k_base": 1870
+        },
+        "final_context_tokens": {
+          "cl100k_base": 1848,
+          "o200k_base": 1870
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 22924,
+          "o200k_base": 23232
+        },
+        "setup_tokens": {
+          "cl100k_base": 303,
+          "o200k_base": 314
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 690,
+          "o200k_base": 700
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 439,
+          "o200k_base": 439
+        },
+        "model_decisions": 18,
+        "tool_calls": 10
+      },
+      "schema_columns_verified": 35,
+      "schema_contains_row_samples": false
+    },
+    {
+      "case": "unknown-wide-table/raw-retained",
+      "success": true,
+      "answers": [
+        {
+          "schema": {
+            "columns": [
+              "row_id",
+              "feature_01",
+              "feature_02",
+              "feature_03",
+              "feature_04",
+              "feature_05",
+              "feature_06",
+              "feature_07",
+              "feature_08",
+              "feature_09",
+              "feature_10",
+              "feature_11",
+              "feature_12",
+              "feature_13",
+              "feature_14",
+              "feature_15",
+              "feature_16",
+              "feature_17",
+              "feature_18",
+              "feature_19",
+              "feature_20",
+              "feature_21",
+              "feature_22",
+              "feature_23",
+              "feature_24",
+              "feature_25",
+              "feature_26",
+              "feature_27",
+              "feature_28",
+              "feature_29",
+              "feature_30",
+              "feature_31",
+              "feature_32",
+              "feature_33",
+              "actual_return_bp"
+            ],
+            "types": [
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT"
+            ]
+          },
+          "answer": 200
+        },
+        1009,
+        -296,
+        297,
+        137,
+        101,
+        66,
+        33
+      ],
+      "expected": [
+        {
+          "schema": {
+            "columns": [
+              "row_id",
+              "feature_01",
+              "feature_02",
+              "feature_03",
+              "feature_04",
+              "feature_05",
+              "feature_06",
+              "feature_07",
+              "feature_08",
+              "feature_09",
+              "feature_10",
+              "feature_11",
+              "feature_12",
+              "feature_13",
+              "feature_14",
+              "feature_15",
+              "feature_16",
+              "feature_17",
+              "feature_18",
+              "feature_19",
+              "feature_20",
+              "feature_21",
+              "feature_22",
+              "feature_23",
+              "feature_24",
+              "feature_25",
+              "feature_26",
+              "feature_27",
+              "feature_28",
+              "feature_29",
+              "feature_30",
+              "feature_31",
+              "feature_32",
+              "feature_33",
+              "actual_return_bp"
+            ],
+            "types": [
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT",
+              "BIGINT"
+            ]
+          },
+          "answer": 200
+        },
+        1009,
+        -296,
+        297,
+        137,
+        101,
+        66,
+        33
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 14564,
+          "o200k_base": 14565
+        },
+        "final_context_tokens": {
+          "cl100k_base": 14564,
+          "o200k_base": 14565
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 115730,
+          "o200k_base": 115737
+        },
+        "setup_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "model_decisions": 8,
+        "tool_calls": 0
+      },
+      "assumption": "CSV injected once and retained across all eight questions; exact scalar answers are deterministic, not model-generated."
+    },
+    {
+      "case": "repeated-freshness/baseline",
+      "success": true,
+      "answers": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "expected": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 4158,
+          "o200k_base": 3979
+        },
+        "final_context_tokens": {
+          "cl100k_base": 4158,
+          "o200k_base": 3979
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 39757,
+          "o200k_base": 38142
+        },
+        "setup_tokens": {
+          "cl100k_base": 149,
+          "o200k_base": 154
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 3381,
+          "o200k_base": 3196
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 212,
+          "o200k_base": 213
+        },
+        "model_decisions": 18,
+        "tool_calls": 10
+      },
+      "unchanged_bodies_reused": 5,
+      "background_updates": [
+        "unrelated",
+        "body",
+        "body"
+      ],
+      "exact_reconstructed_versions_verified": 8,
+      "delta_fallback_reads": 0,
+      "delta_patches_applied": 0
+    },
+    {
+      "case": "repeated-freshness/candidate",
+      "success": true,
+      "answers": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "expected": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 2593,
+          "o200k_base": 2553
+        },
+        "final_context_tokens": {
+          "cl100k_base": 2593,
+          "o200k_base": 2553
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 29691,
+          "o200k_base": 29007
+        },
+        "setup_tokens": {
+          "cl100k_base": 256,
+          "o200k_base": 264
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 1654,
+          "o200k_base": 1602
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 267,
+          "o200k_base": 271
+        },
+        "model_decisions": 16,
+        "tool_calls": 8
+      },
+      "unchanged_bodies_reused": 5,
+      "background_updates": [
+        "unrelated",
+        "body",
+        "body"
+      ],
+      "exact_reconstructed_versions_verified": 8,
+      "delta_fallback_reads": 0,
+      "delta_patches_applied": 2
+    },
+    {
+      "case": "repeated-freshness/raw-retained",
+      "success": true,
+      "answers": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "expected": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3320,
+          "o200k_base": 3128
+        },
+        "final_context_tokens": {
+          "cl100k_base": 3320,
+          "o200k_base": 3128
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 15288,
+          "o200k_base": 14392
+        },
+        "setup_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "model_decisions": 8,
+        "tool_calls": 0
+      },
+      "assumption": "Upstream supplies each changed complete source exactly once; unchanged turns retain history. This is an answering lower bound, not an implemented freshness protocol."
+    },
+    {
+      "case": "coarse-rewrite/baseline",
+      "success": true,
+      "answers": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "expected": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 4178,
+          "o200k_base": 3991
+        },
+        "final_context_tokens": {
+          "cl100k_base": 4178,
+          "o200k_base": 3991
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 39867,
+          "o200k_base": 38165
+        },
+        "setup_tokens": {
+          "cl100k_base": 149,
+          "o200k_base": 154
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 3395,
+          "o200k_base": 3203
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 218,
+          "o200k_base": 218
+        },
+        "model_decisions": 18,
+        "tool_calls": 10
+      },
+      "unchanged_bodies_reused": 5,
+      "background_updates": [
+        "unrelated",
+        "body",
+        "body"
+      ],
+      "exact_reconstructed_versions_verified": 8,
+      "delta_fallback_reads": 0,
+      "delta_patches_applied": 0
+    },
+    {
+      "case": "coarse-rewrite/candidate",
+      "success": true,
+      "answers": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "expected": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 4819,
+          "o200k_base": 4629
+        },
+        "final_context_tokens": {
+          "cl100k_base": 4819,
+          "o200k_base": 4629
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 46220,
+          "o200k_base": 44559
+        },
+        "setup_tokens": {
+          "cl100k_base": 256,
+          "o200k_base": 264
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 3804,
+          "o200k_base": 3608
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 343,
+          "o200k_base": 341
+        },
+        "model_decisions": 18,
+        "tool_calls": 10
+      },
+      "unchanged_bodies_reused": 5,
+      "background_updates": [
+        "unrelated",
+        "body",
+        "body"
+      ],
+      "exact_reconstructed_versions_verified": 8,
+      "delta_fallback_reads": 2,
+      "delta_patches_applied": 0
+    },
+    {
+      "case": "coarse-rewrite/raw-retained",
+      "success": true,
+      "answers": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "expected": [
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-0",
+          "version": 1,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-1",
+          "version": 2,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        },
+        {
+          "instruction": "route-2",
+          "version": 3,
+          "stale_inputs": false
+        }
+      ],
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3320,
+          "o200k_base": 3128
+        },
+        "final_context_tokens": {
+          "cl100k_base": 3320,
+          "o200k_base": 3128
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 15288,
+          "o200k_base": 14392
+        },
+        "setup_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "model_decisions": 8,
+        "tool_calls": 0
+      },
+      "assumption": "Upstream supplies each changed complete source exactly once; unchanged turns retain history. This is an answering lower bound, not an implemented freshness protocol."
+    },
+    {
+      "case": "complete-read/baseline",
+      "success": true,
+      "answers": {
+        "complete_artifacts": 120
+      },
+      "expected": {
+        "complete_artifacts": 120
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 105359,
+          "o200k_base": 105386
+        },
+        "final_context_tokens": {
+          "cl100k_base": 105359,
+          "o200k_base": 105386
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 509985,
+          "o200k_base": 510146
+        },
+        "setup_tokens": {
+          "cl100k_base": 149,
+          "o200k_base": 154
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 99934,
+          "o200k_base": 99944
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 2689,
+          "o200k_base": 2699
+        },
+        "model_decisions": 9,
+        "tool_calls": 8
+      },
+      "exact_source_bytes_verified": 438365
+    },
+    {
+      "case": "complete-read/candidate",
+      "success": true,
+      "answers": {
+        "complete_artifacts": 120
+      },
+      "expected": {
+        "complete_artifacts": 120
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 101792,
+          "o200k_base": 101931
+        },
+        "final_context_tokens": {
+          "cl100k_base": 101792,
+          "o200k_base": 101931
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 493086,
+          "o200k_base": 493779
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 96350,
+          "o200k_base": 96472
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 2689,
+          "o200k_base": 2699
+        },
+        "model_decisions": 9,
+        "tool_calls": 8
+      },
+      "exact_source_bytes_verified": 438365
+    },
+    {
+      "case": "complete-read/raw-retained",
+      "success": true,
+      "answers": {
+        "complete_artifacts": 120
+      },
+      "expected": {
+        "complete_artifacts": 120
+      },
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 96432,
+          "o200k_base": 96434
+        },
+        "final_context_tokens": {
+          "cl100k_base": 96432,
+          "o200k_base": 96434
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 96425,
+          "o200k_base": 96427
+        },
+        "setup_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "assistant_tool_call_tokens": {
+          "cl100k_base": 0,
+          "o200k_base": 0
+        },
+        "model_decisions": 1,
+        "tool_calls": 0
+      },
+      "assumption": "Known-reference manifest is included in every arm; all exact source content reaches the raw counterfactual in one decision."
+    }
+  ],
+  "comparisons": {
+    "beyond-index": {
+      "baseline_success": false,
+      "candidate_success": true,
+      "savings_pct": null
+    },
+    "coarse-rewrite": {
+      "baseline_success": true,
+      "candidate_success": true,
+      "savings_pct": {
+        "new_payload_tokens": {
+          "cl100k_base": -15.34,
+          "o200k_base": -15.99
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": -15.94,
+          "o200k_base": -16.75
+        }
+      }
+    },
+    "complete-read": {
+      "baseline_success": true,
+      "candidate_success": true,
+      "savings_pct": {
+        "new_payload_tokens": {
+          "cl100k_base": 3.39,
+          "o200k_base": 3.28
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 3.31,
+          "o200k_base": 3.21
+        }
+      }
+    },
+    "repeated-freshness": {
+      "baseline_success": true,
+      "candidate_success": true,
+      "savings_pct": {
+        "new_payload_tokens": {
+          "cl100k_base": 37.64,
+          "o200k_base": 35.84
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 25.32,
+          "o200k_base": 23.95
+        }
+      }
+    },
+    "unknown-deep-documents": {
+      "baseline_success": true,
+      "candidate_success": true,
+      "savings_pct": {
+        "new_payload_tokens": {
+          "cl100k_base": 95.47,
+          "o200k_base": 95.28
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 98.61,
+          "o200k_base": 98.54
+        }
+      }
+    },
+    "unknown-wide-table": {
+      "baseline_success": true,
+      "candidate_success": true,
+      "savings_pct": {
+        "new_payload_tokens": {
+          "cl100k_base": 0.22,
+          "o200k_base": 1.68
+        },
+        "cumulative_input_exposure": {
+          "cl100k_base": 1.91,
+          "o200k_base": 3.79
+        }
+      }
+    }
+  },
+  "traces_sha256": "0fea9d649bff2b415d38fd7400753ea89ffc05642f59ab8e629d9994907a8ef1"
+}

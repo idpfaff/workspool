@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-workbook"
+version = "0.4.1"
+description = "Workspool: a local, versioned workbook for humans and MCP agents"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "LicenseRef-MIT-Commons-Clause"
+license-files = ["LICENSE"]
+dependencies = [
+    "duckdb>=1.5,<2",
+    "mcp>=1.26,<2",
+    "pydantic>=2.10,<3",
+    "starlette>=0.27,<2",
+]
+
+[project.optional-dependencies]
+benchmark = ["tokenizers>=0.21,<1"]
+
+[project.scripts]
+workspool = "agent_workbook.cli:main"
+agent-workbook = "agent_workbook.cli:main"
+
+[dependency-groups]
+dev = ["httpx>=0.28,<1", "pytest>=8,<10", "ruff>=0.15,<1"]
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_workbook"]

@@ -1,0 +1,25 @@
+{
+  "results_sha256": "5325a2fdb7cb3df0bffea26a48784db1899e2af30d58328b2810482ad3276c83",
+  "trace_sha256": "0cc79eb618f3d1ce0cdb012bf97ad9930dc9464cad44c238f6a24776e91e707e",
+  "audit_script_sha256": "1f6223d35a631b9acfc711848b5520bfdd2c642ab3ebbb0de650468ecb420337",
+  "tokenizers": [
+    "cl100k_base",
+    "o200k_base"
+  ],
+  "traces_recounted": 198,
+  "cases_verified": 72,
+  "all_token_counts_match": true,
+  "all_current_sources_match_recorded_hashes": true,
+  "current_source_hash_matches": {
+    "benchmarks/efficiency.py": true,
+    "benchmarks/token_reduction.py": true,
+    "src/agent_workbook/__init__.py": true,
+    "src/agent_workbook/bench.py": true,
+    "src/agent_workbook/cli.py": true,
+    "src/agent_workbook/discovery.py": true,
+    "src/agent_workbook/query.py": true,
+    "src/agent_workbook/server.py": true,
+    "src/agent_workbook/settings.py": true,
+    "src/agent_workbook/store.py": true
+  }
+}

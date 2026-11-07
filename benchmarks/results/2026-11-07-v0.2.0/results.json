@@ -1,0 +1,2024 @@
+{
+  "started_at": "2026-11-07T12:46:11.832872+00:00",
+  "code_commit": "d643436c7100f51880a09d2d5e9d0f05a93ae94e",
+  "harness_sha256": "4ff22d946966f04c846ebaba7d66cefbe4859ec263b9cbec53561f633bb51905",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+  "python": "3.12.14",
+  "packages": {
+    "mcp": "1.30.0",
+    "duckdb": "1.5.6",
+    "tokenizers": "0.23.3"
+  },
+  "tokenizers": [
+    "qwen2.5",
+    "cl100k_base"
+  ],
+  "qwen_tokenizer_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+  "accounting": {
+    "tokens": "Sum of separately tokenized initialize instructions, full tool definitions (including output schemas), user prompts, tools/call request objects, and actual MCP text responses. Import commands and their stdout are counted in ingestion. Requests are model-output-like; responses and definitions are model-input-like. This is payload accounting, not measured provider billing.",
+    "full_result_json_tokens": "Same accounting, replacing text responses with full CallToolResult JSON, including structuredContent duplication. Host behavior varies.",
+    "raw_baseline": "User question plus every raw CSV row or document in each independent session. Counterfactual token volume; large cases may not fit a model context window.",
+    "direct_controls": "Local DuckDB and targeted file access show that ordinary tools can also avoid putting raw data in context. Workspool's additional benefit is persisted references, checkpoints, versions, and freshness.",
+    "excluded": "No LLM inference, model reasoning or final-answer tokens, chat role framing, prompt caching, SDK initialize/list_tools wire envelopes, host-specific wrappers, Mac/MLX speed or memory claims. No claims about end-to-end task quality from scripted tool selection.",
+    "fixtures": "Deterministic synthetic data, fixed random seeds. Correct results checked independently in Python; no real market or personal data."
+  },
+  "cases": [
+    {
+      "case": "table",
+      "rows": 20,
+      "fixture_bytes": 472,
+      "fixture_sha256": "9933e401ea8173ceef43bd0e8353bbcc118dd00e8709b01d9f32ff8fd0cb77da",
+      "expected": [
+        20,
+        11,
+        570,
+        10818880
+      ],
+      "verified_sessions": 5,
+      "ingestion_and_checkpoint": {
+        "tokens": {
+          "qwen2.5": 1067,
+          "cl100k_base": 1007
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 1144,
+          "cl100k_base": 1074
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 189,
+            "cl100k_base": 175
+          },
+          "responses": {
+            "qwen2.5": 217,
+            "cl100k_base": 180
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.056
+      },
+      "sessions": [
+        {
+          "tokens": {
+            "qwen2.5": 1090,
+            "cl100k_base": 1017
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1429,
+            "cl100k_base": 1303
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 113
+            },
+            "responses": {
+              "qwen2.5": 282,
+              "cl100k_base": 229
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0224
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1090,
+            "cl100k_base": 1017
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1429,
+            "cl100k_base": 1303
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 113
+            },
+            "responses": {
+              "qwen2.5": 282,
+              "cl100k_base": 229
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0263
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1090,
+            "cl100k_base": 1017
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1429,
+            "cl100k_base": 1303
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 113
+            },
+            "responses": {
+              "qwen2.5": 282,
+              "cl100k_base": 229
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0208
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1090,
+            "cl100k_base": 1017
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1429,
+            "cl100k_base": 1303
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 113
+            },
+            "responses": {
+              "qwen2.5": 282,
+              "cl100k_base": 229
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0249
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1090,
+            "cl100k_base": 1017
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1429,
+            "cl100k_base": 1303
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 113
+            },
+            "responses": {
+              "qwen2.5": 282,
+              "cl100k_base": 229
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0207
+        }
+      ],
+      "warm_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 333,
+          "workspool_tokens": 1090,
+          "reduction_pct": -227.33
+        },
+        "cl100k_base": {
+          "raw_tokens": 213,
+          "workspool_tokens": 1017,
+          "reduction_pct": -377.46
+        }
+      },
+      "cumulative_including_local_ingestion": {
+        "1": {
+          "qwen2.5": {
+            "raw_tokens": 333,
+            "workspool_tokens": 2157,
+            "reduction_pct": -547.75
+          },
+          "cl100k_base": {
+            "raw_tokens": 213,
+            "workspool_tokens": 2024,
+            "reduction_pct": -850.23
+          }
+        },
+        "5": {
+          "qwen2.5": {
+            "raw_tokens": 1665,
+            "workspool_tokens": 6517,
+            "reduction_pct": -291.41
+          },
+          "cl100k_base": {
+            "raw_tokens": 1065,
+            "workspool_tokens": 6092,
+            "reduction_pct": -472.02
+          }
+        }
+      },
+      "direct_local_sql_control": {
+        "tokens": {
+          "qwen2.5": 251,
+          "cl100k_base": 241
+        },
+        "expected": [
+          20,
+          11,
+          570,
+          10818880
+        ],
+        "scope": "Executed local DuckDB control; canonical shell schema and command/result payload, no model inference."
+      }
+    },
+    {
+      "case": "table",
+      "rows": 2000,
+      "fixture_bytes": 47996,
+      "fixture_sha256": "44b3a29634c8dc775ebb589aef49cafdbcbbf2946031a919423cf4c0a7d3aa2b",
+      "expected": [
+        2000,
+        1010,
+        -574,
+        990082224
+      ],
+      "verified_sessions": 5,
+      "ingestion_and_checkpoint": {
+        "tokens": {
+          "qwen2.5": 1086,
+          "cl100k_base": 1018
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 1164,
+          "cl100k_base": 1085
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 199,
+            "cl100k_base": 181
+          },
+          "responses": {
+            "qwen2.5": 226,
+            "cl100k_base": 185
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0562
+      },
+      "sessions": [
+        {
+          "tokens": {
+            "qwen2.5": 1114,
+            "cl100k_base": 1032
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1473,
+            "cl100k_base": 1330
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 128,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 241
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0558
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1114,
+            "cl100k_base": 1032
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1473,
+            "cl100k_base": 1330
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 128,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 241
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0593
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1114,
+            "cl100k_base": 1032
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1473,
+            "cl100k_base": 1330
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 128,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 241
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0759
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1114,
+            "cl100k_base": 1032
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1473,
+            "cl100k_base": 1330
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 128,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 241
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0576
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1114,
+            "cl100k_base": 1032
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1473,
+            "cl100k_base": 1330
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 128,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 241
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0549
+        }
+      ],
+      "warm_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 33811,
+          "workspool_tokens": 1114,
+          "reduction_pct": 96.71
+        },
+        "cl100k_base": {
+          "raw_tokens": 19029,
+          "workspool_tokens": 1032,
+          "reduction_pct": 94.58
+        }
+      },
+      "cumulative_including_local_ingestion": {
+        "1": {
+          "qwen2.5": {
+            "raw_tokens": 33811,
+            "workspool_tokens": 2200,
+            "reduction_pct": 93.49
+          },
+          "cl100k_base": {
+            "raw_tokens": 19029,
+            "workspool_tokens": 2050,
+            "reduction_pct": 89.23
+          }
+        },
+        "5": {
+          "qwen2.5": {
+            "raw_tokens": 169055,
+            "workspool_tokens": 6656,
+            "reduction_pct": 96.06
+          },
+          "cl100k_base": {
+            "raw_tokens": 95145,
+            "workspool_tokens": 6178,
+            "reduction_pct": 93.51
+          }
+        }
+      },
+      "direct_local_sql_control": {
+        "tokens": {
+          "qwen2.5": 258,
+          "cl100k_base": 244
+        },
+        "expected": [
+          2000,
+          1010,
+          -574,
+          990082224
+        ],
+        "scope": "Executed local DuckDB control; canonical shell schema and command/result payload, no model inference."
+      },
+      "inline_cold_start": {
+        "tokens": {
+          "qwen2.5": 34914,
+          "cl100k_base": 20055
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 35173,
+          "cl100k_base": 20268
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 23,
+            "cl100k_base": 23
+          },
+          "requests": {
+            "qwen2.5": 34034,
+            "cl100k_base": 19230
+          },
+          "responses": {
+            "qwen2.5": 196,
+            "cl100k_base": 150
+          }
+        },
+        "tool_calls": 3,
+        "tool_seconds": 0.0637
+      },
+      "inline_cold_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 33811,
+          "workspool_tokens": 34914,
+          "reduction_pct": -3.26
+        },
+        "cl100k_base": {
+          "raw_tokens": 19029,
+          "workspool_tokens": 20055,
+          "reduction_pct": -5.39
+        }
+      },
+      "inline_reuse_sessions": [
+        {
+          "tokens": {
+            "qwen2.5": 1089,
+            "cl100k_base": 1012
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1427,
+            "cl100k_base": 1292
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 114
+            },
+            "responses": {
+              "qwen2.5": 281,
+              "cl100k_base": 223
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0694
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1089,
+            "cl100k_base": 1012
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1427,
+            "cl100k_base": 1292
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 114
+            },
+            "responses": {
+              "qwen2.5": 281,
+              "cl100k_base": 223
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0825
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1089,
+            "cl100k_base": 1012
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1427,
+            "cl100k_base": 1292
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 114
+            },
+            "responses": {
+              "qwen2.5": 281,
+              "cl100k_base": 223
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.056
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1089,
+            "cl100k_base": 1012
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1427,
+            "cl100k_base": 1292
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 124,
+              "cl100k_base": 114
+            },
+            "responses": {
+              "qwen2.5": 281,
+              "cl100k_base": 223
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0569
+        }
+      ],
+      "inline_lifecycle_comparison": {
+        "qwen2.5": {
+          "sessions": 5,
+          "raw_tokens": 169055,
+          "workspool_tokens": 39270,
+          "reduction_pct": 76.77
+        },
+        "cl100k_base": {
+          "sessions": 5,
+          "raw_tokens": 95145,
+          "workspool_tokens": 24103,
+          "reduction_pct": 74.67
+        }
+      }
+    },
+    {
+      "case": "table",
+      "rows": 20000,
+      "fixture_bytes": 499958,
+      "fixture_sha256": "0d3fbb44e0d6eee31bb4bf3ba893c72bf6b4d14830a586821dc4c64bdfaba333",
+      "expected": [
+        20000,
+        9976,
+        2506,
+        10030836279
+      ],
+      "verified_sessions": 5,
+      "ingestion_and_checkpoint": {
+        "tokens": {
+          "qwen2.5": 1086,
+          "cl100k_base": 1023
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 1163,
+          "cl100k_base": 1093
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 200,
+            "cl100k_base": 182
+          },
+          "responses": {
+            "qwen2.5": 225,
+            "cl100k_base": 189
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0581
+      },
+      "sessions": [
+        {
+          "tokens": {
+            "qwen2.5": 1110,
+            "cl100k_base": 1041
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1467,
+            "cl100k_base": 1347
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 126,
+              "cl100k_base": 117
+            },
+            "responses": {
+              "qwen2.5": 300,
+              "cl100k_base": 249
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0807
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1110,
+            "cl100k_base": 1041
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1467,
+            "cl100k_base": 1347
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 126,
+              "cl100k_base": 117
+            },
+            "responses": {
+              "qwen2.5": 300,
+              "cl100k_base": 249
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.081
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1110,
+            "cl100k_base": 1041
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1467,
+            "cl100k_base": 1347
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 126,
+              "cl100k_base": 117
+            },
+            "responses": {
+              "qwen2.5": 300,
+              "cl100k_base": 249
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0733
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1110,
+            "cl100k_base": 1041
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1467,
+            "cl100k_base": 1347
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 126,
+              "cl100k_base": 117
+            },
+            "responses": {
+              "qwen2.5": 300,
+              "cl100k_base": 249
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0745
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1110,
+            "cl100k_base": 1041
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1467,
+            "cl100k_base": 1347
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 126,
+              "cl100k_base": 117
+            },
+            "responses": {
+              "qwen2.5": 300,
+              "cl100k_base": 249
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0735
+        }
+      ],
+      "warm_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 357980,
+          "workspool_tokens": 1110,
+          "reduction_pct": 99.69
+        },
+        "cl100k_base": {
+          "raw_tokens": 199014,
+          "workspool_tokens": 1041,
+          "reduction_pct": 99.48
+        }
+      },
+      "cumulative_including_local_ingestion": {
+        "1": {
+          "qwen2.5": {
+            "raw_tokens": 357980,
+            "workspool_tokens": 2196,
+            "reduction_pct": 99.39
+          },
+          "cl100k_base": {
+            "raw_tokens": 199014,
+            "workspool_tokens": 2064,
+            "reduction_pct": 98.96
+          }
+        },
+        "5": {
+          "qwen2.5": {
+            "raw_tokens": 1789900,
+            "workspool_tokens": 6636,
+            "reduction_pct": 99.63
+          },
+          "cl100k_base": {
+            "raw_tokens": 995070,
+            "workspool_tokens": 6228,
+            "reduction_pct": 99.37
+          }
+        }
+      },
+      "direct_local_sql_control": {
+        "tokens": {
+          "qwen2.5": 263,
+          "cl100k_base": 246
+        },
+        "expected": [
+          20000,
+          9976,
+          2506,
+          10030836279
+        ],
+        "scope": "Executed local DuckDB control; canonical shell schema and command/result payload, no model inference."
+      },
+      "update_and_refresh": {
+        "tokens": {
+          "qwen2.5": 1599,
+          "cl100k_base": 1446
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 2082,
+          "cl100k_base": 1839
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 14,
+            "cl100k_base": 14
+          },
+          "requests": {
+            "qwen2.5": 326,
+            "cl100k_base": 311
+          },
+          "responses": {
+            "qwen2.5": 598,
+            "cl100k_base": 469
+          }
+        },
+        "tool_calls": 5,
+        "tool_seconds": 0.2783
+      },
+      "updated_expected": [
+        20000,
+        10703,
+        342506,
+        10030836279
+      ]
+    },
+    {
+      "case": "table",
+      "rows": 200000,
+      "fixture_bytes": 5199018,
+      "fixture_sha256": "d8348b8f97dd7e36f87bb7cabbe383419cbe85069e62f7428f9372f8e6c5ca4a",
+      "expected": [
+        200000,
+        100092,
+        105492,
+        100288363684
+      ],
+      "verified_sessions": 5,
+      "ingestion_and_checkpoint": {
+        "tokens": {
+          "qwen2.5": 1087,
+          "cl100k_base": 1025
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 1162,
+          "cl100k_base": 1090
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 202,
+            "cl100k_base": 185
+          },
+          "responses": {
+            "qwen2.5": 224,
+            "cl100k_base": 188
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0621
+      },
+      "sessions": [
+        {
+          "tokens": {
+            "qwen2.5": 1111,
+            "cl100k_base": 1048
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1470,
+            "cl100k_base": 1358
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 125,
+              "cl100k_base": 120
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 253
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1111,
+            "cl100k_base": 1048
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1470,
+            "cl100k_base": 1358
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 125,
+              "cl100k_base": 120
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 253
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0984
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1111,
+            "cl100k_base": 1048
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1470,
+            "cl100k_base": 1358
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 125,
+              "cl100k_base": 120
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 253
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1005
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1111,
+            "cl100k_base": 1048
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1470,
+            "cl100k_base": 1358
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 125,
+              "cl100k_base": 120
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 253
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1009
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1111,
+            "cl100k_base": 1048
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1470,
+            "cl100k_base": 1358
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 125,
+              "cl100k_base": 120
+            },
+            "responses": {
+              "qwen2.5": 302,
+              "cl100k_base": 253
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.0992
+        }
+      ],
+      "warm_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 3779537,
+          "workspool_tokens": 1111,
+          "reduction_pct": 99.97
+        },
+        "cl100k_base": {
+          "raw_tokens": 1998856,
+          "workspool_tokens": 1048,
+          "reduction_pct": 99.95
+        }
+      },
+      "cumulative_including_local_ingestion": {
+        "1": {
+          "qwen2.5": {
+            "raw_tokens": 3779537,
+            "workspool_tokens": 2198,
+            "reduction_pct": 99.94
+          },
+          "cl100k_base": {
+            "raw_tokens": 1998856,
+            "workspool_tokens": 2073,
+            "reduction_pct": 99.9
+          }
+        },
+        "5": {
+          "qwen2.5": {
+            "raw_tokens": 18897685,
+            "workspool_tokens": 6642,
+            "reduction_pct": 99.96
+          },
+          "cl100k_base": {
+            "raw_tokens": 9994280,
+            "workspool_tokens": 6265,
+            "reduction_pct": 99.94
+          }
+        }
+      },
+      "direct_local_sql_control": {
+        "tokens": {
+          "qwen2.5": 270,
+          "cl100k_base": 246
+        },
+        "expected": [
+          200000,
+          100092,
+          105492,
+          100288363684
+        ],
+        "scope": "Executed local DuckDB control; canonical shell schema and command/result payload, no model inference."
+      }
+    },
+    {
+      "case": "table",
+      "rows": 1000000,
+      "fixture_bytes": 26442490,
+      "fixture_sha256": "068b009d96833b5eebe0815e0d203d8d4563d2e92bcb8e6abd89eb7136e115f9",
+      "expected": [
+        1000000,
+        498626,
+        8308,
+        500219063882
+      ],
+      "verified_sessions": 5,
+      "ingestion_and_checkpoint": {
+        "tokens": {
+          "qwen2.5": 1096,
+          "cl100k_base": 1020
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 1171,
+          "cl100k_base": 1084
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 207,
+            "cl100k_base": 184
+          },
+          "responses": {
+            "qwen2.5": 228,
+            "cl100k_base": 184
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0952
+      },
+      "sessions": [
+        {
+          "tokens": {
+            "qwen2.5": 1119,
+            "cl100k_base": 1033
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1484,
+            "cl100k_base": 1332
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 127,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 308,
+              "cl100k_base": 242
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1433
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1119,
+            "cl100k_base": 1033
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1484,
+            "cl100k_base": 1332
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 127,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 308,
+              "cl100k_base": 242
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1413
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1119,
+            "cl100k_base": 1033
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1484,
+            "cl100k_base": 1332
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 127,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 308,
+              "cl100k_base": 242
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1413
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1119,
+            "cl100k_base": 1033
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1484,
+            "cl100k_base": 1332
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 127,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 308,
+              "cl100k_base": 242
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1426
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1119,
+            "cl100k_base": 1033
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 1484,
+            "cl100k_base": 1332
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 23,
+              "cl100k_base": 23
+            },
+            "requests": {
+              "qwen2.5": 127,
+              "cl100k_base": 116
+            },
+            "responses": {
+              "qwen2.5": 308,
+              "cl100k_base": 242
+            }
+          },
+          "tool_calls": 2,
+          "tool_seconds": 0.1607
+        }
+      ],
+      "warm_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 19343156,
+          "workspool_tokens": 1119,
+          "reduction_pct": 99.99
+        },
+        "cl100k_base": {
+          "raw_tokens": 9998107,
+          "workspool_tokens": 1033,
+          "reduction_pct": 99.99
+        }
+      },
+      "cumulative_including_local_ingestion": {
+        "1": {
+          "qwen2.5": {
+            "raw_tokens": 19343156,
+            "workspool_tokens": 2215,
+            "reduction_pct": 99.99
+          },
+          "cl100k_base": {
+            "raw_tokens": 9998107,
+            "workspool_tokens": 2053,
+            "reduction_pct": 99.98
+          }
+        },
+        "5": {
+          "qwen2.5": {
+            "raw_tokens": 96715780,
+            "workspool_tokens": 6691,
+            "reduction_pct": 99.99
+          },
+          "cl100k_base": {
+            "raw_tokens": 49990535,
+            "workspool_tokens": 6185,
+            "reduction_pct": 99.99
+          }
+        }
+      },
+      "direct_local_sql_control": {
+        "tokens": {
+          "qwen2.5": 270,
+          "cl100k_base": 248
+        },
+        "expected": [
+          1000000,
+          498626,
+          8308,
+          500219063882
+        ],
+        "scope": "Executed local DuckDB control; canonical shell schema and command/result payload, no model inference."
+      }
+    },
+    {
+      "case": "documents",
+      "documents": 120,
+      "corpus_bytes": 438484,
+      "fixture_sha256": "734e3cc1e4c1d89d2aaf723d1d12d66160bbe81d36c4288d3e820903cd05143f",
+      "selected_documents": [
+        7,
+        60,
+        119
+      ],
+      "verified_sessions": 5,
+      "ingestion_and_checkpoint": {
+        "tokens": {
+          "qwen2.5": 30577,
+          "cl100k_base": 26548
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 30653,
+          "cl100k_base": 26611
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 10143,
+            "cl100k_base": 9620
+          },
+          "responses": {
+            "qwen2.5": 19773,
+            "cl100k_base": 16276
+          }
+        },
+        "tool_calls": 121,
+        "tool_seconds": 5.2668
+      },
+      "sessions": [
+        {
+          "tokens": {
+            "qwen2.5": 1715,
+            "cl100k_base": 1479
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 2652,
+            "cl100k_base": 2236
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 35,
+              "cl100k_base": 29
+            },
+            "requests": {
+              "qwen2.5": 189,
+              "cl100k_base": 148
+            },
+            "responses": {
+              "qwen2.5": 830,
+              "cl100k_base": 650
+            }
+          },
+          "tool_calls": 4,
+          "tool_seconds": 0.0073
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1715,
+            "cl100k_base": 1479
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 2652,
+            "cl100k_base": 2236
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 35,
+              "cl100k_base": 29
+            },
+            "requests": {
+              "qwen2.5": 189,
+              "cl100k_base": 148
+            },
+            "responses": {
+              "qwen2.5": 830,
+              "cl100k_base": 650
+            }
+          },
+          "tool_calls": 4,
+          "tool_seconds": 0.0072
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1715,
+            "cl100k_base": 1479
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 2652,
+            "cl100k_base": 2236
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 35,
+              "cl100k_base": 29
+            },
+            "requests": {
+              "qwen2.5": 189,
+              "cl100k_base": 148
+            },
+            "responses": {
+              "qwen2.5": 830,
+              "cl100k_base": 650
+            }
+          },
+          "tool_calls": 4,
+          "tool_seconds": 0.0076
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1715,
+            "cl100k_base": 1479
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 2652,
+            "cl100k_base": 2236
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 35,
+              "cl100k_base": 29
+            },
+            "requests": {
+              "qwen2.5": 189,
+              "cl100k_base": 148
+            },
+            "responses": {
+              "qwen2.5": 830,
+              "cl100k_base": 650
+            }
+          },
+          "tool_calls": 4,
+          "tool_seconds": 0.0071
+        },
+        {
+          "tokens": {
+            "qwen2.5": 1715,
+            "cl100k_base": 1479
+          },
+          "full_result_json_tokens": {
+            "qwen2.5": 2652,
+            "cl100k_base": 2236
+          },
+          "categories": {
+            "setup": {
+              "qwen2.5": 661,
+              "cl100k_base": 652
+            },
+            "prompts": {
+              "qwen2.5": 35,
+              "cl100k_base": 29
+            },
+            "requests": {
+              "qwen2.5": 189,
+              "cl100k_base": 148
+            },
+            "responses": {
+              "qwen2.5": 830,
+              "cl100k_base": 650
+            }
+          },
+          "tool_calls": 4,
+          "tool_seconds": 0.0077
+        }
+      ],
+      "warm_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 110800,
+          "workspool_tokens": 1715,
+          "reduction_pct": 98.45
+        },
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 1479,
+          "reduction_pct": 98.4
+        }
+      },
+      "cumulative_including_local_ingestion": {
+        "qwen2.5": {
+          "raw_tokens": 554000,
+          "workspool_tokens": 39152,
+          "reduction_pct": 92.93
+        },
+        "cl100k_base": {
+          "raw_tokens": 463370,
+          "workspool_tokens": 33943,
+          "reduction_pct": 92.67
+        }
+      },
+      "search_then_inspect": {
+        "tokens": {
+          "qwen2.5": 958,
+          "cl100k_base": 886
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 1210,
+          "cl100k_base": 1094
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 12,
+            "cl100k_base": 10
+          },
+          "requests": {
+            "qwen2.5": 79,
+            "cl100k_base": 62
+          },
+          "responses": {
+            "qwen2.5": 206,
+            "cl100k_base": 162
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0094
+      },
+      "complete_reread": {
+        "tokens": {
+          "qwen2.5": 131068,
+          "cl100k_base": 110051
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 261908,
+          "cl100k_base": 221327
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 12,
+            "cl100k_base": 12
+          },
+          "requests": {
+            "qwen2.5": 6755,
+            "cl100k_base": 5311
+          },
+          "responses": {
+            "qwen2.5": 123640,
+            "cl100k_base": 104076
+          }
+        },
+        "tool_calls": 120,
+        "tool_seconds": 0.2225
+      },
+      "complete_reread_comparison": {
+        "qwen2.5": {
+          "raw_tokens": 110777,
+          "workspool_tokens": 131068,
+          "reduction_pct": -18.32
+        },
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 110051,
+          "reduction_pct": -18.77
+        }
+      },
+      "targeted_file_control_tokens": {
+        "qwen2.5": 389,
+        "cl100k_base": 335
+      }
+    },
+    {
+      "case": "varied_queries",
+      "rows": 200000,
+      "verified_tasks": 3,
+      "dimension_ingestion": {
+        "tokens": {
+          "qwen2.5": 241,
+          "cl100k_base": 211
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 241,
+          "cl100k_base": 211
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 84,
+            "cl100k_base": 80
+          },
+          "responses": {
+            "qwen2.5": 157,
+            "cl100k_base": 131
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0406
+      },
+      "tasks": [
+        {
+          "task": "sector-groups",
+          "expected": [
+            [
+              "energy",
+              40000,
+              48166
+            ],
+            [
+              "finance",
+              40000,
+              10883
+            ],
+            [
+              "health",
+              40000,
+              -22638
+            ],
+            [
+              "materials",
+              40000,
+              51855
+            ],
+            [
+              "technology",
+              40000,
+              17226
+            ]
+          ],
+          "measured": {
+            "tokens": {
+              "qwen2.5": 1092,
+              "cl100k_base": 1024
+            },
+            "full_result_json_tokens": {
+              "qwen2.5": 1487,
+              "cl100k_base": 1360
+            },
+            "categories": {
+              "setup": {
+                "qwen2.5": 661,
+                "cl100k_base": 652
+              },
+              "prompts": {
+                "qwen2.5": 15,
+                "cl100k_base": 15
+              },
+              "requests": {
+                "qwen2.5": 79,
+                "cl100k_base": 79
+              },
+              "responses": {
+                "qwen2.5": 337,
+                "cl100k_base": 278
+              }
+            },
+            "tool_calls": 2,
+            "tool_seconds": 0.0961
+          },
+          "comparison": {
+            "qwen2.5": {
+              "raw_tokens": 3779529,
+              "workspool_tokens": 1092,
+              "reduction_pct": 99.97
+            },
+            "cl100k_base": {
+              "raw_tokens": 1998848,
+              "workspool_tokens": 1024,
+              "reduction_pct": 99.95
+            }
+          }
+        },
+        {
+          "task": "filter-and-rank",
+          "expected": [
+            [
+              196733,
+              "finance",
+              226,
+              999947
+            ],
+            [
+              197362,
+              "energy",
+              226,
+              999926
+            ],
+            [
+              184519,
+              "materials",
+              200,
+              999603
+            ],
+            [
+              40968,
+              "finance",
+              219,
+              999586
+            ],
+            [
+              24561,
+              "health",
+              244,
+              999549
+            ]
+          ],
+          "measured": {
+            "tokens": {
+              "qwen2.5": 1130,
+              "cl100k_base": 1040
+            },
+            "full_result_json_tokens": {
+              "qwen2.5": 1551,
+              "cl100k_base": 1384
+            },
+            "categories": {
+              "setup": {
+                "qwen2.5": 661,
+                "cl100k_base": 652
+              },
+              "prompts": {
+                "qwen2.5": 23,
+                "cl100k_base": 21
+              },
+              "requests": {
+                "qwen2.5": 82,
+                "cl100k_base": 80
+              },
+              "responses": {
+                "qwen2.5": 364,
+                "cl100k_base": 287
+              }
+            },
+            "tool_calls": 2,
+            "tool_seconds": 0.1039
+          },
+          "comparison": {
+            "qwen2.5": {
+              "raw_tokens": 3779537,
+              "workspool_tokens": 1130,
+              "reduction_pct": 99.97
+            },
+            "cl100k_base": {
+              "raw_tokens": 1998854,
+              "workspool_tokens": 1040,
+              "reduction_pct": 99.95
+            }
+          }
+        },
+        {
+          "task": "threshold-join",
+          "expected": [
+            [
+              "energy",
+              10092,
+              5117307265
+            ],
+            [
+              "finance",
+              9316,
+              4631391599
+            ],
+            [
+              "health",
+              8451,
+              4234631995
+            ],
+            [
+              "materials",
+              7670,
+              3872052120
+            ],
+            [
+              "technology",
+              6857,
+              3428469945
+            ]
+          ],
+          "measured": {
+            "tokens": {
+              "qwen2.5": 1187,
+              "cl100k_base": 1096
+            },
+            "full_result_json_tokens": {
+              "qwen2.5": 1635,
+              "cl100k_base": 1462
+            },
+            "categories": {
+              "setup": {
+                "qwen2.5": 661,
+                "cl100k_base": 652
+              },
+              "prompts": {
+                "qwen2.5": 24,
+                "cl100k_base": 24
+              },
+              "requests": {
+                "qwen2.5": 112,
+                "cl100k_base": 112
+              },
+              "responses": {
+                "qwen2.5": 390,
+                "cl100k_base": 308
+              }
+            },
+            "tool_calls": 2,
+            "tool_seconds": 0.1211
+          },
+          "comparison": {
+            "qwen2.5": {
+              "raw_tokens": 3779572,
+              "workspool_tokens": 1187,
+              "reduction_pct": 99.97
+            },
+            "cl100k_base": {
+              "raw_tokens": 1998881,
+              "workspool_tokens": 1096,
+              "reduction_pct": 99.95
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "completed_at": "2026-11-07T12:47:27.097981+00:00"
+}

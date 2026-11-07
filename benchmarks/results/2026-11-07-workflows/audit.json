@@ -1,0 +1,31 @@
+{
+  "results_sha256": "f1486b08c41fd01d421db8cd25e9521c882ce391e49957ca3bf887c3ea5bc6fa",
+  "traces_sha256": "0fea9d649bff2b415d38fd7400753ea89ffc05642f59ab8e629d9994907a8ef1",
+  "audit_script_sha256": "9b7cf0f6f15b4ca550dcdcc3dd9a3cf4742dbee256a7e2b7c18dfbf40443be60",
+  "traces_recounted": 18,
+  "decision_prefixes_recounted": 177,
+  "tokenizers": [
+    "cl100k_base",
+    "o200k_base"
+  ],
+  "all_trace_counts_match": true,
+  "all_outcomes_and_comparisons_match": true,
+  "all_current_candidate_sources_match": true,
+  "current_candidate_source_matches": {
+    "benchmarks/workflow_efficiency.py": true,
+    "benchmarks/efficiency.py": true,
+    "benchmarks/token_reduction.py": true,
+    "src/agent_workbook/__init__.py": true,
+    "src/agent_workbook/bench.py": true,
+    "src/agent_workbook/cli.py": true,
+    "src/agent_workbook/delta.py": true,
+    "src/agent_workbook/discovery.py": true,
+    "src/agent_workbook/query.py": true,
+    "src/agent_workbook/render.py": true,
+    "src/agent_workbook/retrieval.py": true,
+    "src/agent_workbook/server.py": true,
+    "src/agent_workbook/settings.py": true,
+    "src/agent_workbook/store.py": true
+  },
+  "scope": "Independent token recount and comparison arithmetic; no inference, billing, or independent model-reliability validation."
+}

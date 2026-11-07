@@ -1,0 +1,521 @@
+{
+  "code_commit": "d643436c7100f51880a09d2d5e9d0f05a93ae94e",
+  "harness_sha256": "24d100cd5e8ada7fa57e228cbe7c8d798ecbcf55cf2959942ea7705a4ba4dc5d",
+  "scope": "Explicit client optimizations: batch inspect and tool allowlists. Same generated sources and exact outputs. Warm session counts; one-time local imports and checkpoint are recorded separately. No LLM inference.",
+  "tokenizers": [
+    "qwen2.5",
+    "cl100k_base"
+  ],
+  "document_ingestion": {
+    "tokens": {
+      "qwen2.5": 30767,
+      "cl100k_base": 26782
+    },
+    "full_result_json_tokens": {
+      "qwen2.5": 30843,
+      "cl100k_base": 26852
+    },
+    "categories": {
+      "setup": {
+        "qwen2.5": 661,
+        "cl100k_base": 652
+      },
+      "prompts": {
+        "qwen2.5": 0,
+        "cl100k_base": 0
+      },
+      "requests": {
+        "qwen2.5": 10383,
+        "cl100k_base": 9870
+      },
+      "responses": {
+        "qwen2.5": 19723,
+        "cl100k_base": 16260
+      }
+    },
+    "tool_calls": 121,
+    "tool_seconds": 5.491
+  },
+  "cases": [
+    {
+      "case": "targeted_batch_all-tools",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 1669,
+          "cl100k_base": 1484
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 2577,
+          "cl100k_base": 2249
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 35,
+            "cl100k_base": 29
+          },
+          "requests": {
+            "qwen2.5": 141,
+            "cl100k_base": 114
+          },
+          "responses": {
+            "qwen2.5": 832,
+            "cl100k_base": 689
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0044
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 110800,
+          "workspool_tokens": 1669,
+          "reduction_pct": 98.49
+        },
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 1484,
+          "reduction_pct": 98.4
+        }
+      }
+    },
+    {
+      "case": "targeted_batch_two-tools",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 1194,
+          "cl100k_base": 1015
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 2102,
+          "cl100k_base": 1780
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 186,
+            "cl100k_base": 183
+          },
+          "prompts": {
+            "qwen2.5": 35,
+            "cl100k_base": 29
+          },
+          "requests": {
+            "qwen2.5": 141,
+            "cl100k_base": 114
+          },
+          "responses": {
+            "qwen2.5": 832,
+            "cl100k_base": 689
+          }
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0039
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 110800,
+          "workspool_tokens": 1194,
+          "reduction_pct": 98.92
+        },
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 1015,
+          "reduction_pct": 98.9
+        }
+      }
+    },
+    {
+      "case": "complete_reread_batch_all-tools",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 128088,
+          "cl100k_base": 107349
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 256918,
+          "cl100k_base": 216642
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 12,
+            "cl100k_base": 12
+          },
+          "requests": {
+            "qwen2.5": 3905,
+            "cl100k_base": 2712
+          },
+          "responses": {
+            "qwen2.5": 123510,
+            "cl100k_base": 103973
+          }
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.0227
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 110777,
+          "workspool_tokens": 128088,
+          "reduction_pct": -15.63
+        },
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 107349,
+          "reduction_pct": -15.86
+        }
+      }
+    },
+    {
+      "case": "complete_reread_batch_one-tool",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 127570,
+          "cl100k_base": 106837
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 256400,
+          "cl100k_base": 216130
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 143,
+            "cl100k_base": 140
+          },
+          "prompts": {
+            "qwen2.5": 12,
+            "cl100k_base": 12
+          },
+          "requests": {
+            "qwen2.5": 3905,
+            "cl100k_base": 2712
+          },
+          "responses": {
+            "qwen2.5": 123510,
+            "cl100k_base": 103973
+          }
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.0259
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 110777,
+          "workspool_tokens": 127570,
+          "reduction_pct": -15.16
+        },
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 106837,
+          "reduction_pct": -15.3
+        }
+      }
+    },
+    {
+      "case": "known_input_20_all-tools",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 851,
+          "cl100k_base": 817
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 958,
+          "cl100k_base": 901
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 32,
+            "cl100k_base": 31
+          },
+          "requests": {
+            "qwen2.5": 78,
+            "cl100k_base": 77
+          },
+          "responses": {
+            "qwen2.5": 80,
+            "cl100k_base": 57
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0207
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 342,
+          "workspool_tokens": 851,
+          "reduction_pct": -148.83
+        },
+        "cl100k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 817,
+          "reduction_pct": -269.68
+        }
+      },
+      "separate_local_import": {
+        "tokens": {
+          "qwen2.5": 247,
+          "cl100k_base": 214
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 247,
+          "cl100k_base": 214
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 83,
+            "cl100k_base": 81
+          },
+          "responses": {
+            "qwen2.5": 164,
+            "cl100k_base": 133
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0427
+      }
+    },
+    {
+      "case": "known_input_20_one-tool",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 336,
+          "cl100k_base": 311
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 443,
+          "cl100k_base": 395
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 146,
+            "cl100k_base": 146
+          },
+          "prompts": {
+            "qwen2.5": 32,
+            "cl100k_base": 31
+          },
+          "requests": {
+            "qwen2.5": 78,
+            "cl100k_base": 77
+          },
+          "responses": {
+            "qwen2.5": 80,
+            "cl100k_base": 57
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.019
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 342,
+          "workspool_tokens": 336,
+          "reduction_pct": 1.75
+        },
+        "cl100k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 311,
+          "reduction_pct": -40.72
+        }
+      },
+      "separate_local_import": {
+        "tokens": {
+          "qwen2.5": 247,
+          "cl100k_base": 214
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 247,
+          "cl100k_base": 214
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 83,
+            "cl100k_base": 81
+          },
+          "responses": {
+            "qwen2.5": 164,
+            "cl100k_base": 133
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0427
+      }
+    },
+    {
+      "case": "known_input_2000_all-tools",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 861,
+          "cl100k_base": 822
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 974,
+          "cl100k_base": 909
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 661,
+            "cl100k_base": 652
+          },
+          "prompts": {
+            "qwen2.5": 34,
+            "cl100k_base": 32
+          },
+          "requests": {
+            "qwen2.5": 80,
+            "cl100k_base": 78
+          },
+          "responses": {
+            "qwen2.5": 86,
+            "cl100k_base": 60
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0775
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 33822,
+          "workspool_tokens": 861,
+          "reduction_pct": 97.45
+        },
+        "cl100k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 822,
+          "reduction_pct": 95.68
+        }
+      },
+      "separate_local_import": {
+        "tokens": {
+          "qwen2.5": 258,
+          "cl100k_base": 220
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 258,
+          "cl100k_base": 220
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 87,
+            "cl100k_base": 83
+          },
+          "responses": {
+            "qwen2.5": 171,
+            "cl100k_base": 137
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0519
+      }
+    },
+    {
+      "case": "known_input_2000_one-tool",
+      "measured": {
+        "tokens": {
+          "qwen2.5": 346,
+          "cl100k_base": 316
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 459,
+          "cl100k_base": 403
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 146,
+            "cl100k_base": 146
+          },
+          "prompts": {
+            "qwen2.5": 34,
+            "cl100k_base": 32
+          },
+          "requests": {
+            "qwen2.5": 80,
+            "cl100k_base": 78
+          },
+          "responses": {
+            "qwen2.5": 86,
+            "cl100k_base": 60
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0633
+      },
+      "comparison": {
+        "qwen2.5": {
+          "raw_tokens": 33822,
+          "workspool_tokens": 346,
+          "reduction_pct": 98.98
+        },
+        "cl100k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 316,
+          "reduction_pct": 98.34
+        }
+      },
+      "separate_local_import": {
+        "tokens": {
+          "qwen2.5": 258,
+          "cl100k_base": 220
+        },
+        "full_result_json_tokens": {
+          "qwen2.5": 258,
+          "cl100k_base": 220
+        },
+        "categories": {
+          "setup": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "prompts": {
+            "qwen2.5": 0,
+            "cl100k_base": 0
+          },
+          "requests": {
+            "qwen2.5": 87,
+            "cl100k_base": 83
+          },
+          "responses": {
+            "qwen2.5": 171,
+            "cl100k_base": 137
+          }
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0519
+      }
+    }
+  ]
+}

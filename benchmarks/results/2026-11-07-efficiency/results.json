@@ -1,0 +1,4257 @@
+{
+  "generated_at": "2026-11-07T15:07:06.096719+00:00",
+  "code_commit": "995a2737ed8e489f43350fa2b395dd0cb71332a2",
+  "working_tree_status": [
+    " M .gitignore",
+    " M src/agent_workbook/cli.py",
+    " M src/agent_workbook/server.py",
+    "?? benchmarks/audit_efficiency.py",
+    "?? benchmarks/efficiency.py",
+    "?? src/agent_workbook/discovery.py",
+    "?? tests/test_discovery.py",
+    "?? tests/test_text_responses.py"
+  ],
+  "source_sha256": {
+    "benchmarks/efficiency.py": "a508c82f6ca9b1a4d636ae1f0efb300c63f9518babcce6415e1a5e835a64598b",
+    "benchmarks/token_reduction.py": "4ff22d946966f04c846ebaba7d66cefbe4859ec263b9cbec53561f633bb51905",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/cli.py": "7ab6c5285879d289f57ae56b65d16f25559ca6c58c1eb9470b187e4a8c2ecf7b",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "ea863492001be1c0007e720dff419c4cc53dd252634f8014a52dfbfce28a264d",
+    "src/agent_workbook/server.py": "8fd8a337abaeb8ec19d08c4f1d5c00e0e07860511114f52d73b7ae53046f9d61",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
+  },
+  "source_sha256_at_start": {
+    "benchmarks/efficiency.py": "a508c82f6ca9b1a4d636ae1f0efb300c63f9518babcce6415e1a5e835a64598b",
+    "benchmarks/token_reduction.py": "4ff22d946966f04c846ebaba7d66cefbe4859ec263b9cbec53561f633bb51905",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/cli.py": "7ab6c5285879d289f57ae56b65d16f25559ca6c58c1eb9470b187e4a8c2ecf7b",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "ea863492001be1c0007e720dff419c4cc53dd252634f8014a52dfbfce28a264d",
+    "src/agent_workbook/server.py": "8fd8a337abaeb8ec19d08c4f1d5c00e0e07860511114f52d73b7ae53046f9d61",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
+  },
+  "source_files_changed_during_run": [],
+  "runtime": {
+    "python": "3.13.15",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "packages": {
+      "agent-workbook": "0.3.0",
+      "mcp": "1.30.0",
+      "duckdb": "1.5.6",
+      "tokenizers": "0.23.3",
+      "tiktoken": "0.14.0"
+    }
+  },
+  "scope": {
+    "primary": "Warm independent MCP sessions: instructions, listed tool definitions, question, tools/call request, and all decoded text reply blocks joined with newlines. One copy of each is counted.",
+    "alternatives": "structured_only_tokens replaces text replies with compact structuredContent; null means unavailable. full_result_json_tokens replaces replies with complete serialized CallToolResult objects, including any duplicated content.",
+    "raw": "Identical question plus complete local CSV or complete document corpus, supplied directly as text. Raw market rows are neither copied to this report nor included in the traces.",
+    "imports": "Executed CLI imports counted separately as command payload plus full receipt. No shell-tool definition, API data-fetch cost, or upstream source acquisition is included.",
+    "documents": "Known artifact references, batched at 16, with exact excerpt or complete-content assertions. No checkpoint discovery or model tool-choice inference.",
+    "lazy": "Lazy profiles without discover assume the caller already knows each operation's arguments. lazy-discover explicitly fetches each used operation's schema once per session and includes that cost.",
+    "limits": "No provider billing, chat message envelopes, model reasoning, final answers, prompt caching, model reliability, or inference timing measured. Massive's own store_as/query_data workflow is not this raw replay baseline."
+  },
+  "tokenizers": {
+    "cl100k_base": {
+      "package": "tiktoken"
+    },
+    "o200k_base": {
+      "package": "tiktoken"
+    }
+  },
+  "profiles": {
+    "default": {
+      "response_format": "compact",
+      "response_content": "both",
+      "restricted": false
+    },
+    "restricted": {
+      "response_format": "compact",
+      "response_content": "both",
+      "restricted": true
+    },
+    "text": {
+      "response_format": "text",
+      "response_content": "both",
+      "restricted": false
+    },
+    "text-restricted": {
+      "response_format": "text",
+      "response_content": "both",
+      "restricted": true
+    },
+    "text-single-copy": {
+      "response_format": "text",
+      "response_content": "text",
+      "restricted": true
+    },
+    "lazy": {
+      "response_format": "compact",
+      "response_content": "both",
+      "restricted": false,
+      "lazy": true
+    },
+    "lazy-discover": {
+      "response_format": "compact",
+      "response_content": "both",
+      "restricted": false,
+      "lazy": true,
+      "discover": true
+    },
+    "lazy-text": {
+      "response_format": "text",
+      "response_content": "both",
+      "restricted": false,
+      "lazy": true
+    },
+    "lazy-text-single-copy": {
+      "response_format": "text",
+      "response_content": "text",
+      "restricted": false,
+      "lazy": true
+    }
+  },
+  "market_source": {
+    "filename": "massive-aapl-2025.csv",
+    "sha256": "676a7c072de2de748888074a2735ba24a544f34d6e23b4cd6e6731e15984f92d",
+    "description": "User-supplied local Massive aggregate CSV; not redistributed"
+  },
+  "fixtures": [
+    {
+      "case": "synthetic-20",
+      "sha256": "9933e401ea8173ceef43bd0e8353bbcc118dd00e8709b01d9f32ff8fd0cb77da",
+      "bytes": 472,
+      "rows": 20,
+      "expected": [
+        20,
+        11,
+        570,
+        10818880
+      ]
+    },
+    {
+      "case": "synthetic-2000",
+      "sha256": "44b3a29634c8dc775ebb589aef49cafdbcbbf2946031a919423cf4c0a7d3aa2b",
+      "bytes": 47996,
+      "rows": 2000,
+      "expected": [
+        2000,
+        1010,
+        -574,
+        990082224
+      ]
+    },
+    {
+      "case": "massive-1",
+      "sha256": "0467a3544e8cd5f8231a96091a29ce32d2f4ec0739762669110d53d47fdac404",
+      "bytes": 99,
+      "rows": 1,
+      "expected": [
+        1,
+        0,
+        55740731,
+        249.1
+      ]
+    },
+    {
+      "case": "massive-5",
+      "sha256": "112a6b15d96a5f76bb6963d2b5532f8efc245c6f5dd9c1e31f32bc75ec011f09",
+      "bytes": 394,
+      "rows": 5,
+      "expected": [
+        5,
+        2,
+        219515316,
+        249.1
+      ]
+    },
+    {
+      "case": "massive-20",
+      "sha256": "b3ed58fdc58ef0a351822b4488a5a8c3096a88e993882e5f59d5e7ceb4b157a9",
+      "bytes": 1505,
+      "rows": 20,
+      "expected": [
+        20,
+        8,
+        1200291603,
+        249.1
+      ]
+    },
+    {
+      "case": "massive-250",
+      "sha256": "676a7c072de2de748888074a2735ba24a544f34d6e23b4cd6e6731e15984f92d",
+      "bytes": 18561,
+      "rows": 250,
+      "expected": [
+        250,
+        128,
+        13544474239,
+        288.62
+      ]
+    },
+    {
+      "case": "documents-120",
+      "documents": 120,
+      "sha256": "734e3cc1e4c1d89d2aaf723d1d12d66160bbe81d36c4288d3e820903cd05143f",
+      "bytes": 438484,
+      "document_sha256": [
+        "523653aad84ac557b4b1350ccdd6d1842b2095558281a3c5084e516774a24d00",
+        "d3c116567f0e7df4b465922a26be6c510b0f642c752ae72bb62f0e20825d4872",
+        "f45817703e45da21d119e85f5cc4715336f5cd0a152337254ce947cfb5419cd6",
+        "b0d0f9495101ba7d5a12fbcd35d1b23514b7a048b11b88a2d8c0ed487512fbf6",
+        "1b8cd639ba963d29d529e5b57b5409037962980a0645c9968a711c1eb3af5885",
+        "48007c7ac5e946bd4a2fb844f77013b7b058ba5b967416d569fa538370b39609",
+        "86bb3f39979a11c596713ae521657b5ec7f2f491782b0fadbd02cf38671fb186",
+        "47ee0e8be8dd5a4ff26c2d3a90389aad3adf06995b524a27cc8660995e8444fe",
+        "62b66734ae60dcdd8b513c8e5adce7ee57687facd2500127c838349b3fc2c508",
+        "2ce7c20da1fb02591869b2641a6789f875c92038627f877c00475ede290eac6b",
+        "b1ce4953f8cf4c8d391c5173458fdcbba09acaed6f1109a229b2dcb1ee58a2dd",
+        "e22f9e6a6c8742fc097fdfa753e7580383e41094712b62cd3ee2dcc832388f62",
+        "1fc035e67473a93e60329139ae05426f1a2655e55169dce9d02fa1e8f20f4478",
+        "154976f6342b31cf96b1136c052964d15a05b4fc1f5ba836764f72e6c16adefa",
+        "b459c4a784d26d90f791fe2ecb491862f6840fc469e2357e70727b0ed303317f",
+        "c4be681e7c11f7422793a3f249f6e2de812da5d7572c06abfd63afb6a97b41f2",
+        "29f422e8ca0916ef10cd895539f681013aac502b09b2f71cc688da59a1c7f647",
+        "b92562e37884ab25b770634cc89fe38950f603a196e12ec694b14bcfbf3d01fc",
+        "723fa4b77d2e9cab2e087b59c5276ea383a250d75c0ddc7ebced294342fc5289",
+        "e21d66ce10076e372fd2369418385b8c2e1fecaf46f68107fe8c019bc3a684f0",
+        "b432547dff8d0b54318271104f8beff9437b68892a884cd1ea3ecac3cbed21c8",
+        "f25ca5e7e21bdde8a2c27c0e14352a2bbf75b56a9099b99dc105d81d97e011bc",
+        "c9fffe02dcfe639146e7dc1e1faf7e91a45c8f3b24cfd78ddcd469de16a29e68",
+        "c334226b958a37b739e5b0b46080e927e954cbdcb0ede0cd29177b2b80b977db",
+        "1e253eee4e908f20f1fa4af587902c53d051969ebf4d92929b0e9dc0b7e45165",
+        "c8b1facc6423cf85701505c4015b0ad6b44e54b8b87b5cd014af990b8f5fb34a",
+        "f3d5aa6e801ad5ffffa589f113d3e31acaba1a9d5a9bbff9666fc63b27074577",
+        "f17aedfbf4694620336a1db842b467107a725846ac9ad9d288e82d57fcbc003a",
+        "ccdc5386a87b1a6977b58429d9faf2bf9b6835042b833b0c98570b80dd2f49ec",
+        "bcde5945fab32a4236cc8156b0197d800e16d0efa715d7498da731956f129dda",
+        "2815c2bcd0e4efadda3316081de68102886f9c9e1856b29a34e5ec7d000b4ddc",
+        "a09f4e3e732700547a2776953df083073c92eba8a198144588536e3568ade44d",
+        "cc76c4506237f7eea06e7c702724198aba4af200fe29ca5c0ee9d4dadbbb686d",
+        "abf85f42d885f5020b6c8d311af9c6abac46f8e3030b617becb58cbe3ce3e497",
+        "d70876ce30ab2e8e0d6793c8e4e2b31ab4d15682d80df8d68b694b0c48b5cda6",
+        "741d129b28501e0cc654c6e95b216e7d9bc5d8019931b58a25c2021015194442",
+        "791f74cf931f9d864202835d9a20936954d48049acdfc65500b5cc4472da49ab",
+        "74b66cda8d5c1e2ee85f47ae88b2a74725d368919a3b26a4265e1a16757b1b6f",
+        "c012acfc76f371f54687af70154c1b168f4712487d9557c4d6a504b4505db8cb",
+        "e5b30968a5b32be48f240049f69dcf2a6389bfd7c552d45383f627815a92f794",
+        "3fae2d909fc5098b0758f41f0f26435ca208e64f6bb720f001f7e93b4cf04145",
+        "e6041efa4e39d640cbe0ca84001a06ac8e1955a92fc487fb7707fb9fa1b46116",
+        "cc36b76ab78a7502173dafb27a405a51d98047bf4b0f3371ff0a874dd5b0a163",
+        "614eab4fa3bba3e9aadd5af748400d2082fa63f8d9f9fbc5eebdb7a49ee8e719",
+        "4f4c553b35766b11c4b4de1660de9c703ec71e068609ad1e50f8507ab002ca28",
+        "29a09348cd5901491bad8a919003b40abe186f2758286d6f7b79da1d2000f914",
+        "029e439b8ed4164582e3ab5a2962c9651d488d01dd9b8dd77bc95896f3cfee9a",
+        "850ed177172459d6c182cc52a2e2685e456910797f0f9710582b32be685e1daf",
+        "f46eac96f2e47988e1cfbc0299ed821f0fb725d42dead5a2a6b7d7a700cb1639",
+        "24ffbad072bc2846e933ca0ffa38e0cde810aaaff3a1b0f91faf93da2086b8a0",
+        "402aae283621536e1c4fcab7fe14fe6b03718daf2bab38db3795466307e180e7",
+        "84a170eb7c409eed739d73d780dbea5a3bf7e1f7970229da1f4d368ef90f4905",
+        "177da2b4e8084b7217d99580e16f68121d439245399762c5395289675790cd5f",
+        "c489a1257cca74663a22a094bcfaee3ff45775f147b40c096924c7c40a6dc6ab",
+        "2c89ac01efd7fff230ac463700235ce3f8bcf29e663c86fa5abb2e272efd89c5",
+        "02b2dac91acc44c81b458a5fbef11ae64cfb4b75719122388cd5c62d59b27ac3",
+        "0d5791d997ae17a904795c8876495ce092893e673c4dc0de5c4a1bc4e610793f",
+        "9d18750bb289b793496945deffab34805e3fb7be3fb6661be46f492a9e87cbd1",
+        "71bcea5f5f61c55c5c088d1f35e250926889577f360264d0950eb8924eccbf88",
+        "760bb34ab00317df17dd4e204e37fb4f950e3037bd9c9b446edd38f9e43ad4e7",
+        "d4c22b1bef848d03b514b70ff12e41a03846f84431e68a021d4d4e97451ba11e",
+        "6ca4bbab77da102b3c9588632af2354c926cf1afae73674128985737fbfd126a",
+        "d62eada054566b926c8eeb37c8480e53b243eb7e03f95a16c176085e160bb413",
+        "cac0fa96c10bdc105108170a1ca869886551e74f65a7cf0b8bf638f479a29cc2",
+        "e4e1c69dad6415b5cc77d4cfdca73868619cf969e72d9c9a8f766599c84e95a2",
+        "4129ff624c78bfb2b4b4bb21ce3d8ce0e179d492638fed3cef24deb899e53f7a",
+        "08f3247025f28ac19de89833a7abf513577717fa0e0ad9581af73b6af2becdfd",
+        "8dde38158a3bf9450b738af0048f2d885a6cb459087eab4be71e3c0d7415ff22",
+        "ad49512e5b20c7b9d29636c7973506cc2e21caa9a73ae59c9974cfaa13f433f2",
+        "2c699e95b89772d503567ec96644a3e1cdefd4d190c8fc25d3a734850d00c61e",
+        "b11c85f03195a672c5d18ca4e36e46f6a84f890d09e38ca9a4fd7cc86a45af2e",
+        "c44fdfcc09c8b3b1b7e17ce5a2eb291f0b9ab4a2b908cd9aa142fe652f78ce3c",
+        "0af871d8c93c4cebcc0534fce81ae2da14595809e1717540491c8c886f186fd7",
+        "b38e47f604ea9436c2107715e930b027005edba6640cbab5990fcccc417a6dbf",
+        "711aa88777ffc30d643c22c20cf5e05c45d0588bde19104060afafee832d4ebc",
+        "0eabe662cf98960a266b5121ce772bd15874db33969998cae69d4efa29c3d2e9",
+        "2bbef002ca04839a00a600d821d0dd706dfc6be0ae453f7e07b6b7b54b9b53d8",
+        "83198ad7cf914dcc748ba0a14e8e4e35a49e275e0671e9db9d3303240f310538",
+        "616e8759ef350d94fd69f283f1c131c516d2e29eec9c3b7b862143225b4750ce",
+        "e02590e06a00404c731a2f2323317ca798d3cf2ba8b7ce865ed4df39fa9dbbd9",
+        "d7582de15a26961cce13b007b86371ac14c0200a9d622600c9839256564ec921",
+        "304d9357d989b807e0c008eeeef8fbef75d7f7bf17d799a85a92487a5c5f5cb9",
+        "9f5b643f51eeb0306726bd0980ce46b3d20fdb483dcc79d5578cb59fb9bfc1c1",
+        "536b1fa3889439cc500ec8f56f64bd3e0776d01519cc9a72bab929eef949bfd2",
+        "337fe8a5d41355cc2986bbd0d713b3368f7a794f426adc84a886987c47f92381",
+        "98b1ab65ff0165c30779f081d6e191bd0443ae7decc7feceffd22e4c1b6c55df",
+        "0a0ad25e727c0111490b78f952d383aa35fc7dcaee63a3ddc0c1dbf464e18e1f",
+        "65860e1ce2622f054480493bcd0178c448f141ab45f73bf5d22462998d275b1e",
+        "98a2c9cbb3257529ce03d23d8d0f1ce77d039abfcd35d7d57365b34b92379c84",
+        "cdcc1c15084fca0c3cb98430e19ed6199fdd3614157139bdd59d6a84ec25dd67",
+        "9d32f0f0758981959df9490cff81f80f7a2614c80095a3ff13d96cb7eb8192e1",
+        "2515df941e1159273480cd420a41de4e895dc09fafa7732bfb3a777c99e4bd60",
+        "8e6c04b0694c7d5e9a21d52dee6464c1a1c2715a3f4a76bca120e589832d3ff2",
+        "e64daf69545c2e0397ab44fb642f095e584d43a7e1095e99532feeb5c9d69519",
+        "afe238abad5ad0718790b3d3a555d88cfc406dcb456a7b8cd453607e3d266f8b",
+        "cb8f21c00c45bb4d368f1eb8c65e01734067e3ff064064c542b5de0d9b684e30",
+        "2fafccd6bdaf3bd521492f8b5be85e9eba271226c4e68ac734ac2ab758e89f62",
+        "fde114e3dc34f20a4ad586a8b853bb04e4442a1cc8083f1b4d7273459e86820e",
+        "f2caed0ea12c096b6202a182fd09fbe6dd3f467c4cac9e512d5b1b2df2eda59b",
+        "03ac062206d70ecb8c6fa5712142a4d6d8af603b94a5aeb816d666290670f097",
+        "dbabdddf0c9f7190e9fae4c896b230b03e65b817fdfce113a1c6f77f77eb7e89",
+        "1b4ef261210fc761fc0bccf31d802e72a685bca823315ae5272a876c8d4869a2",
+        "dec925aeeea08ffb3ecc02feb355b83e9ab7c9396836557a22ea4acb98416f14",
+        "db68e2f8759d4e937b70ec29b030dfa69623f840cc810e8a1779386b231f2904",
+        "7db5dab9ce300f682112e7def1f058681c5a5d1742bad18ed944494cc3116180",
+        "5fce4f374a55b0fbe2d02e044d2cb40766a632f330f5c033613631f54b0a0162",
+        "2332eec5944dc48f5f0cdd44e8d74cef14ccb42f4846519659083cd59e9f0e4f",
+        "2d2cc6e50cc0e7aabe93d087385670d6518339af6e9bf3f7298fcb2ee0d6b24a",
+        "9e417867c42e73a092e9514880a27637524980671eb9058d216b68a6b2078827",
+        "0c362b9c35413b92f35dbb34a32da414f2cf06608ec4decd938e90342c864303",
+        "910fda0f216536d4faf04f34f2b9e4638527aab8fbf11a652eac2049aafd4af9",
+        "51fe16dabe3daf46f197b7702f10d920771172c00c7c7b1b92486e3202963ad4",
+        "09370b5759b9b820d6d0a1e393a4f4585f25d618ebddf605bd751c6812491895",
+        "9c9ef818e89050a51ad4a69c1547809a4cbd8a2243ac346a94e06cb2a678c058",
+        "3892cba46f94e4d8d20f5df1948886bad1e103805e15da0633569747af9dad8f",
+        "fcd3be1cc79c2d1b9a3ad534c0f659b80c993674565aaa4d8228e6229c135381",
+        "376371b018384c5b626a924a4e829c94441a6e91188d70ae0c3e4e93a0a7bb57",
+        "b9d8cdecd8572c027be9a7221ef4a590ead6de0f7b644be2af02c8bb22a3af80",
+        "1555355ad452723f69d874765949591d3f21bbeaec42fd02333ee7c4ac87cdcc",
+        "8039bd360023bfbeab9a6704c52677d9bef601175d164a5929ae7a83bdeb5f58"
+      ]
+    }
+  ],
+  "imports": [
+    {
+      "case": "synthetic-20",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 241,
+          "o200k_base": 240
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "prompts": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "requests": {
+            "cl100k_base": 111,
+            "o200k_base": 110
+          },
+          "responses": {
+            "cl100k_base": 130,
+            "o200k_base": 130
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 241,
+          "o200k_base": 240
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 209,
+          "o200k_base": 208
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0374
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 245,
+          "o200k_base": 244
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "prompts": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "requests": {
+            "cl100k_base": 113,
+            "o200k_base": 112
+          },
+          "responses": {
+            "cl100k_base": 132,
+            "o200k_base": 132
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 245,
+          "o200k_base": 244
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 213,
+          "o200k_base": 212
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0384
+      }
+    },
+    {
+      "case": "massive-1",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 241,
+          "o200k_base": 243
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "prompts": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "requests": {
+            "cl100k_base": 111,
+            "o200k_base": 112
+          },
+          "responses": {
+            "cl100k_base": 130,
+            "o200k_base": 131
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 241,
+          "o200k_base": 243
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 209,
+          "o200k_base": 211
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0363
+      }
+    },
+    {
+      "case": "massive-5",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 240,
+          "o200k_base": 242
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "prompts": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "requests": {
+            "cl100k_base": 111,
+            "o200k_base": 112
+          },
+          "responses": {
+            "cl100k_base": 129,
+            "o200k_base": 130
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 240,
+          "o200k_base": 242
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 208,
+          "o200k_base": 210
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0364
+      }
+    },
+    {
+      "case": "massive-20",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 240,
+          "o200k_base": 242
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "prompts": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "requests": {
+            "cl100k_base": 111,
+            "o200k_base": 112
+          },
+          "responses": {
+            "cl100k_base": 129,
+            "o200k_base": 130
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 240,
+          "o200k_base": 242
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 208,
+          "o200k_base": 210
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0391
+      }
+    },
+    {
+      "case": "massive-250",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 243,
+          "o200k_base": 245
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "prompts": {
+            "cl100k_base": 0,
+            "o200k_base": 0
+          },
+          "requests": {
+            "cl100k_base": 111,
+            "o200k_base": 112
+          },
+          "responses": {
+            "cl100k_base": 132,
+            "o200k_base": 133
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 243,
+          "o200k_base": 245
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 211,
+          "o200k_base": 213
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.037
+      }
+    },
+    {
+      "case": "documents-120",
+      "tokens": {
+        "cl100k_base": 28470,
+        "o200k_base": 28714
+      },
+      "tool_calls": 120
+    }
+  ],
+  "cases": [
+    {
+      "case": "synthetic-20",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 820,
+          "o200k_base": 854
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 77
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 906,
+          "o200k_base": 940
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 820,
+          "o200k_base": 854
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 820,
+          "reduction_pct": -269.37,
+          "with_local_import_tokens": 1061
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 854,
+          "reduction_pct": -286.43,
+          "with_local_import_tokens": 1094
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 314,
+          "o200k_base": 320
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 77
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 400,
+          "o200k_base": 406
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 314,
+          "o200k_base": 320
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.008
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 314,
+          "reduction_pct": -41.44,
+          "with_local_import_tokens": 555
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 320,
+          "reduction_pct": -44.8,
+          "with_local_import_tokens": 560
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 829,
+          "o200k_base": 863
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 77
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 915,
+          "o200k_base": 949
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 829,
+          "o200k_base": 863
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0081
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 829,
+          "reduction_pct": -273.42,
+          "with_local_import_tokens": 1070
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 863,
+          "reduction_pct": -290.5,
+          "with_local_import_tokens": 1103
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 314,
+          "o200k_base": 320
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 77
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 400,
+          "o200k_base": 406
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 314,
+          "o200k_base": 320
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0081
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 314,
+          "reduction_pct": -41.44,
+          "with_local_import_tokens": 555
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 320,
+          "reduction_pct": -44.8,
+          "with_local_import_tokens": 560
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 314,
+          "o200k_base": 320
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 77
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 338,
+          "o200k_base": 343
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0083
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 314,
+          "reduction_pct": -41.44,
+          "with_local_import_tokens": 555
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 320,
+          "reduction_pct": -44.8,
+          "with_local_import_tokens": 560
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 291
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 85,
+            "o200k_base": 85
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 372,
+          "o200k_base": 377
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 291
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0081
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 286,
+          "reduction_pct": -28.83,
+          "with_local_import_tokens": 527
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 291,
+          "reduction_pct": -31.67,
+          "with_local_import_tokens": 531
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 441,
+          "o200k_base": 451
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 107,
+            "o200k_base": 107
+          },
+          "responses": {
+            "cl100k_base": 192,
+            "o200k_base": 199
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 707,
+          "o200k_base": 718
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 441,
+          "o200k_base": 451
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0089
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 441,
+          "reduction_pct": -98.65,
+          "with_local_import_tokens": 682
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 451,
+          "reduction_pct": -104.07,
+          "with_local_import_tokens": 691
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 295,
+          "o200k_base": 300
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 85,
+            "o200k_base": 85
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 381,
+          "o200k_base": 386
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 295,
+          "o200k_base": 300
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0083
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 295,
+          "reduction_pct": -32.88,
+          "with_local_import_tokens": 536
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 300,
+          "reduction_pct": -35.75,
+          "with_local_import_tokens": 540
+        }
+      }
+    },
+    {
+      "case": "synthetic-20",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 295,
+          "o200k_base": 300
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 32,
+            "o200k_base": 31
+          },
+          "requests": {
+            "cl100k_base": 85,
+            "o200k_base": 85
+          },
+          "responses": {
+            "cl100k_base": 59,
+            "o200k_base": 61
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 319,
+          "o200k_base": 323
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 222,
+          "workspool_tokens": 295,
+          "reduction_pct": -32.88,
+          "with_local_import_tokens": 536
+        },
+        "o200k_base": {
+          "raw_tokens": 221,
+          "workspool_tokens": 300,
+          "reduction_pct": -35.75,
+          "with_local_import_tokens": 540
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 823,
+          "o200k_base": 857
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 78,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 910,
+          "o200k_base": 944
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 823,
+          "o200k_base": 857
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0307
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 823,
+          "reduction_pct": 95.68,
+          "with_local_import_tokens": 1068
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 857,
+          "reduction_pct": 95.5,
+          "with_local_import_tokens": 1101
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 317,
+          "o200k_base": 323
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 78,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 404,
+          "o200k_base": 410
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 317,
+          "o200k_base": 323
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.032
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 317,
+          "reduction_pct": 98.33,
+          "with_local_import_tokens": 562
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 323,
+          "reduction_pct": 98.3,
+          "with_local_import_tokens": 567
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 832,
+          "o200k_base": 866
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 78,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 919,
+          "o200k_base": 953
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 832,
+          "o200k_base": 866
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.032
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 832,
+          "reduction_pct": 95.63,
+          "with_local_import_tokens": 1077
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 866,
+          "reduction_pct": 95.45,
+          "with_local_import_tokens": 1110
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 317,
+          "o200k_base": 323
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 78,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 404,
+          "o200k_base": 410
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 317,
+          "o200k_base": 323
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0311
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 317,
+          "reduction_pct": 98.33,
+          "with_local_import_tokens": 562
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 323,
+          "reduction_pct": 98.3,
+          "with_local_import_tokens": 567
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 317,
+          "o200k_base": 323
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 78,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 341,
+          "o200k_base": 346
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0309
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 317,
+          "reduction_pct": 98.33,
+          "with_local_import_tokens": 562
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 323,
+          "reduction_pct": 98.3,
+          "with_local_import_tokens": 567
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 289,
+          "o200k_base": 294
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 86
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 376,
+          "o200k_base": 381
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 289,
+          "o200k_base": 294
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0306
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 289,
+          "reduction_pct": 98.48,
+          "with_local_import_tokens": 534
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 294,
+          "reduction_pct": 98.46,
+          "with_local_import_tokens": 538
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 444,
+          "o200k_base": 454
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 108,
+            "o200k_base": 108
+          },
+          "responses": {
+            "cl100k_base": 193,
+            "o200k_base": 200
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 711,
+          "o200k_base": 722
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 444,
+          "o200k_base": 454
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0319
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 444,
+          "reduction_pct": 97.67,
+          "with_local_import_tokens": 689
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 454,
+          "reduction_pct": 97.62,
+          "with_local_import_tokens": 698
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 298,
+          "o200k_base": 303
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 86
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 385,
+          "o200k_base": 390
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 298,
+          "o200k_base": 303
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0313
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 298,
+          "reduction_pct": 98.43,
+          "with_local_import_tokens": 543
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 303,
+          "reduction_pct": 98.41,
+          "with_local_import_tokens": 547
+        }
+      }
+    },
+    {
+      "case": "synthetic-2000",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 298,
+          "o200k_base": 303
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 33,
+            "o200k_base": 32
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 86
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 322,
+          "o200k_base": 326
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0308
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 19039,
+          "workspool_tokens": 298,
+          "reduction_pct": 98.43,
+          "with_local_import_tokens": 543
+        },
+        "o200k_base": {
+          "raw_tokens": 19038,
+          "workspool_tokens": 303,
+          "reduction_pct": 98.41,
+          "with_local_import_tokens": 547
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 812,
+          "o200k_base": 848
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 900,
+          "o200k_base": 936
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 812,
+          "o200k_base": 848
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 812,
+          "reduction_pct": -902.47,
+          "with_local_import_tokens": 1053
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 848,
+          "reduction_pct": -946.91,
+          "with_local_import_tokens": 1091
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 314
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 394,
+          "o200k_base": 402
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 314
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 306,
+          "reduction_pct": -277.78,
+          "with_local_import_tokens": 547
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 314,
+          "reduction_pct": -287.65,
+          "with_local_import_tokens": 557
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 821,
+          "o200k_base": 857
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 909,
+          "o200k_base": 945
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 821,
+          "o200k_base": 857
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 821,
+          "reduction_pct": -913.58,
+          "with_local_import_tokens": 1062
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 857,
+          "reduction_pct": -958.02,
+          "with_local_import_tokens": 1100
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 314
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 394,
+          "o200k_base": 402
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 314
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0083
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 306,
+          "reduction_pct": -277.78,
+          "with_local_import_tokens": 547
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 314,
+          "reduction_pct": -287.65,
+          "with_local_import_tokens": 557
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 314
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 330,
+          "o200k_base": 337
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0081
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 306,
+          "reduction_pct": -277.78,
+          "with_local_import_tokens": 547
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 314,
+          "reduction_pct": -287.65,
+          "with_local_import_tokens": 557
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 278,
+          "o200k_base": 285
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 366,
+          "o200k_base": 373
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 278,
+          "o200k_base": 285
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 278,
+          "reduction_pct": -243.21,
+          "with_local_import_tokens": 519
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 285,
+          "reduction_pct": -251.85,
+          "with_local_import_tokens": 528
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 433,
+          "o200k_base": 445
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 99,
+            "o200k_base": 100
+          },
+          "responses": {
+            "cl100k_base": 194,
+            "o200k_base": 201
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 701,
+          "o200k_base": 714
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 433,
+          "o200k_base": 445
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0088
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 433,
+          "reduction_pct": -434.57,
+          "with_local_import_tokens": 674
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 445,
+          "reduction_pct": -449.38,
+          "with_local_import_tokens": 688
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 287,
+          "o200k_base": 294
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 375,
+          "o200k_base": 382
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 287,
+          "o200k_base": 294
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 287,
+          "reduction_pct": -254.32,
+          "with_local_import_tokens": 528
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 294,
+          "reduction_pct": -262.96,
+          "with_local_import_tokens": 537
+        }
+      }
+    },
+    {
+      "case": "massive-1",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 287,
+          "o200k_base": 294
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 61,
+            "o200k_base": 63
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 311,
+          "o200k_base": 317
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0085
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 287,
+          "reduction_pct": -254.32,
+          "with_local_import_tokens": 528
+        },
+        "o200k_base": {
+          "raw_tokens": 81,
+          "workspool_tokens": 294,
+          "reduction_pct": -262.96,
+          "with_local_import_tokens": 537
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 811,
+          "o200k_base": 847
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 898,
+          "o200k_base": 934
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 811,
+          "o200k_base": 847
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 811,
+          "reduction_pct": -240.76,
+          "with_local_import_tokens": 1051
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 847,
+          "reduction_pct": -255.88,
+          "with_local_import_tokens": 1089
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 392,
+          "o200k_base": 400
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0083
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 305,
+          "reduction_pct": -28.15,
+          "with_local_import_tokens": 545
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 313,
+          "reduction_pct": -31.51,
+          "with_local_import_tokens": 555
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 820,
+          "o200k_base": 856
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 907,
+          "o200k_base": 943
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 820,
+          "o200k_base": 856
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0085
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 820,
+          "reduction_pct": -244.54,
+          "with_local_import_tokens": 1060
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 856,
+          "reduction_pct": -259.66,
+          "with_local_import_tokens": 1098
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 392,
+          "o200k_base": 400
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0081
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 305,
+          "reduction_pct": -28.15,
+          "with_local_import_tokens": 545
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 313,
+          "reduction_pct": -31.51,
+          "with_local_import_tokens": 555
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 329,
+          "o200k_base": 336
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0084
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 305,
+          "reduction_pct": -28.15,
+          "with_local_import_tokens": 545
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 313,
+          "reduction_pct": -31.51,
+          "with_local_import_tokens": 555
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 277,
+          "o200k_base": 284
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 364,
+          "o200k_base": 371
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 277,
+          "o200k_base": 284
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0087
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 277,
+          "reduction_pct": -16.39,
+          "with_local_import_tokens": 517
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 284,
+          "reduction_pct": -19.33,
+          "with_local_import_tokens": 526
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 432,
+          "o200k_base": 444
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 99,
+            "o200k_base": 100
+          },
+          "responses": {
+            "cl100k_base": 193,
+            "o200k_base": 200
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 699,
+          "o200k_base": 712
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 432,
+          "o200k_base": 444
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0093
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 432,
+          "reduction_pct": -81.51,
+          "with_local_import_tokens": 672
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 444,
+          "reduction_pct": -86.55,
+          "with_local_import_tokens": 686
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 293
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 373,
+          "o200k_base": 380
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 293
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0086
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 286,
+          "reduction_pct": -20.17,
+          "with_local_import_tokens": 526
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 293,
+          "reduction_pct": -23.11,
+          "with_local_import_tokens": 535
+        }
+      }
+    },
+    {
+      "case": "massive-5",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 293
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 310,
+          "o200k_base": 316
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0086
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 286,
+          "reduction_pct": -20.17,
+          "with_local_import_tokens": 526
+        },
+        "o200k_base": {
+          "raw_tokens": 238,
+          "workspool_tokens": 293,
+          "reduction_pct": -23.11,
+          "with_local_import_tokens": 535
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 811,
+          "o200k_base": 847
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 898,
+          "o200k_base": 934
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 811,
+          "o200k_base": 847
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.009
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 811,
+          "reduction_pct": 1.58,
+          "with_local_import_tokens": 1051
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 847,
+          "reduction_pct": -2.79,
+          "with_local_import_tokens": 1089
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 392,
+          "o200k_base": 400
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0101
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 305,
+          "reduction_pct": 62.99,
+          "with_local_import_tokens": 545
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 313,
+          "reduction_pct": 62.01,
+          "with_local_import_tokens": 555
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 820,
+          "o200k_base": 856
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 907,
+          "o200k_base": 943
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 820,
+          "o200k_base": 856
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0087
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 820,
+          "reduction_pct": 0.49,
+          "with_local_import_tokens": 1060
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 856,
+          "reduction_pct": -3.88,
+          "with_local_import_tokens": 1098
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 392,
+          "o200k_base": 400
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0089
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 305,
+          "reduction_pct": 62.99,
+          "with_local_import_tokens": 545
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 313,
+          "reduction_pct": 62.01,
+          "with_local_import_tokens": 555
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 305,
+          "o200k_base": 313
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 329,
+          "o200k_base": 336
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0088
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 305,
+          "reduction_pct": 62.99,
+          "with_local_import_tokens": 545
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 313,
+          "reduction_pct": 62.01,
+          "with_local_import_tokens": 555
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 277,
+          "o200k_base": 284
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 364,
+          "o200k_base": 371
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 277,
+          "o200k_base": 284
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.009
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 277,
+          "reduction_pct": 66.38,
+          "with_local_import_tokens": 517
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 284,
+          "reduction_pct": 65.53,
+          "with_local_import_tokens": 526
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 432,
+          "o200k_base": 444
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 99,
+            "o200k_base": 100
+          },
+          "responses": {
+            "cl100k_base": 193,
+            "o200k_base": 200
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 699,
+          "o200k_base": 712
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 432,
+          "o200k_base": 444
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0097
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 432,
+          "reduction_pct": 47.57,
+          "with_local_import_tokens": 672
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 444,
+          "reduction_pct": 46.12,
+          "with_local_import_tokens": 686
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 293
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 373,
+          "o200k_base": 380
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 293
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0088
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 286,
+          "reduction_pct": 65.29,
+          "with_local_import_tokens": 526
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 293,
+          "reduction_pct": 64.44,
+          "with_local_import_tokens": 535
+        }
+      }
+    },
+    {
+      "case": "massive-20",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 286,
+          "o200k_base": 293
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 60,
+            "o200k_base": 62
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 310,
+          "o200k_base": 316
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0085
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 286,
+          "reduction_pct": 65.29,
+          "with_local_import_tokens": 526
+        },
+        "o200k_base": {
+          "raw_tokens": 824,
+          "workspool_tokens": 293,
+          "reduction_pct": 64.44,
+          "with_local_import_tokens": 535
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 814,
+          "o200k_base": 850
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 904,
+          "o200k_base": 940
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 814,
+          "o200k_base": 850
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0137
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 814,
+          "reduction_pct": 91.72,
+          "with_local_import_tokens": 1057
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 850,
+          "reduction_pct": 91.35,
+          "with_local_import_tokens": 1095
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 308,
+          "o200k_base": 316
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 398,
+          "o200k_base": 406
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 308,
+          "o200k_base": 316
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.014
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 308,
+          "reduction_pct": 96.87,
+          "with_local_import_tokens": 551
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 316,
+          "reduction_pct": 96.78,
+          "with_local_import_tokens": 561
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 823,
+          "o200k_base": 859
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 913,
+          "o200k_base": 949
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 823,
+          "o200k_base": 859
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0139
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 823,
+          "reduction_pct": 91.63,
+          "with_local_import_tokens": 1066
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 859,
+          "reduction_pct": 91.26,
+          "with_local_import_tokens": 1104
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 308,
+          "o200k_base": 316
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 398,
+          "o200k_base": 406
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 308,
+          "o200k_base": 316
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0135
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 308,
+          "reduction_pct": 96.87,
+          "with_local_import_tokens": 551
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 316,
+          "reduction_pct": 96.78,
+          "with_local_import_tokens": 561
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 308,
+          "o200k_base": 316
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 146,
+            "o200k_base": 151
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 69,
+            "o200k_base": 70
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 332,
+          "o200k_base": 339
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0133
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 308,
+          "reduction_pct": 96.87,
+          "with_local_import_tokens": 551
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 316,
+          "reduction_pct": 96.78,
+          "with_local_import_tokens": 561
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 280,
+          "o200k_base": 287
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 370,
+          "o200k_base": 377
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 280,
+          "o200k_base": 287
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0138
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 280,
+          "reduction_pct": 97.15,
+          "with_local_import_tokens": 523
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 287,
+          "reduction_pct": 97.08,
+          "with_local_import_tokens": 532
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 435,
+          "o200k_base": 447
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 99,
+            "o200k_base": 100
+          },
+          "responses": {
+            "cl100k_base": 196,
+            "o200k_base": 203
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 705,
+          "o200k_base": 718
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 435,
+          "o200k_base": 447
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0145
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 435,
+          "reduction_pct": 95.57,
+          "with_local_import_tokens": 678
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 447,
+          "reduction_pct": 95.45,
+          "with_local_import_tokens": 692
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 289,
+          "o200k_base": 296
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 379,
+          "o200k_base": 386
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 289,
+          "o200k_base": 296
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0139
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 289,
+          "reduction_pct": 97.06,
+          "with_local_import_tokens": 532
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 296,
+          "reduction_pct": 96.99,
+          "with_local_import_tokens": 541
+        }
+      }
+    },
+    {
+      "case": "massive-250",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 289,
+          "o200k_base": 296
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 30,
+            "o200k_base": 30
+          },
+          "requests": {
+            "cl100k_base": 77,
+            "o200k_base": 78
+          },
+          "responses": {
+            "cl100k_base": 63,
+            "o200k_base": 65
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 313,
+          "o200k_base": 319
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0139
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 289,
+          "reduction_pct": 97.06,
+          "with_local_import_tokens": 532
+        },
+        "o200k_base": {
+          "raw_tokens": 9827,
+          "workspool_tokens": 296,
+          "reduction_pct": 96.99,
+          "with_local_import_tokens": 541
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 1101,
+          "o200k_base": 1137
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 88
+          },
+          "responses": {
+            "cl100k_base": 334,
+            "o200k_base": 335
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 1479,
+          "o200k_base": 1513
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 1101,
+          "o200k_base": 1137
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0019
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 1101,
+          "reduction_pct": 98.81,
+          "with_local_import_tokens": 29571
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 1137,
+          "reduction_pct": 98.77,
+          "with_local_import_tokens": 29851
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 589,
+          "o200k_base": 597
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 140,
+            "o200k_base": 145
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 88
+          },
+          "responses": {
+            "cl100k_base": 334,
+            "o200k_base": 335
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 967,
+          "o200k_base": 973
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 589,
+          "o200k_base": 597
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0015
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 589,
+          "reduction_pct": 99.36,
+          "with_local_import_tokens": 29059
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 597,
+          "reduction_pct": 99.36,
+          "with_local_import_tokens": 29311
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 1115,
+          "o200k_base": 1151
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 88
+          },
+          "responses": {
+            "cl100k_base": 339,
+            "o200k_base": 340
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 1500,
+          "o200k_base": 1534
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 1110,
+          "o200k_base": 1146
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0018
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 1115,
+          "reduction_pct": 98.8,
+          "with_local_import_tokens": 29585
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 1151,
+          "reduction_pct": 98.76,
+          "with_local_import_tokens": 29865
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 603,
+          "o200k_base": 611
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 149,
+            "o200k_base": 154
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 88
+          },
+          "responses": {
+            "cl100k_base": 339,
+            "o200k_base": 340
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 988,
+          "o200k_base": 994
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 598,
+          "o200k_base": 606
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0016
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 603,
+          "reduction_pct": 99.35,
+          "with_local_import_tokens": 29073
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 611,
+          "reduction_pct": 99.34,
+          "with_local_import_tokens": 29325
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 603,
+          "o200k_base": 611
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 149,
+            "o200k_base": 154
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 86,
+            "o200k_base": 88
+          },
+          "responses": {
+            "cl100k_base": 339,
+            "o200k_base": 340
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 651,
+          "o200k_base": 656
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0019
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 603,
+          "reduction_pct": 99.35,
+          "with_local_import_tokens": 29073
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 611,
+          "reduction_pct": 99.34,
+          "with_local_import_tokens": 29325
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 568,
+          "o200k_base": 574
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 95,
+            "o200k_base": 96
+          },
+          "responses": {
+            "cl100k_base": 334,
+            "o200k_base": 335
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 946,
+          "o200k_base": 950
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 568,
+          "o200k_base": 574
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0018
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 568,
+          "reduction_pct": 99.39,
+          "with_local_import_tokens": 29038
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 574,
+          "reduction_pct": 99.38,
+          "with_local_import_tokens": 29288
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 703,
+          "o200k_base": 714
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 117,
+            "o200k_base": 118
+          },
+          "responses": {
+            "cl100k_base": 447,
+            "o200k_base": 453
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 1234,
+          "o200k_base": 1243
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 703,
+          "o200k_base": 714
+        },
+        "tool_calls": 2,
+        "tool_seconds": 0.0023
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 703,
+          "reduction_pct": 99.24,
+          "with_local_import_tokens": 29173
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 714,
+          "reduction_pct": 99.23,
+          "with_local_import_tokens": 29428
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 582,
+          "o200k_base": 588
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 95,
+            "o200k_base": 96
+          },
+          "responses": {
+            "cl100k_base": 339,
+            "o200k_base": 340
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 967,
+          "o200k_base": 971
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 577,
+          "o200k_base": 583
+        },
+        "tool_calls": 1,
+        "tool_seconds": 0.0019
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 582,
+          "reduction_pct": 99.37,
+          "with_local_import_tokens": 29052
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 588,
+          "reduction_pct": 99.37,
+          "with_local_import_tokens": 29302
+        }
+      }
+    },
+    {
+      "case": "documents-targeted",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 582,
+          "o200k_base": 588
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 29,
+            "o200k_base": 29
+          },
+          "requests": {
+            "cl100k_base": 95,
+            "o200k_base": 96
+          },
+          "responses": {
+            "cl100k_base": 339,
+            "o200k_base": 340
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 630,
+          "o200k_base": 633
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 1,
+        "tool_seconds": 0.0019
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 582,
+          "reduction_pct": 99.37,
+          "with_local_import_tokens": 29052
+        },
+        "o200k_base": {
+          "raw_tokens": 92674,
+          "workspool_tokens": 588,
+          "reduction_pct": 99.37,
+          "with_local_import_tokens": 29302
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "default",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 107393,
+          "o200k_base": 107458
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 652,
+            "o200k_base": 685
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2734,
+            "o200k_base": 2754
+          },
+          "responses": {
+            "cl100k_base": 103995,
+            "o200k_base": 104007
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 216708,
+          "o200k_base": 216665
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 107393,
+          "o200k_base": 107458
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.0161
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 107393,
+          "reduction_pct": -15.9,
+          "with_local_import_tokens": 135863
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 107458,
+          "reduction_pct": -15.97,
+          "with_local_import_tokens": 136172
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 106881,
+          "o200k_base": 106918
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 140,
+            "o200k_base": 145
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2734,
+            "o200k_base": 2754
+          },
+          "responses": {
+            "cl100k_base": 103995,
+            "o200k_base": 104007
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 216196,
+          "o200k_base": 216125
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 106881,
+          "o200k_base": 106918
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.0158
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 106881,
+          "reduction_pct": -15.35,
+          "with_local_import_tokens": 135351
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 106918,
+          "reduction_pct": -15.39,
+          "with_local_import_tokens": 135632
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 103322,
+          "o200k_base": 103387
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 661,
+            "o200k_base": 694
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2734,
+            "o200k_base": 2754
+          },
+          "responses": {
+            "cl100k_base": 99915,
+            "o200k_base": 99927
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 212997,
+          "o200k_base": 212954
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 107402,
+          "o200k_base": 107467
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.0159
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 103322,
+          "reduction_pct": -11.51,
+          "with_local_import_tokens": 131792
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 103387,
+          "reduction_pct": -11.58,
+          "with_local_import_tokens": 132101
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "text-restricted",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 102810,
+          "o200k_base": 102847
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 149,
+            "o200k_base": 154
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2734,
+            "o200k_base": 2754
+          },
+          "responses": {
+            "cl100k_base": 99915,
+            "o200k_base": 99927
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 212485,
+          "o200k_base": 212414
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 106890,
+          "o200k_base": 106927
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.0155
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102810,
+          "reduction_pct": -10.96,
+          "with_local_import_tokens": 131280
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102847,
+          "reduction_pct": -11.0,
+          "with_local_import_tokens": 131561
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 102810,
+          "o200k_base": 102847
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 149,
+            "o200k_base": 154
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2734,
+            "o200k_base": 2754
+          },
+          "responses": {
+            "cl100k_base": 99915,
+            "o200k_base": 99927
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 108466,
+          "o200k_base": 108383
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 8,
+        "tool_seconds": 0.0135
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102810,
+          "reduction_pct": -10.96,
+          "with_local_import_tokens": 131280
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102847,
+          "reduction_pct": -11.0,
+          "with_local_import_tokens": 131561
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "lazy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 106923,
+          "o200k_base": 106951
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2806,
+            "o200k_base": 2818
+          },
+          "responses": {
+            "cl100k_base": 103995,
+            "o200k_base": 104007
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 216238,
+          "o200k_base": 216158
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 106923,
+          "o200k_base": 106951
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.016
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 106923,
+          "reduction_pct": -15.4,
+          "with_local_import_tokens": 135393
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 106951,
+          "reduction_pct": -15.43,
+          "with_local_import_tokens": 135665
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "lazy-discover",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 107058,
+          "o200k_base": 107091
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 110,
+            "o200k_base": 114
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2828,
+            "o200k_base": 2840
+          },
+          "responses": {
+            "cl100k_base": 104108,
+            "o200k_base": 104125
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 216526,
+          "o200k_base": 216451
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 107058,
+          "o200k_base": 107091
+        },
+        "tool_calls": 9,
+        "tool_seconds": 0.0157
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 107058,
+          "reduction_pct": -15.54,
+          "with_local_import_tokens": 135528
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 107091,
+          "reduction_pct": -15.58,
+          "with_local_import_tokens": 135805
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "lazy-text",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 102852,
+          "o200k_base": 102880
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2806,
+            "o200k_base": 2818
+          },
+          "responses": {
+            "cl100k_base": 99915,
+            "o200k_base": 99927
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 212527,
+          "o200k_base": 212447
+        },
+        "structured_only_tokens": {
+          "cl100k_base": 106932,
+          "o200k_base": 106960
+        },
+        "tool_calls": 8,
+        "tool_seconds": 0.0155
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102852,
+          "reduction_pct": -11.0,
+          "with_local_import_tokens": 131322
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102880,
+          "reduction_pct": -11.03,
+          "with_local_import_tokens": 131594
+        }
+      }
+    },
+    {
+      "case": "documents-complete",
+      "profile": "lazy-text-single-copy",
+      "measured": {
+        "tokens": {
+          "cl100k_base": 102852,
+          "o200k_base": 102880
+        },
+        "categories": {
+          "setup": {
+            "cl100k_base": 119,
+            "o200k_base": 123
+          },
+          "prompts": {
+            "cl100k_base": 12,
+            "o200k_base": 12
+          },
+          "requests": {
+            "cl100k_base": 2806,
+            "o200k_base": 2818
+          },
+          "responses": {
+            "cl100k_base": 99915,
+            "o200k_base": 99927
+          }
+        },
+        "full_result_json_tokens": {
+          "cl100k_base": 108508,
+          "o200k_base": 108416
+        },
+        "structured_only_tokens": null,
+        "tool_calls": 8,
+        "tool_seconds": 0.0138
+      },
+      "comparison": {
+        "cl100k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102852,
+          "reduction_pct": -11.0,
+          "with_local_import_tokens": 131322
+        },
+        "o200k_base": {
+          "raw_tokens": 92657,
+          "workspool_tokens": 102880,
+          "reduction_pct": -11.03,
+          "with_local_import_tokens": 131594
+        }
+      }
+    }
+  ],
+  "trace_sha256": "0cc79eb618f3d1ce0cdb012bf97ad9930dc9464cad44c238f6a24776e91e707e"
+}

@@ -1,0 +1,20 @@
+{
+  "traces_recounted": 11,
+  "mcp_sessions": 9,
+  "mcp_tool_calls": 25,
+  "local_imports": 122,
+  "both_tokenizer_counts_and_full_json_counts_match": true,
+  "runtime_commit": "d643436c7100f51880a09d2d5e9d0f05a93ae94e",
+  "regression_tests": "21 passed with MCP 1.30.0; 21 passed with MCP 1.26.0",
+  "trace_sha256": "3023f3ce953d28922517ac51f3f16ddeab3e1a472a12b01bf03967395bff6581",
+  "runtime_files_sha256": {
+    "src/agent_workbook/server.py": "bc60a384fc9c18c73cb724da286b3cad056d3d4e5cf53e964f419a42c78aafa2",
+    "src/agent_workbook/store.py": "965e57909e56088f85cbdb3da9576df22932c4f60c8b3529c3a1512f8d85b612",
+    "src/agent_workbook/query.py": "e0165ab8c15fc05a557a2cb966504366a4dcdd081efef97430d445abb4444a91",
+    "src/agent_workbook/cli.py": "cfb4548331453804010039a5660d84116a3b8ca9a28b823b8d100658112acde5",
+    "benchmarks/token_reduction.py": "4ff22d946966f04c846ebaba7d66cefbe4859ec263b9cbec53561f633bb51905",
+    "benchmarks/optimized_paths.py": "24d100cd5e8ada7fa57e228cbe7c8d798ecbcf55cf2959942ea7705a4ba4dc5d",
+    "pyproject.toml": "6a770a2696432af258a330036ea40ce0b329216c7d36019927e88f09b5d31456",
+    "uv.lock": "88532ceba7076ec5b919586454a77344d52b8995decac01518a4b2018989ee86"
+  }
+}
