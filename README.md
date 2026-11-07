@@ -19,6 +19,7 @@ Workspool reduces the material your agent needs to read again. Use it for everyd
 | --- | --- | --- |
 | **Answer questions about documents** | Reference material, research notes, and supporting passages | Retrieve the passages for each question instead of repeatedly sending entire documents. |
 | **Analyze spreadsheets and reports** | CSV or Parquet exports of sales, spending, customer activity, or operations | Calculate totals, trends, and comparisons locally; send the answer or selected rows to your agent. |
+| **Analyze stock market data** | Imported price and volume history, fundamentals, earnings notes, and saved screens | Use local SQL to calculate returns, volume trends, and volatility; send selected symbols, summary tables, and supporting notes to your agent instead of every market-data row. |
 | **Write and revise long documents** | Drafts, review comments, and editing decisions | Read the section being edited; receive only the changes when your agent still retains the previous draft. |
 | **Develop and debug software** | Relevant code, error logs, test results, and attempted fixes | Carry the useful evidence into the next session without replaying the full debugging conversation. |
 | **Manage projects and follow-ups** | Meeting notes, decisions, action items, and progress checkpoints | Start from the current status and next action, then open the supporting details when needed. |
