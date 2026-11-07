@@ -79,7 +79,7 @@ The baseline is the isolated source archive at v0.4.1, commit `094be81de2a776867
 
 ## Reproduction
 
-After configuring an authorized API key in the environment, or in a private ignored env file, run from the repository root:
+After configuring an authorized API key in the environment, or in a private ignored env file, run from the repository root with the v0.4.1 tag available (`git fetch origin tag v0.4.1` for a shallow checkout):
 
 ```sh
 uv sync --locked

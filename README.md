@@ -457,6 +457,12 @@ The server is designed for trusted local workspaces and files. Give each host ac
 
 ## Development
 
+The baseline harness test needs the v0.4.1 tag. If you used the shallow quick-start clone, fetch it before testing:
+
+```sh
+git fetch origin tag v0.4.1
+```
+
 ```sh
 uv sync --locked --extra benchmark --extra tokens
 uv run --locked --extra benchmark --extra tokens pytest -q
