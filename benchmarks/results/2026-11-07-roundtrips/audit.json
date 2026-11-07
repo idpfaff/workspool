@@ -1,0 +1,33 @@
+{
+  "results_sha256": "9c80e74971e55810ea3bcd6232e4a1e98f20e67f21284860c1f64e80803c5b71",
+  "traces_sha256": "ea5e3a70acebf4ee5182c3b71b615e78af23b7e89722930209f4622be61953ab",
+  "audit_script_sha256": "a8c78339a5b284a1a3a3fcd0d200380bda01a1f58b881411a37f35d41c85ef7f",
+  "traces_recounted": 29,
+  "decision_prefixes_recounted": 237,
+  "tool_calls_recounted": 150,
+  "tokenizers": [
+    "cl100k_base",
+    "o200k_base"
+  ],
+  "all_payload_and_exposure_counts_match": true,
+  "all_comparisons_and_verified_content_match": true,
+  "all_current_candidate_sources_match": true,
+  "current_candidate_source_matches": {
+    "benchmarks/roundtrip_efficiency.py": true,
+    "src/agent_workbook/__init__.py": true,
+    "src/agent_workbook/batch_retrieval.py": true,
+    "src/agent_workbook/bench.py": true,
+    "src/agent_workbook/budget.py": true,
+    "src/agent_workbook/cli.py": true,
+    "src/agent_workbook/delta.py": true,
+    "src/agent_workbook/discovery.py": true,
+    "src/agent_workbook/query.py": true,
+    "src/agent_workbook/render.py": true,
+    "src/agent_workbook/retrieval.py": true,
+    "src/agent_workbook/server.py": true,
+    "src/agent_workbook/settings.py": true,
+    "src/agent_workbook/store.py": true,
+    "src/agent_workbook/sync.py": true
+  },
+  "scope": "Independent recount of actual formatted payloads and grouped scripted prefixes, not provider billing or model-reliability validation."
+}

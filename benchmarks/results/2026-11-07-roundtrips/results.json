@@ -1,0 +1,2383 @@
+{
+  "baseline_commit": "094be81de2a77686726a77b17aeed0b9ee4dc688",
+  "baseline_archive_sha256": "510adcaf9d98dd9afe1c4bf71df7c2070a3662b7ca1ac63b556d1ddcf7e08f14",
+  "baseline_source_sha256": {
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/cli.py": "9f714d8965be135965cf9a9376b7daeaea0b97fc304e2c059b34f7f304a67d6b",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
+    "src/agent_workbook/render.py": "2c9d4a4cd425104e3aa0b35ee275429fa9ec21dded81d4efb9e650193349ae5f",
+    "src/agent_workbook/retrieval.py": "3e9301213abbe5e173a4e9b600e7103e99653e05ef842981e8ff005c21c08c96",
+    "src/agent_workbook/server.py": "7e74f533693247b3175c53ef5f0d2b5683eb365af9b97de87e9e6a92b5c89762",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
+  },
+  "candidate_source_sha256": {
+    "benchmarks/roundtrip_efficiency.py": "46bcfd9814f010413e7b2ca480811bbd7644c6909762694b58136dfd5c09e610",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "a754cae2b8d50c1e3347f9fca3d740276bb4103e3ca82c5142d97b9bfa528629",
+    "src/agent_workbook/cli.py": "e73c54d3626202d7cf388db313425165b6eb69b8dc1a83cd711e1afad674e774",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/server.py": "185b9661a34a5f0bb63dc8bfeaa870ce0fd7a908e810171aedebab26ff526d53",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0"
+  },
+  "runtime": {
+    "python": "3.13.15",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "packages": {
+      "mcp": "1.30.0",
+      "duckdb": "1.5.6",
+      "pydantic": "2.14.3",
+      "tiktoken": "0.14.0"
+    }
+  },
+  "tokenizers": [
+    "cl100k_base",
+    "o200k_base"
+  ],
+  "cases": [
+    {
+      "case": "sync_sparse",
+      "arm": "metadata_first",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 4735,
+          "o200k_base": 4740
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 45356,
+          "o200k_base": 45446
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 177,
+          "o200k_base": 177
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 4136,
+          "o200k_base": 4136
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 10,
+        "scripted_decisions": 18,
+        "tool_seconds": 0.012943,
+        "max_reply_bytes": 4922
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "ee9d6f89b03b9cd59d964c41bc760f0c231e39ed214aa37d59e07dd2009795b5",
+          "ee9d6f89b03b9cd59d964c41bc760f0c231e39ed214aa37d59e07dd2009795b5",
+          "0ccc2384ade1e596a7e5dcea9a589918964558f3a7fd8e2828dc37ad7f5581d5",
+          "0ccc2384ade1e596a7e5dcea9a589918964558f3a7fd8e2828dc37ad7f5581d5"
+        ],
+        "modes": {
+          "full": 3,
+          "unchanged": 5
+        }
+      }
+    },
+    {
+      "case": "sync_sparse",
+      "arm": "diff_first",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 2651,
+          "o200k_base": 2663
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 31651,
+          "o200k_base": 31799
+        },
+        "setup_tokens": {
+          "cl100k_base": 256,
+          "o200k_base": 264
+        },
+        "instruction_tokens": {
+          "cl100k_base": 65,
+          "o200k_base": 65
+        },
+        "schema_tokens": {
+          "cl100k_base": 191,
+          "o200k_base": 199
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 279,
+          "o200k_base": 279
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 1860,
+          "o200k_base": 1864
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 8,
+        "scripted_decisions": 16,
+        "tool_seconds": 0.012194,
+        "max_reply_bytes": 4922
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "ee9d6f89b03b9cd59d964c41bc760f0c231e39ed214aa37d59e07dd2009795b5",
+          "ee9d6f89b03b9cd59d964c41bc760f0c231e39ed214aa37d59e07dd2009795b5",
+          "0ccc2384ade1e596a7e5dcea9a589918964558f3a7fd8e2828dc37ad7f5581d5",
+          "0ccc2384ade1e596a7e5dcea9a589918964558f3a7fd8e2828dc37ad7f5581d5"
+        ],
+        "modes": {
+          "full": 1,
+          "unchanged": 5,
+          "delta": 2
+        }
+      }
+    },
+    {
+      "case": "sync_sparse",
+      "arm": "sync",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 2311,
+          "o200k_base": 2319
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 28326,
+          "o200k_base": 28410
+        },
+        "setup_tokens": {
+          "cl100k_base": 163,
+          "o200k_base": 167
+        },
+        "instruction_tokens": {
+          "cl100k_base": 53,
+          "o200k_base": 53
+        },
+        "schema_tokens": {
+          "cl100k_base": 110,
+          "o200k_base": 114
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 132,
+          "o200k_base": 132
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 1760,
+          "o200k_base": 1764
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 8,
+        "scripted_decisions": 16,
+        "tool_seconds": 0.01156,
+        "max_reply_bytes": 4976
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "ee9d6f89b03b9cd59d964c41bc760f0c231e39ed214aa37d59e07dd2009795b5",
+          "ee9d6f89b03b9cd59d964c41bc760f0c231e39ed214aa37d59e07dd2009795b5",
+          "0ccc2384ade1e596a7e5dcea9a589918964558f3a7fd8e2828dc37ad7f5581d5",
+          "0ccc2384ade1e596a7e5dcea9a589918964558f3a7fd8e2828dc37ad7f5581d5"
+        ],
+        "modes": {
+          "full": 1,
+          "unchanged": 5,
+          "delta": 2
+        }
+      }
+    },
+    {
+      "case": "sync_dense",
+      "arm": "metadata_first",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 4739,
+          "o200k_base": 4744
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 45317,
+          "o200k_base": 45407
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 180,
+          "o200k_base": 180
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 4137,
+          "o200k_base": 4137
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 10,
+        "scripted_decisions": 18,
+        "tool_seconds": 0.012947,
+        "max_reply_bytes": 4922
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "20a69f47a054f4330285b941830e105d8c7ffb09b14b2651e66940ab8bfa7828",
+          "20a69f47a054f4330285b941830e105d8c7ffb09b14b2651e66940ab8bfa7828",
+          "bfeb56ee7594deabe1a2c2d2f8200e5c3997e354c83c1ac5262e870c2dcd9669",
+          "bfeb56ee7594deabe1a2c2d2f8200e5c3997e354c83c1ac5262e870c2dcd9669"
+        ],
+        "modes": {
+          "full": 3,
+          "unchanged": 5
+        }
+      }
+    },
+    {
+      "case": "sync_dense",
+      "arm": "diff_first",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 5221,
+          "o200k_base": 5229
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 50292,
+          "o200k_base": 50436
+        },
+        "setup_tokens": {
+          "cl100k_base": 256,
+          "o200k_base": 264
+        },
+        "instruction_tokens": {
+          "cl100k_base": 65,
+          "o200k_base": 65
+        },
+        "schema_tokens": {
+          "cl100k_base": 191,
+          "o200k_base": 199
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 346,
+          "o200k_base": 346
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 4363,
+          "o200k_base": 4363
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 10,
+        "scripted_decisions": 18,
+        "tool_seconds": 0.014077,
+        "max_reply_bytes": 4922
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "20a69f47a054f4330285b941830e105d8c7ffb09b14b2651e66940ab8bfa7828",
+          "20a69f47a054f4330285b941830e105d8c7ffb09b14b2651e66940ab8bfa7828",
+          "bfeb56ee7594deabe1a2c2d2f8200e5c3997e354c83c1ac5262e870c2dcd9669",
+          "bfeb56ee7594deabe1a2c2d2f8200e5c3997e354c83c1ac5262e870c2dcd9669"
+        ],
+        "modes": {
+          "full": 1,
+          "unchanged": 5,
+          "fallback_full": 2
+        }
+      }
+    },
+    {
+      "case": "sync_dense",
+      "arm": "sync",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 4697,
+          "o200k_base": 4701
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 40198,
+          "o200k_base": 40262
+        },
+        "setup_tokens": {
+          "cl100k_base": 163,
+          "o200k_base": 167
+        },
+        "instruction_tokens": {
+          "cl100k_base": 53,
+          "o200k_base": 53
+        },
+        "schema_tokens": {
+          "cl100k_base": 110,
+          "o200k_base": 114
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 132,
+          "o200k_base": 132
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 4146,
+          "o200k_base": 4146
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 8,
+        "scripted_decisions": 16,
+        "tool_seconds": 0.011534,
+        "max_reply_bytes": 4976
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "053c496463f42ab49fd4d50235ffbc2e4a661781fc57c23e5e9fcf23976df55f",
+          "20a69f47a054f4330285b941830e105d8c7ffb09b14b2651e66940ab8bfa7828",
+          "20a69f47a054f4330285b941830e105d8c7ffb09b14b2651e66940ab8bfa7828",
+          "bfeb56ee7594deabe1a2c2d2f8200e5c3997e354c83c1ac5262e870c2dcd9669",
+          "bfeb56ee7594deabe1a2c2d2f8200e5c3997e354c83c1ac5262e870c2dcd9669"
+        ],
+        "modes": {
+          "full": 3,
+          "unchanged": 5
+        }
+      }
+    },
+    {
+      "case": "sync_tiny",
+      "arm": "direct_read",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1088,
+          "o200k_base": 1095
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 10028,
+          "o200k_base": 10112
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 152,
+          "o200k_base": 152
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 514,
+          "o200k_base": 516
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 8,
+        "scripted_decisions": 16,
+        "tool_seconds": 0.010721,
+        "max_reply_bytes": 202
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552"
+        ],
+        "modes": {
+          "full": 8
+        }
+      }
+    },
+    {
+      "case": "sync_tiny",
+      "arm": "metadata_first",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1151,
+          "o200k_base": 1160
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 11610,
+          "o200k_base": 11711
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 187,
+          "o200k_base": 188
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 542,
+          "o200k_base": 545
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 10,
+        "scripted_decisions": 18,
+        "tool_seconds": 0.012477,
+        "max_reply_bytes": 202
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552"
+        ],
+        "modes": {
+          "full": 3,
+          "unchanged": 5
+        }
+      }
+    },
+    {
+      "case": "sync_tiny",
+      "arm": "diff_first",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1619,
+          "o200k_base": 1633
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 16251,
+          "o200k_base": 16408
+        },
+        "setup_tokens": {
+          "cl100k_base": 256,
+          "o200k_base": 264
+        },
+        "instruction_tokens": {
+          "cl100k_base": 65,
+          "o200k_base": 65
+        },
+        "schema_tokens": {
+          "cl100k_base": 191,
+          "o200k_base": 199
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 346,
+          "o200k_base": 348
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 761,
+          "o200k_base": 765
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 10,
+        "scripted_decisions": 18,
+        "tool_seconds": 0.012887,
+        "max_reply_bytes": 257
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552"
+        ],
+        "modes": {
+          "full": 1,
+          "unchanged": 5,
+          "fallback_full": 2
+        }
+      }
+    },
+    {
+      "case": "sync_tiny",
+      "arm": "sync",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1095,
+          "o200k_base": 1101
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 10050,
+          "o200k_base": 10118
+        },
+        "setup_tokens": {
+          "cl100k_base": 163,
+          "o200k_base": 167
+        },
+        "instruction_tokens": {
+          "cl100k_base": 53,
+          "o200k_base": 53
+        },
+        "schema_tokens": {
+          "cl100k_base": 110,
+          "o200k_base": 114
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 132,
+          "o200k_base": 132
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 544,
+          "o200k_base": 546
+        },
+        "user_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 168
+        },
+        "answer_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 88
+        },
+        "tool_calls": 8,
+        "scripted_decisions": 16,
+        "tool_seconds": 0.010218,
+        "max_reply_bytes": 256
+      },
+      "verification": {
+        "complete_source_sha256_by_turn": [
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "e447128c11e3e7ad3b3c894fb396c17ef02bf49295dadf730b8d49008d4134ed",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c423d3611de5b55d0449170d69877d2444ebf9e1432755c306d5fffc4baa3bd4",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552",
+          "c835b8c79512d309d0a636e536ece22732bc49a5e8840dc13c14746377829552"
+        ],
+        "modes": {
+          "full": 3,
+          "unchanged": 5
+        }
+      }
+    },
+    {
+      "case": "uneven_reads",
+      "arm": "batched_inspect",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 969,
+          "o200k_base": 981
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 1191,
+          "o200k_base": 1208
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 62,
+          "o200k_base": 63
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 673,
+          "o200k_base": 679
+        },
+        "user_tokens": {
+          "cl100k_base": 62,
+          "o200k_base": 62
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 3,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.003836,
+        "max_reply_bytes": 1331
+      },
+      "verification": {
+        "exact_page_sha256": [
+          "4ece338817fd72b0f5eda0f09f2dc7d8f97b30e6d5a8d4f46ff0b02e1b46e784",
+          "847dce713d0a32f2a8590237f149c8fd2dc6c38d349ab6039e55320b9199f38d",
+          "dbd29d594e1ca81c8190d03b8d1cc8de644611b7723df4fcb4c4e14945e68f8c",
+          "69591f462dfc3e0df20f284a90c15f6119bf3a84201934e15e4de62a0769bb2c"
+        ],
+        "requested_range_sha256": [
+          "4ece338817fd72b0f5eda0f09f2dc7d8f97b30e6d5a8d4f46ff0b02e1b46e784",
+          "847dce713d0a32f2a8590237f149c8fd2dc6c38d349ab6039e55320b9199f38d",
+          "dbd29d594e1ca81c8190d03b8d1cc8de644611b7723df4fcb4c4e14945e68f8c",
+          "69591f462dfc3e0df20f284a90c15f6119bf3a84201934e15e4de62a0769bb2c"
+        ],
+        "source_sha256": {
+          "docs/a": "894aaca1f0e999e1bebeb57c951280aa181d98a6e209c7c53eb380fd0825bb93",
+          "docs/b": "27e9a35e4345659237b0a20096283b18061c779f7996b7d7e51168687402c5ed",
+          "docs/c": "1e45bb883ec543a6c5051bb053964cd6461d4d313dbfcdd886099484f963ef59"
+        }
+      }
+    },
+    {
+      "case": "uneven_reads",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1205,
+          "o200k_base": 1229
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 1650,
+          "o200k_base": 1688
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 62,
+          "o200k_base": 63
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 686,
+          "o200k_base": 695
+        },
+        "user_tokens": {
+          "cl100k_base": 62,
+          "o200k_base": 62
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 1,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.002191,
+        "max_reply_bytes": 2458
+      },
+      "verification": {
+        "exact_page_sha256": [
+          "4ece338817fd72b0f5eda0f09f2dc7d8f97b30e6d5a8d4f46ff0b02e1b46e784",
+          "847dce713d0a32f2a8590237f149c8fd2dc6c38d349ab6039e55320b9199f38d",
+          "dbd29d594e1ca81c8190d03b8d1cc8de644611b7723df4fcb4c4e14945e68f8c",
+          "69591f462dfc3e0df20f284a90c15f6119bf3a84201934e15e4de62a0769bb2c"
+        ],
+        "requested_range_sha256": [
+          "4ece338817fd72b0f5eda0f09f2dc7d8f97b30e6d5a8d4f46ff0b02e1b46e784",
+          "847dce713d0a32f2a8590237f149c8fd2dc6c38d349ab6039e55320b9199f38d",
+          "dbd29d594e1ca81c8190d03b8d1cc8de644611b7723df4fcb4c4e14945e68f8c",
+          "69591f462dfc3e0df20f284a90c15f6119bf3a84201934e15e4de62a0769bb2c"
+        ],
+        "source_sha256": {
+          "docs/a": "894aaca1f0e999e1bebeb57c951280aa181d98a6e209c7c53eb380fd0825bb93",
+          "docs/b": "27e9a35e4345659237b0a20096283b18061c779f7996b7d7e51168687402c5ed",
+          "docs/c": "1e45bb883ec543a6c5051bb053964cd6461d4d313dbfcdd886099484f963ef59"
+        }
+      }
+    },
+    {
+      "case": "read_all",
+      "arm": "batched_inspect",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 11014,
+          "o200k_base": 11023
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 26617,
+          "o200k_base": 26647
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 134,
+          "o200k_base": 136
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 10646,
+          "o200k_base": 10648
+        },
+        "user_tokens": {
+          "cl100k_base": 62,
+          "o200k_base": 62
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 3,
+        "scripted_decisions": 4,
+        "tool_seconds": 0.006117,
+        "max_reply_bytes": 22871
+      },
+      "verification": {
+        "exact_page_sha256": [
+          "d14e21dedc4734c7fc7f437d7567d4d68f4251452bb11fbeb19826f9a1443bbb",
+          "43a4e3695c169611c645a9a47bb7f97dcf5bd330149bda4fa691704164e85807",
+          "bf3abd76d22b7be78c0969a08adb15d594546786037b9c9215b99d8b5309d799",
+          "c545e5f87bc54212ce36948d98eab5ef0cb8995a2a46d5b1948eefb8bb76673e",
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "eb2360158b590b4139d7e8ec43018bbcd7cab6c0f639a33f91f659c78b721da5",
+          "87e22e9ad63baa8ae19dfa737963b41f0bd033fbe8277407f6e8d0ba26c86d4f",
+          "7802a06f189e1c34f47852fbdb6e381856bc2002e9e66fe85a5367f178331335"
+        ],
+        "requested_range_sha256": [
+          "d14e21dedc4734c7fc7f437d7567d4d68f4251452bb11fbeb19826f9a1443bbb",
+          "43a4e3695c169611c645a9a47bb7f97dcf5bd330149bda4fa691704164e85807",
+          "1cdfc5812265e9eb85eb3f32a5ff4825ed0bc9b9804e409516cda10eb1bb7ea7",
+          "516373f2c85407a83d9ed0a21e93f995488cfecaafc956db1402d468947ac07f",
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "source_sha256": {
+          "docs/a": "d14e21dedc4734c7fc7f437d7567d4d68f4251452bb11fbeb19826f9a1443bbb",
+          "docs/b": "43a4e3695c169611c645a9a47bb7f97dcf5bd330149bda4fa691704164e85807",
+          "docs/c": "1cdfc5812265e9eb85eb3f32a5ff4825ed0bc9b9804e409516cda10eb1bb7ea7",
+          "docs/d": "516373f2c85407a83d9ed0a21e93f995488cfecaafc956db1402d468947ac07f",
+          "docs/empty": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "case": "read_all",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 12086,
+          "o200k_base": 12118
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 29666,
+          "o200k_base": 29763
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 180,
+          "o200k_base": 183
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 11449,
+          "o200k_base": 11464
+        },
+        "user_tokens": {
+          "cl100k_base": 62,
+          "o200k_base": 62
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 3,
+        "scripted_decisions": 4,
+        "tool_seconds": 0.005561,
+        "max_reply_bytes": 23832
+      },
+      "verification": {
+        "exact_page_sha256": [
+          "d14e21dedc4734c7fc7f437d7567d4d68f4251452bb11fbeb19826f9a1443bbb",
+          "43a4e3695c169611c645a9a47bb7f97dcf5bd330149bda4fa691704164e85807",
+          "bf3abd76d22b7be78c0969a08adb15d594546786037b9c9215b99d8b5309d799",
+          "c545e5f87bc54212ce36948d98eab5ef0cb8995a2a46d5b1948eefb8bb76673e",
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "eb2360158b590b4139d7e8ec43018bbcd7cab6c0f639a33f91f659c78b721da5",
+          "87e22e9ad63baa8ae19dfa737963b41f0bd033fbe8277407f6e8d0ba26c86d4f",
+          "7802a06f189e1c34f47852fbdb6e381856bc2002e9e66fe85a5367f178331335"
+        ],
+        "requested_range_sha256": [
+          "d14e21dedc4734c7fc7f437d7567d4d68f4251452bb11fbeb19826f9a1443bbb",
+          "43a4e3695c169611c645a9a47bb7f97dcf5bd330149bda4fa691704164e85807",
+          "1cdfc5812265e9eb85eb3f32a5ff4825ed0bc9b9804e409516cda10eb1bb7ea7",
+          "516373f2c85407a83d9ed0a21e93f995488cfecaafc956db1402d468947ac07f",
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "source_sha256": {
+          "docs/a": "d14e21dedc4734c7fc7f437d7567d4d68f4251452bb11fbeb19826f9a1443bbb",
+          "docs/b": "43a4e3695c169611c645a9a47bb7f97dcf5bd330149bda4fa691704164e85807",
+          "docs/c": "1cdfc5812265e9eb85eb3f32a5ff4825ed0bc9b9804e409516cda10eb1bb7ea7",
+          "docs/d": "516373f2c85407a83d9ed0a21e93f995488cfecaafc956db1402d468947ac07f",
+          "docs/empty": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "case": "tiny_read",
+      "arm": "batched_inspect",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 274,
+          "o200k_base": 280
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 455,
+          "o200k_base": 466
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 18,
+          "o200k_base": 18
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 63,
+          "o200k_base": 64
+        },
+        "user_tokens": {
+          "cl100k_base": 21,
+          "o200k_base": 21
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 1,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.001897,
+        "max_reply_bytes": 193
+      },
+      "verification": {
+        "exact_page_sha256": [
+          "26f7e9f67157edd88be2d694cea0d0c5b446928271f816d6dadb9329b582d588"
+        ],
+        "requested_range_sha256": [
+          "26f7e9f67157edd88be2d694cea0d0c5b446928271f816d6dadb9329b582d588"
+        ],
+        "source_sha256": {
+          "docs/a": "26f7e9f67157edd88be2d694cea0d0c5b446928271f816d6dadb9329b582d588"
+        }
+      }
+    },
+    {
+      "case": "tiny_read",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 544,
+          "o200k_base": 563
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 948,
+          "o200k_base": 981
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 20,
+          "o200k_base": 21
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 108,
+          "o200k_base": 112
+        },
+        "user_tokens": {
+          "cl100k_base": 21,
+          "o200k_base": 21
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 1,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.00207,
+        "max_reply_bytes": 327
+      },
+      "verification": {
+        "exact_page_sha256": [
+          "26f7e9f67157edd88be2d694cea0d0c5b446928271f816d6dadb9329b582d588"
+        ],
+        "requested_range_sha256": [
+          "26f7e9f67157edd88be2d694cea0d0c5b446928271f816d6dadb9329b582d588"
+        ],
+        "source_sha256": {
+          "docs/a": "26f7e9f67157edd88be2d694cea0d0c5b446928271f816d6dadb9329b582d588"
+        }
+      }
+    },
+    {
+      "case": "sparse_ranges_1",
+      "arm": "batched_inspect",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 390,
+          "o200k_base": 398
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 601,
+          "o200k_base": 615
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 42,
+          "o200k_base": 43
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 125,
+          "o200k_base": 126
+        },
+        "user_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 52
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 1,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.001866,
+        "max_reply_bytes": 434
+      },
+      "verification": {
+        "source_sha256": {
+          "logs/large": "9520554edb4a87e509e96117edf3e566800004a55b6f4795ff805c9a74f7112c"
+        },
+        "source_bytes": 104400,
+        "requested_bytes": 256,
+        "requested_range_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be"
+        ],
+        "exact_page_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be"
+        ]
+      }
+    },
+    {
+      "case": "sparse_ranges_1",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 664,
+          "o200k_base": 685
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 1098,
+          "o200k_base": 1134
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 44,
+          "o200k_base": 46
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 174,
+          "o200k_base": 178
+        },
+        "user_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 52
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 1,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.001775,
+        "max_reply_bytes": 579
+      },
+      "verification": {
+        "source_sha256": {
+          "logs/large": "9520554edb4a87e509e96117edf3e566800004a55b6f4795ff805c9a74f7112c"
+        },
+        "source_bytes": 104400,
+        "requested_bytes": 256,
+        "requested_range_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be"
+        ],
+        "exact_page_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be"
+        ]
+      }
+    },
+    {
+      "case": "sparse_ranges_4",
+      "arm": "batched_inspect",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 992,
+          "o200k_base": 1009
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 1305,
+          "o200k_base": 1331
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 168,
+          "o200k_base": 172
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 499,
+          "o200k_base": 503
+        },
+        "user_tokens": {
+          "cl100k_base": 153,
+          "o200k_base": 157
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 4,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.004734,
+        "max_reply_bytes": 434
+      },
+      "verification": {
+        "source_sha256": {
+          "logs/large": "9520554edb4a87e509e96117edf3e566800004a55b6f4795ff805c9a74f7112c"
+        },
+        "source_bytes": 104400,
+        "requested_bytes": 1024,
+        "requested_range_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3"
+        ],
+        "exact_page_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3"
+        ]
+      }
+    },
+    {
+      "case": "sparse_ranges_4",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1186,
+          "o200k_base": 1213
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 1722,
+          "o200k_base": 1767
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 146,
+          "o200k_base": 151
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 492,
+          "o200k_base": 496
+        },
+        "user_tokens": {
+          "cl100k_base": 153,
+          "o200k_base": 157
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 1,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.002124,
+        "max_reply_bytes": 1749
+      },
+      "verification": {
+        "source_sha256": {
+          "logs/large": "9520554edb4a87e509e96117edf3e566800004a55b6f4795ff805c9a74f7112c"
+        },
+        "source_bytes": 104400,
+        "requested_bytes": 1024,
+        "requested_range_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3"
+        ],
+        "exact_page_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3"
+        ]
+      }
+    },
+    {
+      "case": "sparse_ranges_16",
+      "arm": "batched_inspect",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3437,
+          "o200k_base": 3490
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 4158,
+          "o200k_base": 4232
+        },
+        "setup_tokens": {
+          "cl100k_base": 166,
+          "o200k_base": 171
+        },
+        "instruction_tokens": {
+          "cl100k_base": 51,
+          "o200k_base": 51
+        },
+        "schema_tokens": {
+          "cl100k_base": 115,
+          "o200k_base": 120
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 672,
+          "o200k_base": 688
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 2032,
+          "o200k_base": 2048
+        },
+        "user_tokens": {
+          "cl100k_base": 561,
+          "o200k_base": 577
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 16,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.014166,
+        "max_reply_bytes": 435
+      },
+      "verification": {
+        "source_sha256": {
+          "logs/large": "9520554edb4a87e509e96117edf3e566800004a55b6f4795ff805c9a74f7112c"
+        },
+        "source_bytes": 104400,
+        "requested_bytes": 4096,
+        "requested_range_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3",
+          "1e3a6840b19b0dfb68d770d2da01816bcb323a2a9fbfc0c661f83fd1dda57656",
+          "161bb66ede6af7568366b61c303749981d0cd3e11337c21d1a4cc09c2d560f02",
+          "06bdb384debaa948f7658439b37451cd1df89c9c62455dd52e33d6d689fb3514",
+          "7020e3aeef4a024e72eb10e4fcf86e8636abb77197b2a0fec6ab22f514e23256",
+          "ff3ba58bfa2c1f85068cc04896e1acd8fe67fcce2fd9da626d32a1c583e8da5c",
+          "b7c901983405e085c0ed6e09feb5d6dd86db5519bf23580f69771cc015b77e35",
+          "74e27a9ef2fb7051eb76377365df1d6024bd70aadeb9d4f9a9e038872b2ea668",
+          "58491e47313322e85e67eef3d909dfc4f9101f9a884c7d5fe26b186d10bc9275",
+          "946b7b829245d687374a8a11d3d768263d12a4843a94768ce8d39168b1175b47",
+          "cd0eb40fb8ad696f5f554e32196a4816c8c9ac1cf132d112d96880d90d30069e",
+          "f499a0d1d1eb62580951c8c9d1953bfcdb4d0817d46bc9580c042152fa5fdf77",
+          "b10206ca781c8ab37f8740f1ea9f3ad2b8d3fd835ae060052409417e4d5c5394"
+        ],
+        "exact_page_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3",
+          "1e3a6840b19b0dfb68d770d2da01816bcb323a2a9fbfc0c661f83fd1dda57656",
+          "161bb66ede6af7568366b61c303749981d0cd3e11337c21d1a4cc09c2d560f02",
+          "06bdb384debaa948f7658439b37451cd1df89c9c62455dd52e33d6d689fb3514",
+          "7020e3aeef4a024e72eb10e4fcf86e8636abb77197b2a0fec6ab22f514e23256",
+          "ff3ba58bfa2c1f85068cc04896e1acd8fe67fcce2fd9da626d32a1c583e8da5c",
+          "b7c901983405e085c0ed6e09feb5d6dd86db5519bf23580f69771cc015b77e35",
+          "74e27a9ef2fb7051eb76377365df1d6024bd70aadeb9d4f9a9e038872b2ea668",
+          "58491e47313322e85e67eef3d909dfc4f9101f9a884c7d5fe26b186d10bc9275",
+          "946b7b829245d687374a8a11d3d768263d12a4843a94768ce8d39168b1175b47",
+          "cd0eb40fb8ad696f5f554e32196a4816c8c9ac1cf132d112d96880d90d30069e",
+          "f499a0d1d1eb62580951c8c9d1953bfcdb4d0817d46bc9580c042152fa5fdf77",
+          "b10206ca781c8ab37f8740f1ea9f3ad2b8d3fd835ae060052409417e4d5c5394"
+        ]
+      }
+    },
+    {
+      "case": "sparse_ranges_16",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3308,
+          "o200k_base": 3359
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 4252,
+          "o200k_base": 4333
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 554,
+          "o200k_base": 571
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 1798,
+          "o200k_base": 1802
+        },
+        "user_tokens": {
+          "cl100k_base": 561,
+          "o200k_base": 577
+        },
+        "answer_tokens": {
+          "cl100k_base": 6,
+          "o200k_base": 6
+        },
+        "tool_calls": 1,
+        "scripted_decisions": 2,
+        "tool_seconds": 0.002367,
+        "max_reply_bytes": 6453
+      },
+      "verification": {
+        "source_sha256": {
+          "logs/large": "9520554edb4a87e509e96117edf3e566800004a55b6f4795ff805c9a74f7112c"
+        },
+        "source_bytes": 104400,
+        "requested_bytes": 4096,
+        "requested_range_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3",
+          "1e3a6840b19b0dfb68d770d2da01816bcb323a2a9fbfc0c661f83fd1dda57656",
+          "161bb66ede6af7568366b61c303749981d0cd3e11337c21d1a4cc09c2d560f02",
+          "06bdb384debaa948f7658439b37451cd1df89c9c62455dd52e33d6d689fb3514",
+          "7020e3aeef4a024e72eb10e4fcf86e8636abb77197b2a0fec6ab22f514e23256",
+          "ff3ba58bfa2c1f85068cc04896e1acd8fe67fcce2fd9da626d32a1c583e8da5c",
+          "b7c901983405e085c0ed6e09feb5d6dd86db5519bf23580f69771cc015b77e35",
+          "74e27a9ef2fb7051eb76377365df1d6024bd70aadeb9d4f9a9e038872b2ea668",
+          "58491e47313322e85e67eef3d909dfc4f9101f9a884c7d5fe26b186d10bc9275",
+          "946b7b829245d687374a8a11d3d768263d12a4843a94768ce8d39168b1175b47",
+          "cd0eb40fb8ad696f5f554e32196a4816c8c9ac1cf132d112d96880d90d30069e",
+          "f499a0d1d1eb62580951c8c9d1953bfcdb4d0817d46bc9580c042152fa5fdf77",
+          "b10206ca781c8ab37f8740f1ea9f3ad2b8d3fd835ae060052409417e4d5c5394"
+        ],
+        "exact_page_sha256": [
+          "82c75638fe1e282fab39a64b7207d239427d61fc145b21d5daf586076f7b92be",
+          "1d57a7192177a12d4e44c5515aabd7f352c9cd9c28241dc48461afc21e7d47a3",
+          "905b30810e3e67891186d3986a430845516cf83cf9a7dbac61e26fa7df867625",
+          "b980a8c1a2a4802734e66e13253b82d5276114f613ce7c971a1ba63ee6ea2ca3",
+          "1e3a6840b19b0dfb68d770d2da01816bcb323a2a9fbfc0c661f83fd1dda57656",
+          "161bb66ede6af7568366b61c303749981d0cd3e11337c21d1a4cc09c2d560f02",
+          "06bdb384debaa948f7658439b37451cd1df89c9c62455dd52e33d6d689fb3514",
+          "7020e3aeef4a024e72eb10e4fcf86e8636abb77197b2a0fec6ab22f514e23256",
+          "ff3ba58bfa2c1f85068cc04896e1acd8fe67fcce2fd9da626d32a1c583e8da5c",
+          "b7c901983405e085c0ed6e09feb5d6dd86db5519bf23580f69771cc015b77e35",
+          "74e27a9ef2fb7051eb76377365df1d6024bd70aadeb9d4f9a9e038872b2ea668",
+          "58491e47313322e85e67eef3d909dfc4f9101f9a884c7d5fe26b186d10bc9275",
+          "946b7b829245d687374a8a11d3d768263d12a4843a94768ce8d39168b1175b47",
+          "cd0eb40fb8ad696f5f554e32196a4816c8c9ac1cf132d112d96880d90d30069e",
+          "f499a0d1d1eb62580951c8c9d1953bfcdb4d0817d46bc9580c042152fa5fdf77",
+          "b10206ca781c8ab37f8740f1ea9f3ad2b8d3fd835ae060052409417e4d5c5394"
+        ]
+      }
+    },
+    {
+      "case": "overlapping_passages",
+      "arm": "batched_search",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3061,
+          "o200k_base": 3060
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 10035,
+          "o200k_base": 10024
+        },
+        "setup_tokens": {
+          "cl100k_base": 120,
+          "o200k_base": 125
+        },
+        "instruction_tokens": {
+          "cl100k_base": 22,
+          "o200k_base": 22
+        },
+        "schema_tokens": {
+          "cl100k_base": 98,
+          "o200k_base": 103
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 87
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 2637,
+          "o200k_base": 2632
+        },
+        "user_tokens": {
+          "cl100k_base": 81,
+          "o200k_base": 78
+        },
+        "answer_tokens": {
+          "cl100k_base": 135,
+          "o200k_base": 138
+        },
+        "tool_calls": 4,
+        "scripted_decisions": 5,
+        "tool_seconds": 0.006196,
+        "max_reply_bytes": 2321
+      },
+      "verification": {
+        "answers": [
+          {
+            "reviews/atlas": {
+              "renewal_code": "RC-7101",
+              "owner": "team-1",
+              "status": "approved"
+            },
+            "reviews/orion": {
+              "renewal_code": "RC-7102",
+              "owner": "team-2",
+              "status": "approved"
+            },
+            "reviews/zephyr": {
+              "renewal_code": "RC-7103",
+              "owner": "team-3",
+              "status": "approved"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "owner": "team-1"
+            },
+            "reviews/orion": {
+              "owner": "team-2"
+            },
+            "reviews/zephyr": {
+              "owner": "team-3"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "risk_limit": "150"
+            },
+            "reviews/orion": {
+              "risk_limit": "175"
+            },
+            "reviews/zephyr": {
+              "risk_limit": "200"
+            }
+          }
+        ],
+        "source_sha256": {
+          "reviews/atlas": "e8996cc8d67831ef74e45b2c48dee7170b25541a722c7fbd9fd51a8eab049c81",
+          "reviews/orion": "80ec794256897a674fc9b886d1eb719a7deb344dba6cd5135a49601a601181bb",
+          "reviews/zephyr": "c9eced7b30e824285fa036898348dd41575000f204b986c345bd4df06cb7e5c1"
+        }
+      }
+    },
+    {
+      "case": "overlapping_passages",
+      "arm": "search_then_read",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 2450,
+          "o200k_base": 2462
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 10744,
+          "o200k_base": 10792
+        },
+        "setup_tokens": {
+          "cl100k_base": 273,
+          "o200k_base": 283
+        },
+        "instruction_tokens": {
+          "cl100k_base": 62,
+          "o200k_base": 62
+        },
+        "schema_tokens": {
+          "cl100k_base": 211,
+          "o200k_base": 221
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 253,
+          "o200k_base": 254
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 1708,
+          "o200k_base": 1709
+        },
+        "user_tokens": {
+          "cl100k_base": 81,
+          "o200k_base": 78
+        },
+        "answer_tokens": {
+          "cl100k_base": 135,
+          "o200k_base": 138
+        },
+        "tool_calls": 6,
+        "scripted_decisions": 7,
+        "tool_seconds": 0.008093,
+        "max_reply_bytes": 1277
+      },
+      "verification": {
+        "answers": [
+          {
+            "reviews/atlas": {
+              "renewal_code": "RC-7101",
+              "owner": "team-1",
+              "status": "approved"
+            },
+            "reviews/orion": {
+              "renewal_code": "RC-7102",
+              "owner": "team-2",
+              "status": "approved"
+            },
+            "reviews/zephyr": {
+              "renewal_code": "RC-7103",
+              "owner": "team-3",
+              "status": "approved"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "owner": "team-1"
+            },
+            "reviews/orion": {
+              "owner": "team-2"
+            },
+            "reviews/zephyr": {
+              "owner": "team-3"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "risk_limit": "150"
+            },
+            "reviews/orion": {
+              "risk_limit": "175"
+            },
+            "reviews/zephyr": {
+              "risk_limit": "200"
+            }
+          }
+        ],
+        "source_sha256": {
+          "reviews/atlas": "e8996cc8d67831ef74e45b2c48dee7170b25541a722c7fbd9fd51a8eab049c81",
+          "reviews/orion": "80ec794256897a674fc9b886d1eb719a7deb344dba6cd5135a49601a601181bb",
+          "reviews/zephyr": "c9eced7b30e824285fa036898348dd41575000f204b986c345bd4df06cb7e5c1"
+        }
+      }
+    },
+    {
+      "case": "overlapping_passages",
+      "arm": "incremental_search",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 1696,
+          "o200k_base": 1699
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 4575,
+          "o200k_base": 4580
+        },
+        "setup_tokens": {
+          "cl100k_base": 120,
+          "o200k_base": 125
+        },
+        "instruction_tokens": {
+          "cl100k_base": 22,
+          "o200k_base": 22
+        },
+        "schema_tokens": {
+          "cl100k_base": 98,
+          "o200k_base": 103
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 46,
+          "o200k_base": 45
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 1314,
+          "o200k_base": 1313
+        },
+        "user_tokens": {
+          "cl100k_base": 81,
+          "o200k_base": 78
+        },
+        "answer_tokens": {
+          "cl100k_base": 135,
+          "o200k_base": 138
+        },
+        "tool_calls": 2,
+        "scripted_decisions": 5,
+        "tool_seconds": 0.003162,
+        "max_reply_bytes": 2321
+      },
+      "verification": {
+        "answers": [
+          {
+            "reviews/atlas": {
+              "renewal_code": "RC-7101",
+              "owner": "team-1",
+              "status": "approved"
+            },
+            "reviews/orion": {
+              "renewal_code": "RC-7102",
+              "owner": "team-2",
+              "status": "approved"
+            },
+            "reviews/zephyr": {
+              "renewal_code": "RC-7103",
+              "owner": "team-3",
+              "status": "approved"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "owner": "team-1"
+            },
+            "reviews/orion": {
+              "owner": "team-2"
+            },
+            "reviews/zephyr": {
+              "owner": "team-3"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "risk_limit": "150"
+            },
+            "reviews/orion": {
+              "risk_limit": "175"
+            },
+            "reviews/zephyr": {
+              "risk_limit": "200"
+            }
+          }
+        ],
+        "source_sha256": {
+          "reviews/atlas": "e8996cc8d67831ef74e45b2c48dee7170b25541a722c7fbd9fd51a8eab049c81",
+          "reviews/orion": "80ec794256897a674fc9b886d1eb719a7deb344dba6cd5135a49601a601181bb",
+          "reviews/zephyr": "c9eced7b30e824285fa036898348dd41575000f204b986c345bd4df06cb7e5c1"
+        }
+      }
+    },
+    {
+      "case": "overlapping_passages",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 2151,
+          "o200k_base": 2174
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 6631,
+          "o200k_base": 6707
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 80,
+          "o200k_base": 81
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 1466,
+          "o200k_base": 1474
+        },
+        "user_tokens": {
+          "cl100k_base": 81,
+          "o200k_base": 78
+        },
+        "answer_tokens": {
+          "cl100k_base": 135,
+          "o200k_base": 138
+        },
+        "tool_calls": 2,
+        "scripted_decisions": 5,
+        "tool_seconds": 0.004129,
+        "max_reply_bytes": 2772
+      },
+      "verification": {
+        "answers": [
+          {
+            "reviews/atlas": {
+              "renewal_code": "RC-7101",
+              "owner": "team-1",
+              "status": "approved"
+            },
+            "reviews/orion": {
+              "renewal_code": "RC-7102",
+              "owner": "team-2",
+              "status": "approved"
+            },
+            "reviews/zephyr": {
+              "renewal_code": "RC-7103",
+              "owner": "team-3",
+              "status": "approved"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "owner": "team-1"
+            },
+            "reviews/orion": {
+              "owner": "team-2"
+            },
+            "reviews/zephyr": {
+              "owner": "team-3"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "risk_limit": "150"
+            },
+            "reviews/orion": {
+              "risk_limit": "175"
+            },
+            "reviews/zephyr": {
+              "risk_limit": "200"
+            }
+          }
+        ],
+        "source_sha256": {
+          "reviews/atlas": "e8996cc8d67831ef74e45b2c48dee7170b25541a722c7fbd9fd51a8eab049c81",
+          "reviews/orion": "80ec794256897a674fc9b886d1eb719a7deb344dba6cd5135a49601a601181bb",
+          "reviews/zephyr": "c9eced7b30e824285fa036898348dd41575000f204b986c345bd4df06cb7e5c1"
+        }
+      }
+    },
+    {
+      "case": "dispersed_passages",
+      "arm": "batched_search",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3035,
+          "o200k_base": 3037
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 9937,
+          "o200k_base": 9938
+        },
+        "setup_tokens": {
+          "cl100k_base": 120,
+          "o200k_base": 125
+        },
+        "instruction_tokens": {
+          "cl100k_base": 22,
+          "o200k_base": 22
+        },
+        "schema_tokens": {
+          "cl100k_base": 98,
+          "o200k_base": 103
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 87
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 2611,
+          "o200k_base": 2609
+        },
+        "user_tokens": {
+          "cl100k_base": 81,
+          "o200k_base": 78
+        },
+        "answer_tokens": {
+          "cl100k_base": 135,
+          "o200k_base": 138
+        },
+        "tool_calls": 4,
+        "scripted_decisions": 5,
+        "tool_seconds": 0.005567,
+        "max_reply_bytes": 2322
+      },
+      "verification": {
+        "answers": [
+          {
+            "reviews/atlas": {
+              "renewal_code": "RC-7101",
+              "owner": "team-1",
+              "status": "approved"
+            },
+            "reviews/orion": {
+              "renewal_code": "RC-7102",
+              "owner": "team-2",
+              "status": "approved"
+            },
+            "reviews/zephyr": {
+              "renewal_code": "RC-7103",
+              "owner": "team-3",
+              "status": "approved"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "owner": "team-1"
+            },
+            "reviews/orion": {
+              "owner": "team-2"
+            },
+            "reviews/zephyr": {
+              "owner": "team-3"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "risk_limit": "150"
+            },
+            "reviews/orion": {
+              "risk_limit": "175"
+            },
+            "reviews/zephyr": {
+              "risk_limit": "200"
+            }
+          }
+        ],
+        "source_sha256": {
+          "reviews/atlas": "f78ff61bb411b16e6480eb6361f3384f54d518000e908114450fa6cb432fe61b",
+          "reviews/orion": "7eb3539a787189da78f2a9c983b96e13092047d7fac5a5dcb2763762f1e96ce7",
+          "reviews/zephyr": "21ab9292730f9d7cc4b10ee2d880fe6282969745d61c431e93a3d2d4d7320730"
+        }
+      }
+    },
+    {
+      "case": "dispersed_passages",
+      "arm": "incremental_search",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3035,
+          "o200k_base": 3037
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 12274,
+          "o200k_base": 12278
+        },
+        "setup_tokens": {
+          "cl100k_base": 120,
+          "o200k_base": 125
+        },
+        "instruction_tokens": {
+          "cl100k_base": 22,
+          "o200k_base": 22
+        },
+        "schema_tokens": {
+          "cl100k_base": 98,
+          "o200k_base": 103
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 88,
+          "o200k_base": 87
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 2611,
+          "o200k_base": 2609
+        },
+        "user_tokens": {
+          "cl100k_base": 81,
+          "o200k_base": 78
+        },
+        "answer_tokens": {
+          "cl100k_base": 135,
+          "o200k_base": 138
+        },
+        "tool_calls": 4,
+        "scripted_decisions": 7,
+        "tool_seconds": 0.006098,
+        "max_reply_bytes": 2322
+      },
+      "verification": {
+        "answers": [
+          {
+            "reviews/atlas": {
+              "renewal_code": "RC-7101",
+              "owner": "team-1",
+              "status": "approved"
+            },
+            "reviews/orion": {
+              "renewal_code": "RC-7102",
+              "owner": "team-2",
+              "status": "approved"
+            },
+            "reviews/zephyr": {
+              "renewal_code": "RC-7103",
+              "owner": "team-3",
+              "status": "approved"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "owner": "team-1"
+            },
+            "reviews/orion": {
+              "owner": "team-2"
+            },
+            "reviews/zephyr": {
+              "owner": "team-3"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "risk_limit": "150"
+            },
+            "reviews/orion": {
+              "risk_limit": "175"
+            },
+            "reviews/zephyr": {
+              "risk_limit": "200"
+            }
+          }
+        ],
+        "source_sha256": {
+          "reviews/atlas": "f78ff61bb411b16e6480eb6361f3384f54d518000e908114450fa6cb432fe61b",
+          "reviews/orion": "7eb3539a787189da78f2a9c983b96e13092047d7fac5a5dcb2763762f1e96ce7",
+          "reviews/zephyr": "21ab9292730f9d7cc4b10ee2d880fe6282969745d61c431e93a3d2d4d7320730"
+        }
+      }
+    },
+    {
+      "case": "dispersed_passages",
+      "arm": "retrieve",
+      "success": true,
+      "measured": {
+        "new_payload_tokens": {
+          "cl100k_base": 3062,
+          "o200k_base": 3085
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 10281,
+          "o200k_base": 10357
+        },
+        "setup_tokens": {
+          "cl100k_base": 389,
+          "o200k_base": 403
+        },
+        "instruction_tokens": {
+          "cl100k_base": 83,
+          "o200k_base": 83
+        },
+        "schema_tokens": {
+          "cl100k_base": 306,
+          "o200k_base": 320
+        },
+        "tool_request_tokens": {
+          "cl100k_base": 80,
+          "o200k_base": 81
+        },
+        "tool_reply_tokens": {
+          "cl100k_base": 2377,
+          "o200k_base": 2385
+        },
+        "user_tokens": {
+          "cl100k_base": 81,
+          "o200k_base": 78
+        },
+        "answer_tokens": {
+          "cl100k_base": 135,
+          "o200k_base": 138
+        },
+        "tool_calls": 2,
+        "scripted_decisions": 5,
+        "tool_seconds": 0.004248,
+        "max_reply_bytes": 6237
+      },
+      "verification": {
+        "answers": [
+          {
+            "reviews/atlas": {
+              "renewal_code": "RC-7101",
+              "owner": "team-1",
+              "status": "approved"
+            },
+            "reviews/orion": {
+              "renewal_code": "RC-7102",
+              "owner": "team-2",
+              "status": "approved"
+            },
+            "reviews/zephyr": {
+              "renewal_code": "RC-7103",
+              "owner": "team-3",
+              "status": "approved"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "owner": "team-1"
+            },
+            "reviews/orion": {
+              "owner": "team-2"
+            },
+            "reviews/zephyr": {
+              "owner": "team-3"
+            }
+          },
+          {
+            "reviews/atlas": {
+              "risk_limit": "150"
+            },
+            "reviews/orion": {
+              "risk_limit": "175"
+            },
+            "reviews/zephyr": {
+              "risk_limit": "200"
+            }
+          }
+        ],
+        "source_sha256": {
+          "reviews/atlas": "f78ff61bb411b16e6480eb6361f3384f54d518000e908114450fa6cb432fe61b",
+          "reviews/orion": "7eb3539a787189da78f2a9c983b96e13092047d7fac5a5dcb2763762f1e96ce7",
+          "reviews/zephyr": "21ab9292730f9d7cc4b10ee2d880fe6282969745d61c431e93a3d2d4d7320730"
+        }
+      }
+    }
+  ],
+  "comparisons_pct": {
+    "dispersed_passages": {
+      "batched_search": {
+        "new_payload_tokens": {
+          "cl100k_base": -0.89,
+          "o200k_base": -1.58
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -3.46,
+          "o200k_base": -4.22
+        }
+      },
+      "incremental_search": {
+        "new_payload_tokens": {
+          "cl100k_base": -0.89,
+          "o200k_base": -1.58
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 16.24,
+          "o200k_base": 15.65
+        }
+      }
+    },
+    "overlapping_passages": {
+      "batched_search": {
+        "new_payload_tokens": {
+          "cl100k_base": 29.73,
+          "o200k_base": 28.95
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 33.92,
+          "o200k_base": 33.09
+        }
+      },
+      "search_then_read": {
+        "new_payload_tokens": {
+          "cl100k_base": 12.2,
+          "o200k_base": 11.7
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 38.28,
+          "o200k_base": 37.85
+        }
+      },
+      "incremental_search": {
+        "new_payload_tokens": {
+          "cl100k_base": -26.83,
+          "o200k_base": -27.96
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -44.94,
+          "o200k_base": -46.44
+        }
+      }
+    },
+    "read_all": {
+      "batched_inspect": {
+        "new_payload_tokens": {
+          "cl100k_base": -9.73,
+          "o200k_base": -9.93
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -11.46,
+          "o200k_base": -11.69
+        }
+      }
+    },
+    "sparse_ranges_1": {
+      "batched_inspect": {
+        "new_payload_tokens": {
+          "cl100k_base": -70.26,
+          "o200k_base": -72.11
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -82.7,
+          "o200k_base": -84.39
+        }
+      }
+    },
+    "sparse_ranges_16": {
+      "batched_inspect": {
+        "new_payload_tokens": {
+          "cl100k_base": 3.75,
+          "o200k_base": 3.75
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -2.26,
+          "o200k_base": -2.39
+        }
+      }
+    },
+    "sparse_ranges_4": {
+      "batched_inspect": {
+        "new_payload_tokens": {
+          "cl100k_base": -19.56,
+          "o200k_base": -20.22
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -31.95,
+          "o200k_base": -32.76
+        }
+      }
+    },
+    "sync_dense": {
+      "metadata_first": {
+        "new_payload_tokens": {
+          "cl100k_base": 0.89,
+          "o200k_base": 0.91
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 11.3,
+          "o200k_base": 11.33
+        }
+      },
+      "diff_first": {
+        "new_payload_tokens": {
+          "cl100k_base": 10.04,
+          "o200k_base": 10.1
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 20.07,
+          "o200k_base": 20.17
+        }
+      }
+    },
+    "sync_sparse": {
+      "metadata_first": {
+        "new_payload_tokens": {
+          "cl100k_base": 51.19,
+          "o200k_base": 51.08
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 37.55,
+          "o200k_base": 37.49
+        }
+      },
+      "diff_first": {
+        "new_payload_tokens": {
+          "cl100k_base": 12.83,
+          "o200k_base": 12.92
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 10.51,
+          "o200k_base": 10.66
+        }
+      }
+    },
+    "sync_tiny": {
+      "direct_read": {
+        "new_payload_tokens": {
+          "cl100k_base": -0.64,
+          "o200k_base": -0.55
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -0.22,
+          "o200k_base": -0.06
+        }
+      },
+      "metadata_first": {
+        "new_payload_tokens": {
+          "cl100k_base": 4.87,
+          "o200k_base": 5.09
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 13.44,
+          "o200k_base": 13.6
+        }
+      },
+      "diff_first": {
+        "new_payload_tokens": {
+          "cl100k_base": 32.37,
+          "o200k_base": 32.58
+        },
+        "retained_input_exposure": {
+          "cl100k_base": 38.16,
+          "o200k_base": 38.33
+        }
+      }
+    },
+    "tiny_read": {
+      "batched_inspect": {
+        "new_payload_tokens": {
+          "cl100k_base": -98.54,
+          "o200k_base": -101.07
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -108.35,
+          "o200k_base": -110.52
+        }
+      }
+    },
+    "uneven_reads": {
+      "batched_inspect": {
+        "new_payload_tokens": {
+          "cl100k_base": -24.36,
+          "o200k_base": -25.28
+        },
+        "retained_input_exposure": {
+          "cl100k_base": -38.54,
+          "o200k_base": -39.74
+        }
+      }
+    }
+  },
+  "scope": "Actual MCP instructions, cold tool schemas, requests, and formatted text replies. Synthetic fixed plans; independent requests share a decision. Retained exposure replays static setup and all prior canonical message payloads at each planned decision, excluding provider framing, prompt caching, reasoning, inference, and billing. No model reliability claims.",
+  "controls": "Both arms use minimal eager tool allowlists, adaptive text-only replies, and the same interpreter/dependencies. Metadata-first and diff-first are separate whole-workflow baselines; tiny sources also have an always-read-full control. No per-turn hindsight selection. Search controls include grouped independent queries, merged reads after context-free matches, and incremental search that reassesses missing facts after each field. Reads batch shared offsets and lengths. Previously seen facts are reused without a new tool call. Sync uses the prior response's version integer as its retained base; baseline diff requires the retained immutable ID.",
+  "fixtures": "Synthetic sources imported before measurement; acquisition/import cost excluded. Fixture UUIDs are deterministic valid hashes, identical across implementations, with no server changes. Full-body synchronization and read-all cases verify complete exact bytes, not just facts near the start. Sparse-range cases request 1, 4, or 16 disjoint 256-byte ranges from the same supplied immutable 104400-byte source; both implementations use that ID, and requested bytes remain below 4% of the file. Passage cases retain both adjacent facts and facts separated by over 1 KiB.",
+  "timing": "tool_seconds is observed wall time for each request group, excluding process startup. Single local runs are diagnostics, not statistically reliable latency claims.",
+  "traces_sha256": "ea5e3a70acebf4ee5182c3b71b615e78af23b7e89722930209f4622be61953ab"
+}

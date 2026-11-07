@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agent-workbook"
-version = "0.4.1"
+version = "0.5.0"
 description = "Workspool: a local, versioned workbook for humans and MCP agents"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -19,6 +19,7 @@ dependencies = [
 
 [project.optional-dependencies]
 benchmark = ["tokenizers>=0.21,<1"]
+tokens = ["tiktoken>=0.12,<1", "tokenizers>=0.21,<1"]
 
 [project.scripts]
 workspool = "agent_workbook.cli:main"

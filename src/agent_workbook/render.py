@@ -13,10 +13,13 @@ from typing import Any
 from mcp.types import TextContent
 
 TAG = "workspool_encoding"
-ENCODINGS = {"json-v1", "text-v1", "artifacts-v1"}
+ENCODINGS = {"json-v1", "text-v1", "artifacts-v1", "sources-v1"}
 INSTRUCTIONS = (
     "Adaptive replies may use workspool_encoding: fields/rows/defaults expand "
     "artifact metadata; excerpt_rows maps following exact text blocks."
+)
+SOURCE_INSTRUCTIONS = (
+    "sources-v1 restores following text blocks at excerpt_paths in data."
 )
 
 
@@ -113,7 +116,39 @@ def content_bytes(content: Sequence[TextContent]) -> int:
     )
 
 
-def render(data: Any) -> list[TextContent]:
+def _source_blocks(data):
+    """Only extract the defined sync and retrieve fields, never arbitrary user data."""
+    if not isinstance(data, dict) or _is_envelope(data):
+        return None
+    paths = []
+    if (
+        data.get("mode") == "full"
+        and isinstance(data.get("artifact"), dict)
+        and "artifact_id" in data["artifact"]
+        and isinstance(data.get("excerpt"), str)
+    ):
+        paths.append(["excerpt"])
+    if isinstance(data.get("spans"), list) and isinstance(data.get("artifacts"), list):
+        paths.extend(
+            ["spans", index, "excerpt"]
+            for index, span in enumerate(data["spans"])
+            if isinstance(span, dict) and isinstance(span.get("excerpt"), str)
+        )
+    if not paths:
+        return None
+    metadata = copy.deepcopy(data)
+    excerpts = []
+    for path in paths:
+        target = metadata
+        for key in path[:-1]:
+            target = target[key]
+        excerpts.append(target.pop(path[-1]))
+    return _blocks(
+        {TAG: "sources-v1", "data": metadata, "excerpt_paths": paths}, excerpts
+    )
+
+
+def render(data: Any, *, measure=None) -> list[TextContent]:
     """Return the smallest supported representation without changing its data.
 
     Ordinary compact JSON stays unwrapped unless it collides with a reserved
@@ -122,9 +157,13 @@ def render(data: Any) -> list[TextContent]:
     """
     plain = {TAG: "json-v1", "data": data} if _is_envelope(data) else data
     candidates = [_blocks(plain)]
+    sources = _source_blocks(data)
+    if sources is not None:
+        candidates.append(sources)
+    measure = content_bytes if measure is None else measure
     artifact_set = _artifacts(data)
     if artifact_set is None:
-        return candidates[0]
+        return min(candidates, key=measure)
     rows, single = artifact_set
     metadata, indexes, excerpts = _extract(rows)
     candidates.append(_blocks(_pack(rows, data=data, single=single)))
@@ -141,7 +180,7 @@ def render(data: Any) -> list[TextContent]:
         packed = _pack(metadata, data=data, single=single)
         packed["excerpt_rows"] = _excerpt_rows(indexes, len(rows))
         candidates.append(_blocks(packed, excerpts))
-    return min(candidates, key=content_bytes)
+    return min(candidates, key=measure)
 
 
 def decode(content: Sequence[TextContent]) -> Any:
@@ -168,6 +207,34 @@ def decode(content: Sequence[TextContent]) -> Any:
         if len(content) != 1:
             raise ValueError("Unexpected blocks after escaped JSON")
         return envelope["data"]
+    if encoding == "sources-v1":
+        data = envelope["data"]
+        paths = envelope.get("excerpt_paths")
+        if not isinstance(paths, list) or len(paths) != len(content) - 1:
+            raise ValueError("Source paths do not match content blocks")
+        seen = set()
+        for path, block in zip(paths, content[1:], strict=True):
+            valid = path == ["excerpt"] or (
+                isinstance(path, list)
+                and len(path) == 3
+                and path[0] == "spans"
+                and type(path[1]) is int
+                and path[1] >= 0
+                and path[2] == "excerpt"
+            )
+            if not valid or tuple(path) in seen:
+                raise ValueError("Invalid or duplicate source excerpt path")
+            seen.add(tuple(path))
+            try:
+                target = data
+                for key in path[:-1]:
+                    target = target[key]
+                if not isinstance(target, dict) or path[-1] in target:
+                    raise ValueError("Source excerpt path overwrites existing data")
+                target[path[-1]] = block.text
+            except (KeyError, IndexError, TypeError):
+                raise ValueError("Invalid source excerpt path") from None
+        return data
     single = envelope.get("single", False)
     if encoding == "text-v1":
         data = envelope["data"]

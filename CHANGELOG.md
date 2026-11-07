@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 — 2026-11-07
+
+- Add `sync`: return unchanged status, complete line edits, or full source pages in one call. Accept retained version numbers or IDs; resolve initial reads to the current version and pin continuation pages to their original snapshot.
+- Add `retrieve`: combine up to 8 literal queries and 16 independent reads, merge overlapping source spans, share metadata, and preserve per-request continuations under bounded output.
+- Add optional explicit tokenizer support and `max_tokens` for `sync`/`retrieve`. Count the complete serialized MCP result, including duplicate representations when configured; CLI budgets count printed output. Add lossless `sources-v1` rendering and token-aware representation selection.
+- Include the new operations in the eleven-operation efficient profile; preserve the compatible profile's six tools and existing defaults.
+- Publish independently audited comparisons against v0.4.1: 12.83% fewer new payload tokens for sparse synchronization and 3.75% fewer for sixteen scattered ranges. Record the cases that increase tokens and distinguish fewer RPCs from fewer model decisions.
+- Add a bounded live OpenAI evaluation with model-selected calls and separate input, output, cache, correctness, and timing records. Fix the stale-ID synchronization ambiguity it exposed; all six corrected cases pass. The small sample shows mixed token results and is not a universal savings claim.
+- Keep the MIT License with Commons Clause and ship the full combined license in both package archives.
+
 ## 0.4.1 — 2026-11-07
 
 - Prepare a standalone source snapshot intended for a new repository history, preserving the v0.4.0 implementation, tests, benchmark records, and provenance.

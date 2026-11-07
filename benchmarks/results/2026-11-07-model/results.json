@@ -1,0 +1,365 @@
+{
+  "requested_model": "gpt-6-luna",
+  "request_budget": 36,
+  "max_steps": 6,
+  "max_output_tokens": 2000,
+  "source_sha256": {
+    "benchmarks/model_efficiency.py": "33f33ef28d0b0d2755415d05a7c8d1cde9820a4e0eccebbd1af032c169985681",
+    "benchmarks/roundtrip_efficiency.py": "46bcfd9814f010413e7b2ca480811bbd7644c6909762694b58136dfd5c09e610",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "a754cae2b8d50c1e3347f9fca3d740276bb4103e3ca82c5142d97b9bfa528629",
+    "src/agent_workbook/cli.py": "e73c54d3626202d7cf388db313425165b6eb69b8dc1a83cd711e1afad674e774",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/server.py": "185b9661a34a5f0bb63dc8bfeaa870ce0fd7a908e810171aedebab26ff526d53",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0"
+  },
+  "scope": "Actual provider usage with model-selected tool calls on synthetic tasks. Small diagnostic sample, not universal savings or statistically reliable latency. Imports/process startup excluded. All returned reasoning/function-call items replayed in memory with store=false. Text-only tool replies; strict=false preserves optional MCP arguments. No direct shell/local-files control, provider-price estimate, or billing claim. Tool failures and exhausted budgets remain failures, never savings wins.",
+  "baseline_commit": "094be81de2a77686726a77b17aeed0b9ee4dc688",
+  "baseline_archive_sha256": "510adcaf9d98dd9afe1c4bf71df7c2070a3662b7ca1ac63b556d1ddcf7e08f14",
+  "provider_requests_attempted": 17,
+  "sources_unchanged": true,
+  "usage": {
+    "input_tokens": 19912,
+    "output_tokens": 779,
+    "cached_input_tokens": 9470,
+    "cache_write_tokens": 7272,
+    "reasoning_tokens": 54
+  },
+  "complete": true,
+  "publication": {
+    "run": "corrected",
+    "synthetic_data_only": true,
+    "provider_response_ids": "removed",
+    "tool_call_ids": "normalized per execution",
+    "encrypted_reasoning": "never logged by harness; replayed only in memory",
+    "cache_write_tokens_missing": "null means unavailable, not zero"
+  },
+  "cases": [
+    {
+      "case": "passages",
+      "arm": "baseline",
+      "fixture_sha256": {
+        "reviews/atlas": "e8996cc8d67831ef74e45b2c48dee7170b25541a722c7fbd9fd51a8eab049c81",
+        "reviews/orion": "80ec794256897a674fc9b886d1eb719a7deb344dba6cd5135a49601a601181bb",
+        "reviews/zephyr": "c9eced7b30e824285fa036898348dd41575000f204b986c345bd4df06cb7e5c1"
+      },
+      "success": true,
+      "failure": null,
+      "abort_run": false,
+      "answer": "{\"reviews/atlas\":{\"renewal_code\":\"RC-7101\",\"owner\":\"team-1\",\"status\":\"approved\"},\"reviews/orion\":{\"renewal_code\":\"RC-7102\",\"owner\":\"team-2\",\"status\":\"approved\"},\"reviews/zephyr\":{\"renewal_code\":\"RC-7103\",\"owner\":\"team-3\",\"status\":\"approved\"}}",
+      "expected": {
+        "reviews/atlas": {
+          "renewal_code": "RC-7101",
+          "owner": "team-1",
+          "status": "approved"
+        },
+        "reviews/orion": {
+          "renewal_code": "RC-7102",
+          "owner": "team-2",
+          "status": "approved"
+        },
+        "reviews/zephyr": {
+          "renewal_code": "RC-7103",
+          "owner": "team-3",
+          "status": "approved"
+        }
+      },
+      "usage": {
+        "input_tokens": 2310,
+        "output_tokens": 166,
+        "cached_input_tokens": 0,
+        "cache_write_tokens": 1144,
+        "reasoning_tokens": 16
+      },
+      "tool_seconds_sum": 0.015159,
+      "end_to_end_seconds": 3.845701,
+      "provider_requests": 4,
+      "tool_calls": 3,
+      "tool_errors": 1,
+      "tool_choices": [
+        "search",
+        "inspect",
+        "search"
+      ],
+      "first_request_input_tokens": 339,
+      "exposed_tools": [
+        "inspect",
+        "search"
+      ]
+    },
+    {
+      "case": "passages",
+      "arm": "candidate",
+      "fixture_sha256": {
+        "reviews/atlas": "e8996cc8d67831ef74e45b2c48dee7170b25541a722c7fbd9fd51a8eab049c81",
+        "reviews/orion": "80ec794256897a674fc9b886d1eb719a7deb344dba6cd5135a49601a601181bb",
+        "reviews/zephyr": "c9eced7b30e824285fa036898348dd41575000f204b986c345bd4df06cb7e5c1"
+      },
+      "success": true,
+      "failure": null,
+      "abort_run": false,
+      "answer": "{\"reviews/atlas\":{\"renewal_code\":\"RC-7101\",\"owner\":\"team-1\",\"status\":\"approved\"},\"reviews/orion\":{\"renewal_code\":\"RC-7102\",\"owner\":\"team-2\",\"status\":\"approved\"},\"reviews/zephyr\":{\"renewal_code\":\"RC-7103\",\"owner\":\"team-3\",\"status\":\"approved\"}}",
+      "expected": {
+        "reviews/atlas": {
+          "renewal_code": "RC-7101",
+          "owner": "team-1",
+          "status": "approved"
+        },
+        "reviews/orion": {
+          "renewal_code": "RC-7102",
+          "owner": "team-2",
+          "status": "approved"
+        },
+        "reviews/zephyr": {
+          "renewal_code": "RC-7103",
+          "owner": "team-3",
+          "status": "approved"
+        }
+      },
+      "usage": {
+        "input_tokens": 3475,
+        "output_tokens": 194,
+        "cached_input_tokens": 0,
+        "cache_write_tokens": 1498,
+        "reasoning_tokens": 38
+      },
+      "tool_seconds_sum": 0.020136,
+      "end_to_end_seconds": 5.611481,
+      "provider_requests": 4,
+      "tool_calls": 3,
+      "tool_errors": 1,
+      "tool_choices": [
+        "search",
+        "inspect",
+        "search"
+      ],
+      "first_request_input_tokens": 608,
+      "exposed_tools": [
+        "inspect",
+        "search",
+        "retrieve"
+      ]
+    },
+    {
+      "case": "sparse",
+      "arm": "baseline",
+      "fixture_sha256": {
+        "base": "f556a5698710102a0c30d8862c1f8a7b3657053fe4041f63ac5f79627f375838",
+        "current": "fb5c83af8d7d241742756db8c08ef23d9f0853133162940034dc2e651ba44047"
+      },
+      "success": true,
+      "failure": null,
+      "abort_run": false,
+      "answer": "{\"instruction\":\"route-current\",\"artifact_id\":\"wb_4586125222a256d0d41b0bb546e085e8\",\"version\":2,\"stale_inputs\":false}",
+      "expected": {
+        "instruction": "route-current",
+        "artifact_id": "wb_4586125222a256d0d41b0bb546e085e8",
+        "version": 2,
+        "stale_inputs": false
+      },
+      "usage": {
+        "input_tokens": 2767,
+        "output_tokens": 96,
+        "cached_input_tokens": 2598,
+        "cache_write_tokens": 163,
+        "reasoning_tokens": 0
+      },
+      "tool_seconds_sum": 0.010149,
+      "end_to_end_seconds": 2.107076,
+      "provider_requests": 2,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "tool_choices": [
+        "diff"
+      ],
+      "first_request_input_tokens": 1302,
+      "exposed_tools": [
+        "inspect",
+        "search",
+        "diff"
+      ]
+    },
+    {
+      "case": "sparse",
+      "arm": "candidate",
+      "fixture_sha256": {
+        "base": "f556a5698710102a0c30d8862c1f8a7b3657053fe4041f63ac5f79627f375838",
+        "current": "fb5c83af8d7d241742756db8c08ef23d9f0853133162940034dc2e651ba44047"
+      },
+      "success": true,
+      "failure": null,
+      "abort_run": false,
+      "answer": "{\"instruction\":\"route-current\",\"artifact_id\":\"wb_4586125222a256d0d41b0bb546e085e8\",\"version\":2,\"stale_inputs\":false}",
+      "expected": {
+        "instruction": "route-current",
+        "artifact_id": "wb_4586125222a256d0d41b0bb546e085e8",
+        "version": 2,
+        "stale_inputs": false
+      },
+      "usage": {
+        "input_tokens": 3023,
+        "output_tokens": 96,
+        "cached_input_tokens": 1423,
+        "cache_write_tokens": 1594,
+        "reasoning_tokens": 0
+      },
+      "tool_seconds_sum": 0.009028,
+      "end_to_end_seconds": 1.808928,
+      "provider_requests": 2,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "tool_choices": [
+        "sync"
+      ],
+      "first_request_input_tokens": 1426,
+      "exposed_tools": [
+        "inspect",
+        "search",
+        "diff",
+        "sync"
+      ]
+    },
+    {
+      "case": "dense",
+      "arm": "baseline",
+      "fixture_sha256": {
+        "base": "f556a5698710102a0c30d8862c1f8a7b3657053fe4041f63ac5f79627f375838",
+        "current": "2142d81931c50a7647e0684e73b1c2371e55e59b38e701799fbecdf2da06c50d"
+      },
+      "success": true,
+      "failure": null,
+      "abort_run": false,
+      "answer": "{\"instruction\":\"route-current\",\"artifact_id\":\"wb_2300f74253f244b215a6c63241b0e088\",\"version\":2,\"stale_inputs\":false}",
+      "expected": {
+        "instruction": "route-current",
+        "artifact_id": "wb_2300f74253f244b215a6c63241b0e088",
+        "version": 2,
+        "stale_inputs": false
+      },
+      "usage": {
+        "input_tokens": 4452,
+        "output_tokens": 132,
+        "cached_input_tokens": 4029,
+        "cache_write_tokens": 414,
+        "reasoning_tokens": 0
+      },
+      "tool_seconds_sum": 0.014563,
+      "end_to_end_seconds": 3.088484,
+      "provider_requests": 3,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "tool_choices": [
+        "diff",
+        "inspect"
+      ],
+      "first_request_input_tokens": 1299,
+      "exposed_tools": [
+        "inspect",
+        "search",
+        "diff"
+      ]
+    },
+    {
+      "case": "dense",
+      "arm": "candidate",
+      "fixture_sha256": {
+        "base": "f556a5698710102a0c30d8862c1f8a7b3657053fe4041f63ac5f79627f375838",
+        "current": "2142d81931c50a7647e0684e73b1c2371e55e59b38e701799fbecdf2da06c50d"
+      },
+      "success": true,
+      "failure": null,
+      "abort_run": false,
+      "answer": "{\"instruction\":\"route-current\",\"artifact_id\":\"wb_2300f74253f244b215a6c63241b0e088\",\"version\":2,\"stale_inputs\":false}",
+      "expected": {
+        "instruction": "route-current",
+        "artifact_id": "wb_2300f74253f244b215a6c63241b0e088",
+        "version": 2,
+        "stale_inputs": false
+      },
+      "usage": {
+        "input_tokens": 3885,
+        "output_tokens": 95,
+        "cached_input_tokens": 1420,
+        "cache_write_tokens": 2459,
+        "reasoning_tokens": 0
+      },
+      "tool_seconds_sum": 0.008562,
+      "end_to_end_seconds": 1.926731,
+      "provider_requests": 2,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "tool_choices": [
+        "sync"
+      ],
+      "first_request_input_tokens": 1423,
+      "exposed_tools": [
+        "inspect",
+        "search",
+        "diff",
+        "sync"
+      ]
+    }
+  ],
+  "by_arm": {
+    "baseline": {
+      "executions": 3,
+      "passed": 3,
+      "usage": {
+        "input_tokens": 9529,
+        "output_tokens": 394,
+        "cached_input_tokens": 6627,
+        "cache_write_tokens": 1721,
+        "reasoning_tokens": 16
+      },
+      "provider_requests": 9,
+      "tool_calls": 6,
+      "tool_errors": 1,
+      "end_to_end_seconds_sum": 9.041261
+    },
+    "candidate": {
+      "executions": 3,
+      "passed": 3,
+      "usage": {
+        "input_tokens": 10383,
+        "output_tokens": 385,
+        "cached_input_tokens": 2843,
+        "cache_write_tokens": 5551,
+        "reasoning_tokens": 38
+      },
+      "provider_requests": 8,
+      "tool_calls": 5,
+      "tool_errors": 1,
+      "end_to_end_seconds_sum": 9.34714
+    }
+  },
+  "comparisons": {
+    "passages": {
+      "both_correct": true,
+      "candidate_input_change_pct": 50.43,
+      "candidate_input_plus_output_change_pct": 48.18
+    },
+    "sparse": {
+      "both_correct": true,
+      "candidate_input_change_pct": 9.25,
+      "candidate_input_plus_output_change_pct": 8.94
+    },
+    "dense": {
+      "both_correct": true,
+      "candidate_input_change_pct": -12.74,
+      "candidate_input_plus_output_change_pct": -13.18
+    }
+  },
+  "trace_artifact": {
+    "path": "traces.json.gz",
+    "sha256": "0606888b85bca972ca2ee3b9652184691a050d3b0738386f56ac50a400eabfa9",
+    "decompressed_sha256": "98f9e27bf9a881ee88222ecd94f84694175d930e8ed694d13e2813de927904ea"
+  }
+}

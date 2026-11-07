@@ -76,6 +76,8 @@ def test_efficient_profile_and_explicit_cli_overrides(tmp_path):
                 "search",
                 "describe",
                 "diff",
+                "sync",
+                "retrieve",
             }
             for name in ("import", "delete"):
                 await call(client, name, {}, error=True)

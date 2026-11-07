@@ -10,23 +10,26 @@ It saves the most where replaying the source costs the most, and it is not free.
 
 ## Where it saves tokens, and where it doesn't
 
-The largest gains come from keeping irrelevant source text out of the conversation. Workspool can now search passages beyond its catalog index, describe table schemas without returning rows, and send exact edits against a complete version the caller already holds. Adaptive replies also pack repeated artifact metadata without changing the result.
+The largest gains come from keeping irrelevant source text out of the conversation: import files once, query local tables, and retrieve only the evidence needed. Version 0.5.0 adds `sync` for a retained document, `retrieve` for combined searches and ranges, and explicit tokenizer budgets. Each has overhead.
 
-The new workflow test compares the previous implementation at `bdc6561` with these changes. Both sides use small explicit eager tool allowlists, text-only responses, and fully counted cold schemas. The baseline already reuses unchanged text. These are `cl100k_base` counts of newly introduced payloads, including scripted requests and exact answers:
+The new benchmark compares real MCP calls with competent **v0.4.1** workflows. It counts cold instructions and schemas, scripted requests, exact replies, and answers with `cl100k_base`. Both sides use tailored tool allowlists and text-only replies; these are payload counts, not billed-token savings.
 
-| Workflow | Previous implementation | Updated | Change |
+| Workflow | v0.4.1 control | v0.5.0 | Change |
 | --- | ---: | ---: | --- |
-| Find evidence deep in three initially unknown documents | 20,303 | 920 | **95.47% fewer** |
-| Keep a complete runbook current over eight checks and two small edits | 4,158 | 2,593 | **37.64% fewer** |
-| Verify all 35 column names/types, then answer eight table questions | 1,852 | 1,848 | 0.22% fewer |
-| Read every byte of 120 documents | 105,359 | 101,792 | 3.39% fewer |
-| Keep the runbook current through two extensive rewrites | 4,178 | 4,819 | **15.34% more** |
+| Maintain a complete runbook over eight checks and two small edits | 2,651 | 2,311 | **12.83% fewer** |
+| Maintain it through two extensive rewrites | 4,739 | 4,697 | 0.89% fewer; 10 tool calls → 8 |
+| Read 16 scattered ranges from one source | 3,437 | 3,308 | **3.75% fewer**; 16 tool calls → 1 |
+| Keep a tiny note current | 1,088 | 1,095 | 0.64% more |
+| Find nearby facts, reusing each search result | 1,696 | 2,151 | **26.83% more** |
+| Read complete documents | 11,014 | 12,086 | **9.73% more** |
 
-A separate case places evidence beyond the 64 KiB index and outside the baseline's bounded catalog fallback. The previous retrieval plan was inconclusive; source search found the evidence. That is a correctness improvement, so no token-savings percentage is assigned to the failed baseline.
+Use `sync` when you retain the complete source and need to keep it current. Use `retrieve` selectively for many independent ranges or combined requests; ordinary `inspect` and `search` remain cheaper for simple reads and neighboring facts. Combining calls does not necessarily save model turns: a capable host can already issue independent calls together. Even the 16-range case slightly increases the measured retained-input exposure despite its smaller new payload.
 
-The earlier benchmark assumed known inputs and easily located excerpts. This test includes discovery, complete-schema verification, repeated checks, source changes, and exact reconstruction. It still uses scripted decisions, not a model. The [workflow report](benchmarks/WORKFLOWS.md) explains both tokenizers, retained-context exposure, counterfactual raw-source controls, and the losing cases. Reading everything remains more expensive than supplying the raw corpus, and small inputs still may not justify tool overhead. `diff` can add a call before falling back to a full read when changes are extensive.
+The [roundtrip report](benchmarks/ROUNDTRIPS.md) publishes all 29 arms, both tokenizers, independent recounts, exact reconstruction checks, and losing cases. A separate [live model evaluation](benchmarks/MODEL_EVAL.md) let `gpt-6-luna` choose tools: all six final cases passed, but input-token usage increased for passage discovery and sparse edits and decreased for dense rewrites. This small diagnostic run establishes neither universal savings nor reliable latency gains. It also exposed and helped fix an old-ID synchronization ambiguity before release.
 
-For general work, `serve --profile efficient` enables the new retrieval operations, lazy discovery, and adaptive replies. It preserves both MCP response representations by default. The table uses tailored configurations rather than this nine-operation profile; the profile does not choose a workflow or guarantee minimum tokens.
+The [historical workflow report](benchmarks/WORKFLOWS.md) records the earlier improvements from full-source search, table descriptions, and exact deltas, including a 95.47% payload reduction for finding evidence deep in initially unknown documents. That comparison uses an older implementation and a different task; it is not an additional v0.5.0 gain.
+
+`serve --profile efficient` enables all eleven operations through lazy discovery and adaptive replies. It preserves both MCP response representations by default. Select the tools and response content your host needs; the profile does not choose an optimal workflow automatically.
 
 <details>
 <summary>Historical known-input measurements: the earlier overhead optimization</summary>
@@ -70,7 +73,7 @@ A short note is often enough for a one-off handoff. A workbook earns its overhea
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.4.1 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.5.0 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
@@ -111,11 +114,11 @@ For the retrieval and revision features, start with:
 uv run workspool --workspace ~/MyWorkbook serve --profile efficient
 ```
 
-This exposes the six existing operations plus `search`, `describe`, and `diff` through the lazy `workspool` dispatcher, with adaptive text replies. The default `compatible` profile retains the six eager tools and compact JSON. `--tools`, `--tool-discovery`, and `--response-format` override the selected profile; `import` and `delete` always require an explicit allowlist.
+This exposes the six existing operations plus `search`, `describe`, `diff`, `sync`, and `retrieve` through the lazy `workspool` dispatcher, with adaptive text replies. The default `compatible` profile retains the six eager tools and compact JSON. `--tools`, `--tool-discovery`, and `--response-format` override the selected profile; `import` and `delete` always require an explicit allowlist.
 
 ### Choose the tools each host gets
 
-The compatibility default exposes six tools. `search`, `describe`, and `diff` can be added individually or enabled by the efficient profile. Two other operations require an explicit allowlist because they read or remove local files:
+The compatibility default exposes six tools. `search`, `describe`, `diff`, `sync`, and `retrieve` can be added individually or enabled by the efficient profile. Two other operations require an explicit allowlist because they read or remove local files:
 
 ```sh
 uv run workspool --workspace ~/MyWorkbook serve --tools save find inspect resume query refresh import delete
@@ -165,7 +168,7 @@ uv run workspool --workspace ~/MyWorkbook serve --tools inspect --response-forma
 
 In text format, `content[0].text` contains compact JSON metadata. Each artifact's `excerpt_block` is the zero-based index of the content block containing its exact raw excerpt; batches preserve the `artifacts` array. Full metadata and pagination work as before. With the default `--response-content both`, `structuredContent` retains the original object with string `excerpt` fields. Choose `text` to omit that structured copy, or `structured` to omit successful text replies for hosts that consume structured results. Errors remain readable text. These modes require a compatible host; [the report](benchmarks/EFFICIENCY.md#response-representations) specifies the block layout and measured tradeoffs.
 
-`--response-format adaptive` chooses among compact JSON, raw excerpt blocks, and packed artifact metadata using serialized byte size. It preserves missing fields, nulls, values, and exact excerpts. This heuristic is not a tokenizer optimizer. Hosts can reconstruct the original object with [`agent_workbook.render.decode`](src/agent_workbook/render.py); `structuredContent` stays unchanged when present. The [workflow report](benchmarks/WORKFLOWS.md#adaptive-replies) describes the versioned envelopes.
+`--response-format adaptive` chooses among compact JSON, raw excerpt blocks, and packed artifact metadata using serialized byte size. It preserves missing fields, nulls, values, and exact excerpts. With `--tokenizer`, it instead chooses the lowest counted serialized result among its lossless representations; without a tokenizer, byte size remains a heuristic. Hosts can reconstruct the original object with [`agent_workbook.render.decode`](src/agent_workbook/render.py); `structuredContent` stays unchanged when present. The [workflow report](benchmarks/WORKFLOWS.md#adaptive-replies) describes the versioned envelopes.
 
 ### Retrieve the evidence you need
 
@@ -194,6 +197,50 @@ If the caller holds the complete text of an immutable version, `diff` returns ex
 ```
 
 Apply edits in reverse order to the retained base's lines, preserving their line endings. Empty changes mean the content is unchanged; freshness metadata still matters. `requires_read: true` requests a full `inspect` of the returned pinned artifact ID, with an explicit reason. Deltas are never silently truncated. If a new session or compaction has lost the complete base, read the source again. The [delta contract and limits](benchmarks/WORKFLOWS.md#exact-version-deltas) include the reconstruction code and failure behavior.
+
+### Synchronize without a separate fallback read
+
+`sync` chooses unchanged status, complete line edits, or a full source page within one call:
+
+```json
+{"tool":"sync","arguments":{"ref":"operations/runbook","base":3,"max_bytes":8192}}
+```
+
+Supply `base` only when you retain that version's **complete text**. It accepts a version number scoped to the source name or an immutable artifact ID. Omit it after losing context. At offset zero, `ref` resolves the current version of that name, even if you supply an old ID. To read a historical version deliberately, use `inspect`.
+
+- `mode: "unchanged"`: keep the retained text and update its metadata.
+- `mode: "delta"`: apply `changes` in reverse order to the base's lines, preserving line endings. The entire delta is present.
+- `mode: "full"`: replace the old text by collecting `excerpt` pages until `complete`. Continue with the returned artifact ID and `next_offset`; subsequent pages stay pinned even if a newer version appears.
+
+Missing or deleted bases fall back to a full read. Deltas use the existing bounded comparison algorithm; an unsuitable or larger delta also falls back directly. Full synchronization supports valid UTF-8 sources up to 16 MiB and verifies their content hash. `max_bytes` caps the full metadata-and-content JSON object at 1–32,768 bytes, before MCP rendering. An impossible budget returns an explicit error instead of silently dropping source content.
+
+### Combine searches and independent ranges
+
+```json
+{"tool":"retrieve","arguments":{"queries":[{"text":"renewal_code","context_bytes":128},{"text":"owner","context_bytes":128}],"reads":[{"ref":"operations/runbook","offset":0,"bytes":512}],"max_bytes":8192}}
+```
+
+`retrieve` resolves names and search scopes in one catalog snapshot. It returns shared `artifacts` metadata, exact `spans`, and ordered `queries`/`reads` results that refer to those spans by index. A match or read's byte offsets select its exact content within the span; overlapping and adjacent ranges merge only within the same immutable artifact.
+
+Follow each unfinished query's `cursor` and each read's `next_offset`, using the returned artifact ID for continued reads. Under a tight budget, a read may be deferred with an empty span and its original offset; process the other returned progress and retry it. A response must make progress somewhere or fail explicitly. Queries use the same literal matching and cursor validation as `search`.
+
+The limits are 8 queries, 16 reads, 32,768 bytes per requested read, and 16 MiB of total scan/read work per call, including repeated search windows. The default `max_bytes` is 32,768 and caps the complete result JSON. Combining queries does not create a persistent search index or guarantee a single scan. Existing `inspect` remains the lower-overhead choice for ordinary reads in the measured cases.
+
+### Set a measured output-token budget
+
+Install the optional tokenizer dependencies and configure the encoding explicitly:
+
+```sh
+uv sync --locked --extra tokens
+uv run --locked --extra tokens workspool --workspace ~/MyWorkbook serve \
+  --profile efficient --tokenizer cl100k_base
+```
+
+Then include `"max_tokens": 800` in a `sync` or `retrieve` call. Supported encodings are `cl100k_base`, `o200k_base`, or a path to a local `tokenizer.json`; Workspool does not guess an encoding from a model name. Named encodings may download their rank files on first use. A local tokenizer file works offline.
+
+The limit counts the exact compact JSON serialization of the **complete successful MCP result**, including both text and structured content when enabled. It excludes JSON-RPC framing, provider message formatting, and error replies, so it is not a billing cap. Limits are 1–131,072 tokens. Requests without a configured tokenizer, or budgets too small for metadata and progress, fail explicitly. CLI `sync`/`retrieve` also support `--tokenizer` and `--max-tokens`, counting their actual printed JSON and final newline instead.
+
+Adaptive replies may use a `sources-v1` envelope: `data` holds metadata and `excerpt_paths` identifies where the following exact text blocks belong. Use `agent_workbook.render.decode` to reconstruct it. Structured content always retains the original object. Token budgets limit output size; they do not summarize or discard evidence silently.
 
 ### Connect over local Streamable HTTP
 
@@ -362,6 +409,8 @@ Over MCP, `delete` is available only to hosts whose `--tools` list includes it.
 | `search` | Efficient profile or explicit allowlist. Find exact source passages beyond the catalog index, with bounded scanning and continuations. |
 | `describe` | Efficient profile or explicit allowlist. Page through exact table column names and SQL types without returning rows. |
 | `diff` | Efficient profile or explicit allowlist. Return exact edits against a complete immutable base the caller retains, or request a full read. |
+| `sync` | Efficient profile or explicit allowlist. Return unchanged status, exact edits, or a full page of the current source in one call. |
+| `retrieve` | Efficient profile or explicit allowlist. Combine up to 8 literal searches and 16 byte-range reads, merging overlapping spans. |
 | `import` | Opt-in. Copy a local file by absolute path in its native format: CSV, Parquet, PDF, images, anything. |
 | `delete` | Opt-in. Delete a superseded version by ID, or every version of a name with its `expected_version`. |
 
@@ -379,7 +428,7 @@ The defaults keep a query predictable on a laptop; raise them when the machine a
 
 The indexing limit applies when saving a new version. Existing versions keep their earlier search index; import a new version to index more of an existing source.
 
-Fixed bounds: names up to 120 characters, summaries and source labels up to 360, at most 16 dependencies per artifact, at most 8 inputs and 6,000 characters of SQL per query, one query at a time per server process, and 8 KiB per excerpt page.
+Fixed bounds: names up to 120 characters, summaries and source labels up to 360, at most 16 dependencies per artifact, at most 8 inputs and 6,000 characters of SQL per query, one query at a time per server process, and 8 KiB per `inspect` excerpt page. The `sync` and `retrieve` limits are documented above.
 
 ## Benchmark
 
@@ -409,12 +458,13 @@ The server is designed for trusted local workspaces and files. Give each host ac
 ## Development
 
 ```sh
-uv sync --locked --extra benchmark
-uv run --locked --extra benchmark pytest -q
-uv run --locked ruff check src tests
+uv sync --locked --extra benchmark --extra tokens
+uv run --locked --extra benchmark --extra tokens pytest -q
+uv run --no-sync ruff check src tests benchmarks
+uv run --no-sync ruff format --check src tests
 ```
 
-CI runs the suite on Linux and macOS with Python 3.11 to 3.13, and once more with the minimum supported MCP SDK. Coverage includes independent-session handoffs, stale results and refresh, deletion and pruning with pinned versions, the opt-in tools, HTTP authentication, exact large integers, batched Unicode reads, complete metadata access, and restricted tool registration.
+CI runs the suite on Linux and macOS with Python 3.11 to 3.13, and once more with the minimum supported MCP SDK. Coverage includes independent-session handoffs, stale results and refresh, deletion and pruning with pinned versions, the opt-in tools, HTTP authentication, exact large integers, batched Unicode reads, complete metadata access, restricted tool registration, current-version synchronization, merged retrieval and pagination, and exact serialized token limits.
 
 To publish a new GitHub release, update the version in `pyproject.toml` and `uv.lock`, add its changelog entry, and push to `main`. The release workflow runs when the package metadata or release workflow changes, and also supports manual runs on `main`. It tests the package, verifies the license in both archives, and publishes a new version tag with a wheel, source distribution, and checksums. It refuses to replace an existing tag or release. It does not publish to PyPI.
 

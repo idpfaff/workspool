@@ -20,6 +20,8 @@ TOOL_CHOICES = [
     "search",
     "describe",
     "diff",
+    "sync",
+    "retrieve",
 ]
 
 
@@ -70,7 +72,7 @@ def main() -> None:
         "--profile",
         choices=["compatible", "efficient"],
         default="compatible",
-        help="efficient enables lazy discovery, adaptive replies, search, describe, and diff",
+        help="efficient enables lazy discovery, adaptive replies, and retrieval/synchronization tools",
     )
     serve.add_argument(
         "--response-format",
@@ -87,6 +89,10 @@ def main() -> None:
         "--tool-discovery",
         choices=["eager", "lazy"],
         help="advertise all tool schemas, or discover them on demand through workspool",
+    )
+    serve.add_argument(
+        "--tokenizer",
+        help="cl100k_base, o200k_base, or local tokenizer.json; enables exact max_tokens budgets",
     )
     serve.add_argument(
         "--tools",
@@ -128,6 +134,33 @@ def main() -> None:
     delta.add_argument("ref")
     delta.add_argument("--base", required=True)
     delta.add_argument("--max-bytes", type=int, default=8192)
+
+    sync = commands.add_parser(
+        "sync", help="Read unchanged, delta, or full text in one call"
+    )
+    sync.add_argument("ref")
+    sync.add_argument(
+        "--base",
+        type=lambda value: int(value) if value.isdecimal() else value,
+        help="retained complete version number or immutable artifact ID",
+    )
+    sync.add_argument("--offset", type=int, default=0)
+    sync.add_argument("--max-bytes", type=int, default=8192)
+    retrieve = commands.add_parser(
+        "retrieve", help="Merge literal searches and independent reads"
+    )
+    retrieve.add_argument(
+        "--queries", default="[]", help="JSON list of search requests"
+    )
+    retrieve.add_argument(
+        "--reads", default="[]", help="JSON list of ref/offset/bytes requests"
+    )
+    retrieve.add_argument("--max-bytes", type=int, default=32768)
+    for bounded in (sync, retrieve):
+        bounded.add_argument("--max-tokens", type=int)
+        bounded.add_argument(
+            "--tokenizer", help="encoding name or local tokenizer.json"
+        )
 
     search = commands.add_parser("search", help="Find literal passages in source text")
     search.add_argument("text")
@@ -192,6 +225,25 @@ def main() -> None:
                 max_preview_rows=args.max_preview_rows,
             )
             workbook = Workbook(args.workspace, settings)
+            if args.command in {"sync", "retrieve"}:
+                from .budget import token_counter, validate_limit
+
+                counter = token_counter(args.tokenizer) if args.tokenizer else None
+                validate_limit(args.max_tokens, counter)
+                cost = (
+                    (
+                        lambda data: counter(
+                            json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+                        )
+                    )
+                    if counter
+                    else None
+                )
+                fits = (
+                    (lambda data: cost(data) <= args.max_tokens)
+                    if args.max_tokens is not None
+                    else None
+                )
             match args.command:
                 case "serve":
                     from .server import server_for
@@ -204,6 +256,7 @@ def main() -> None:
                         tool_discovery=args.tool_discovery,
                         tools=args.tools,
                         profile=args.profile,
+                        tokenizer=args.tokenizer,
                     ).run(transport=args.transport)
                     return
                 case "import":
@@ -232,6 +285,28 @@ def main() -> None:
                     from .delta import diff
 
                     result = diff(workbook, args.ref, args.base, args.max_bytes)
+                case "sync":
+                    from .sync import sync
+
+                    result = sync(
+                        workbook,
+                        args.ref,
+                        args.base,
+                        args.offset,
+                        args.max_bytes,
+                        fits=fits,
+                        cost=cost,
+                    )
+                case "retrieve":
+                    from .batch_retrieval import retrieve
+
+                    result = retrieve(
+                        workbook,
+                        json.loads(args.queries),
+                        json.loads(args.reads),
+                        args.max_bytes,
+                        fits=fits,
+                    )
                 case "search":
                     from .retrieval import search
 

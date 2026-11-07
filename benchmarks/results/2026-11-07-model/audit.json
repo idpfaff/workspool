@@ -1,0 +1,53 @@
+{
+  "runs": {
+    "corrected": {
+      "private_input_sha256": "a723138664e3bfd4ab786514b3de4d804f5876532b02687a5eab09aa694e676c",
+      "executions": 6,
+      "passed": 6,
+      "provider_requests": 17,
+      "request_usage_sums_match": true,
+      "execution_usage_sums_match": true,
+      "independent_json_answers_match_recorded_success": true,
+      "identical_prompts_fixtures_and_expected_answers_within_pairs": true,
+      "cache_write_tokens_available": true,
+      "recorded_sources_unchanged_during_run": true,
+      "source_hashes_match_publication_checkout": true
+    },
+    "initial_diagnostic": {
+      "private_input_sha256": "3bf769bb5edebcc6bf8b857ee815ec91cd0115c7db22e1d3886199e8c44545bb",
+      "executions": 6,
+      "passed": 4,
+      "provider_requests": 17,
+      "request_usage_sums_match": true,
+      "execution_usage_sums_match": true,
+      "independent_json_answers_match_recorded_success": true,
+      "identical_prompts_fixtures_and_expected_answers_within_pairs": true,
+      "cache_write_tokens_available": false,
+      "recorded_sources_unchanged_during_run": true
+    }
+  },
+  "artifacts": {
+    "traces.json.gz": {
+      "sha256": "0606888b85bca972ca2ee3b9652184691a050d3b0738386f56ac50a400eabfa9",
+      "bytes": 7109
+    },
+    "results.json": {
+      "sha256": "e537f82bb486aa5f6261f3765d740c043186f44abfc37e24b3f2b63ad7994640",
+      "bytes": 12792
+    },
+    "initial-traces.json.gz": {
+      "sha256": "0b82133bf9fd7baa63e6fa6a730999562a77fb6286894fcedc3b059ca5599d7b",
+      "bytes": 6477
+    },
+    "initial-results.json": {
+      "sha256": "96f944b31caa846a3224471469bd8aeb8e823caceec6b7d2e5e5ed6e07267beb",
+      "bytes": 12832
+    }
+  },
+  "checks": {
+    "no_credential_patterns": true,
+    "no_absolute_local_paths": true,
+    "provider_response_ids_removed": true,
+    "encrypted_reasoning_not_published": true
+  }
+}

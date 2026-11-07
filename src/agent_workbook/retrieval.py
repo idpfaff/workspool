@@ -23,7 +23,7 @@ def _digest(value):
     return hashlib.sha256(encoded.encode()).digest()[:16]
 
 
-def _scope(workbook, refs):
+def _scope(workbook, refs, *, db=None):
     if refs is not None and (
         not isinstance(refs, list)
         or not 1 <= len(refs) <= 16
@@ -31,27 +31,29 @@ def _scope(workbook, refs):
         or len(set(refs)) != len(refs)
     ):
         raise ValueError("Provide 1-16 distinct artifact references, or omit refs")
+    if db is None:
+        with workbook.connect() as connection:
+            connection.execute("BEGIN")
+            return _scope(workbook, refs, db=connection)
     selected = []
-    with workbook.connect() as db:
-        db.execute("BEGIN")
-        rows = (
-            [workbook._get(db, ref) for ref in refs]
-            if refs is not None
-            else db.execute("SELECT * FROM latest ORDER BY name").fetchall()
-        )
-        seen = set()
-        for row in rows:
-            if not is_text(row["media_type"]):
-                if refs is not None:
-                    raise ValueError(f"{row['name']} is not searchable text")
-                continue
-            if row["artifact_id"] in seen:
-                raise ValueError("References must resolve to distinct versions")
-            seen.add(row["artifact_id"])
-            metadata = {
-                key: row[key] for key in ("artifact_id", "name", "version")
-            } | workbook._status(db, row["artifact_id"])
-            selected.append((metadata, row["digest"], row["size_bytes"]))
+    rows = (
+        [workbook._get(db, ref) for ref in refs]
+        if refs is not None
+        else db.execute("SELECT * FROM latest ORDER BY name").fetchall()
+    )
+    seen = set()
+    for row in rows:
+        if not is_text(row["media_type"]):
+            if refs is not None:
+                raise ValueError(f"{row['name']} is not searchable text")
+            continue
+        if row["artifact_id"] in seen:
+            raise ValueError("References must resolve to distinct versions")
+        seen.add(row["artifact_id"])
+        metadata = {
+            key: row[key] for key in ("artifact_id", "name", "version")
+        } | workbook._status(db, row["artifact_id"])
+        selected.append((metadata, row["digest"], row["size_bytes"]))
     return selected, _digest({"refs": refs, "artifacts": selected})
 
 
@@ -108,13 +110,37 @@ def search(
     always return a continuation. Binary references and malformed UTF-8 fail
     explicitly. No request depends on what another caller has already read.
     """
+    _validate_search(text, limit, context_bytes)
+    selected, snapshot = _scope(workbook, refs)
+    return _search_selected(
+        workbook, text, selected, snapshot, limit, context_bytes, cursor
+    )
+
+
+def _validate_search(text, limit, context_bytes):
     if not isinstance(text, str) or not text.strip() or len(text) > 500:
         raise ValueError("Search text must contain 1-500 characters and not be blank")
     if type(limit) is not int or not 1 <= limit <= 20:
         raise ValueError("Search limit must be between 1 and 20")
     if type(context_bytes) is not int or not 0 <= context_bytes <= 2048:
         raise ValueError("Search context_bytes must be between 0 and 2048")
-    selected, snapshot = _scope(workbook, refs)
+
+
+def _search_selected(
+    workbook,
+    text,
+    selected,
+    snapshot,
+    limit,
+    context_bytes,
+    cursor,
+    *,
+    scan_budget=None,
+    allow_pending=False,
+):
+    """Search an already resolved snapshot; shared by standalone and batch APIs."""
+    if scan_budget is None:
+        scan_budget = MAX_SCAN_BYTES
     query = _digest(text)
     index, position = _position(cursor, snapshot, query, selected)
     pattern = re.compile(re.escape(text), re.IGNORECASE)
@@ -141,12 +167,12 @@ def search(
             index, position = index + 1, 0
             continue
         start = max(0, position - context_bytes - 3)
-        available = MAX_SCAN_BYTES - scanned
+        available = scan_budget - scanned
         core_size = min(WINDOW_BYTES, size - position)
         if size - start > available:
             core_size = min(core_size, available - (position - start) - lookahead)
         if core_size < min(4, size - position):
-            if not scanned:
+            if not scanned and not allow_pending:
                 raise ValueError(
                     "Search scan budget is too small for this query and context"
                 )
