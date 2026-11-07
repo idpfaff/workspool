@@ -27,7 +27,16 @@ Workspool reduces the material your agent needs to read again. Use it for everyd
 
 Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not automatically add its contents to the conversation.
 
-**Large files, small answers.** We downloaded **34 million real records** from Massive—**1.86 GB of CSV data**—and queried a typed Parquet copy through Workspool. A nine-field summary took **1.12 seconds** on the test machine and returned **121 tokens of answer text**. The records stayed local. Saving and refreshing a **528,697-row** filtered result each took about one second. [See the full stress-test results](benchmarks/MASSIVE_STRESS.md), including tool overhead, exact-answer checks, memory use, and the limits found.
+**96.7% fewer tokens for a 1,000-row stock-data summary.** Keeping the records local saved **29,369 tokens** compared with sending the CSV to the agent:
+
+| Records summarized | Full CSV text | Workspool, including setup | Tokens avoided |
+| ---: | ---: | ---: | ---: |
+| 1,000 | 30,375 | 1,006 | **29,369 (96.7%)** |
+| 34,015,435 | 1,027,283,033 | 1,017 | **1,027,282,016 (99.9999%)** |
+
+Counts use `cl100k_base`; Workspool includes tool setup, import, query requests, and replies. The comparison is against transmitting the source CSV once. The full 34-million-row file exceeds model context limits, so that row measures source tokens kept out of context, not an observed API bill.
+
+The full dataset came from Massive and contains **1.86 GB of CSV data**. Querying its typed Parquet copy took **1.12 seconds** on the test machine. Saving and refreshing a **528,697-row** filtered result each took about one second. [See the token counts and full stress-test results](benchmarks/MASSIVE_STRESS.md#token-savings).
 
 ## Quick start
 

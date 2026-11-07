@@ -14,6 +14,34 @@ A separate query through the Massive connector verified an overlapping AAPL inte
 
 Raw market data, credentials, and workbook blobs stay local. Published evidence contains aggregate measurements, source fingerprints, and correctness results.
 
+## Token savings
+
+**The 1,000-row stock-data summary avoided 29,369 tokens (96.69%)** compared with sending its source CSV once. Workspool used **1,006 tokens**, including a fresh session's tool instructions and schemas, the import request and reply, and the aggregate request and reply. The raw CSV contains **30,375 tokens**. Its rows match the independently checked 1,000-row Parquet pilot exactly.
+
+The complete **34,015,435-row CSV contains 1,027,283,033 tokens**. The corresponding Workspool summary workflow used **1,017**, a difference of **1,027,282,016 tokens (99.999901%)**. This is an exact count of source text avoided against a hypothetical full-CSV transmission. The full dataset exceeds model context limits; no model actually ingested it, and this comparison does not measure an API invoice. Another local SQL workflow can also avoid transmitting source rows.
+
+| Source rows | Tokenizer | Full CSV text | Workspool setup + import + summary | Tokens avoided | Reduction |
+| ---: | --- | ---: | ---: | ---: | ---: |
+| 1,000 | `cl100k_base` | 30,375 | 1,006 | 29,369 | 96.6881% |
+| 1,000 | `o200k_base` | 30,375 | 1,044 | 29,331 | 96.5630% |
+| 34,015,435 | `cl100k_base` | 1,027,283,033 | 1,017 | 1,027,282,016 | 99.999901% |
+| 34,015,435 | `o200k_base` | 1,025,342,510 | 1,055 | 1,025,341,455 | 99.999897% |
+
+The Workspool count includes more than the 121-token full-size reply:
+
+| Component | 1,000 rows, `cl100k_base` | 34,015,435 rows, `cl100k_base` |
+| --- | ---: | ---: |
+| Tool instructions and advertised schemas | 693 | 693 |
+| Import request and reply | 89 | 93 |
+| Summary request and reply | 224 | 231 |
+| **Total** | **1,006** | **1,017** |
+
+Every source byte was tokenized, including a single CSV header; no token-per-byte estimate or sample extrapolation was used. The combined CSV is 1,855,952,827 bytes, slightly smaller than the 131 separate files because repeated headers are omitted. Its SHA-256 matches the CSV stress-test source. Both encodings were counted with tiktoken 0.14.0 in 885 bounded chunks. Every chunk seam is numeric + LF followed by an ASCII letter, which lies between pre-tokens under both recorded tokenizer regexes; BPE cannot merge across those seams. The counter refuses unverified tokenizer patterns. Counting both encodings took 103.09 seconds and peaked at 278 MiB RSS.
+
+Requests are counted as the serialized tool name and arguments; replies are the exact text blocks from the captured MCP trace. Tool instructions and schemas are included once for the fresh session. Both sides omit the common user question and final natural-language answer, and neither includes provider-specific message framing or cache billing. The separate 23-call stress lifecycle totals **5,845 `cl100k_base` / 5,952 `o200k_base` tokens**, including both server setups; it is not multiplied into a fictional repeated-source baseline.
+
+[Exact source counts, component totals, hashes, and comparison arithmetic](results/2026-11-07-massive/tokens-saved.json) are published with the [streaming counter](count_source_tokens.py). The source data and full private traces stay local.
+
 ## Results
 
 **All five typed-Parquet cases passed every exact-answer and lifecycle check.** The largest input contains all 34,015,435 downloaded rows in an 862,965,562-byte Parquet file. The summary returns one row with nine fields: row and symbol counts, first and last timestamps, volume and trade totals, price bounds, and the number of up-bars.
@@ -65,7 +93,7 @@ The normal query settings are **15 seconds, 1 GB DuckDB memory, and two threads*
 
 ## Reproduce locally
 
-Install the optional measurement dependencies:
+Run these measurement scripts from a current `main` checkout. Install the optional measurement dependencies:
 
 ```sh
 uv sync --locked --extra benchmark --extra tokens
@@ -97,6 +125,10 @@ uv run python benchmarks/massive_csv_stress.py \
 uv run python benchmarks/stress_failures.py \
   --source .local-benchmarks/massive/data/AAPL.csv \
   --output .local-benchmarks/massive/failure-results --rows 100000
+
+uv run python benchmarks/count_source_tokens.py \
+  .local-benchmarks/massive/full.csv \
+  --output .local-benchmarks/massive/source-tokens.json
 ```
 
 The scale test refuses to duplicate rows when the requested size exceeds the source. Local traces may contain source previews and filesystem paths; publish only reviewed aggregate evidence.

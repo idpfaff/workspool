@@ -1,0 +1,131 @@
+{
+  "source_count": {
+    "source": {
+      "bytes": 1855952827,
+      "rows": 34015435,
+      "sha256": "167f9a542e30e491b323f38a3900009e2230ffc3144ed402d308c99d2a3634cc",
+      "tokens": {
+        "cl100k_base": 1027283033,
+        "o200k_base": 1025342510
+      },
+      "headers": 1
+    },
+    "prefix": {
+      "bytes": 56786,
+      "rows": 1000,
+      "sha256": "82ff836cf210ed4bd0255ce2376beaa96dea62151cf25a77a741c899281cf470",
+      "tokens": {
+        "cl100k_base": 30375,
+        "o200k_base": 30375
+      },
+      "headers": 1
+    },
+    "method": {
+      "tiktoken_version": "0.14.0",
+      "patterns": {
+        "cl100k_base": "'(?i:[sdmt]|ll|ve|re)|[^\\r\\n\\p{L}\\p{N}]?+\\p{L}++|\\p{N}{1,3}+| ?[^\\s\\p{L}\\p{N}]++[\\r\\n]*+|\\s++$|\\s*[\\r\\n]|\\s+(?!\\S)|\\s",
+        "o200k_base": "[^\\r\\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]*[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]+(?i:'s|'t|'re|'ve|'m|'ll|'d)?|[^\\r\\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]+[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]*(?i:'s|'t|'re|'ve|'m|'ll|'d)?|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n/]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+"
+      },
+      "workers": 4,
+      "chunks": 885,
+      "maximum_chunk_bytes": 2097212,
+      "elapsed_seconds": 103.08614687505178,
+      "peak_process_rss_bytes": 291799040,
+      "exactness": "Every byte is counted. Each checked seam is numeric+LF followed by an ASCII letter; neither recorded regex can form a pre-token across it. BPE merges stay inside pre-tokens. No sampling, byte/token ratio estimate, special-token substitution, or model call."
+    }
+  },
+  "comparison": {
+    "1000_rows": {
+      "rows": 1000,
+      "components": {
+        "setup": {
+          "cl100k_base": 693,
+          "o200k_base": 727
+        },
+        "import_request": {
+          "cl100k_base": 44,
+          "o200k_base": 45
+        },
+        "import_reply": {
+          "cl100k_base": 45,
+          "o200k_base": 45
+        },
+        "aggregate_request": {
+          "cl100k_base": 110,
+          "o200k_base": 111
+        },
+        "aggregate_reply": {
+          "cl100k_base": 114,
+          "o200k_base": 116
+        }
+      },
+      "tokenizers": {
+        "cl100k_base": {
+          "source_tokens": 30375,
+          "workspool_tokens": 1006,
+          "tokens_avoided": 29369,
+          "reduction_percent": "96.68806584362139917695473251"
+        },
+        "o200k_base": {
+          "source_tokens": 30375,
+          "workspool_tokens": 1044,
+          "tokens_avoided": 29331,
+          "reduction_percent": "96.56296296296296296296296296"
+        }
+      },
+      "private_trace_sha256": "036a29d28ec95cae3ac13de69fe1a8025256e44f1b958da40a6d6b8e71240943"
+    },
+    "34015435_rows": {
+      "rows": 34015435,
+      "components": {
+        "setup": {
+          "cl100k_base": 693,
+          "o200k_base": 727
+        },
+        "import_request": {
+          "cl100k_base": 48,
+          "o200k_base": 49
+        },
+        "import_reply": {
+          "cl100k_base": 45,
+          "o200k_base": 45
+        },
+        "aggregate_request": {
+          "cl100k_base": 110,
+          "o200k_base": 111
+        },
+        "aggregate_reply": {
+          "cl100k_base": 121,
+          "o200k_base": 123
+        }
+      },
+      "tokenizers": {
+        "cl100k_base": {
+          "source_tokens": 1027283033,
+          "workspool_tokens": 1017,
+          "tokens_avoided": 1027282016,
+          "reduction_percent": "99.99990100099317030187920956"
+        },
+        "o200k_base": {
+          "source_tokens": 1025342510,
+          "workspool_tokens": 1055,
+          "tokens_avoided": 1025341455,
+          "reduction_percent": "99.99989710755287030867373284"
+        }
+      },
+      "private_trace_sha256": "3b28bfe0e650c117dfaee134918eb9d3a424c2d969a3cc362662103d7c12058f"
+    }
+  },
+  "scope": "Raw CSV text once versus cold Workspool setup + import + first aggregate requests and text replies. Both omit the common user question/final natural-language answer and provider framing. No model ingested either baseline; these are exact local payload counts, not observed API billing. The complete 34-million-row CSV is a hypothetical source-transmission baseline exceeding model context limits. Another local SQL workflow can also keep source rows out of context.",
+  "whole_stress_workflow": {
+    "calls": 23,
+    "setup_sessions": 2,
+    "tokens": {
+      "cl100k_base": 5845,
+      "o200k_base": 5952
+    },
+    "note": "Separately reported emitted payload, not a second baseline or cumulative billed model input."
+  },
+  "prefix_validation": "Header and first 1,000 rows match the AAPL source byte for byte and all fields match the separately prepared 1,000-row Parquet pilot; its aggregate passed the independent decimal oracle.",
+  "counter_sha256": "ab661e69f95e19682040d8050f00bc5f44ecacf56d6c922d026f80392a5eb0ec"
+}
