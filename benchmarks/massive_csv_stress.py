@@ -365,23 +365,33 @@ def direct(config):
     }
 
 
-async def mcp(config):
+def offline_encoders():
+    """Load cached rank files without leaving tiktoken's loader patched."""
     import tiktoken
     import tiktoken.load
-    from mcp import ClientSession, StdioServerParameters
-    from mcp.client.stdio import stdio_client
-
-    from agent_workbook.render import decode
 
     def offline_tokenizer_file(path):
         if path.startswith(("https://", "http://")):
             raise ValueError("Tokenizer ranks must already be in the local cache")
         return Path(path).read_bytes()
 
-    tiktoken.load.read_file = offline_tokenizer_file
-    encoders = {
-        name: tiktoken.get_encoding(name) for name in ("cl100k_base", "o200k_base")
-    }
+    original_read_file = tiktoken.load.read_file
+    try:
+        tiktoken.load.read_file = offline_tokenizer_file
+        return {
+            name: tiktoken.get_encoding(name) for name in ("cl100k_base", "o200k_base")
+        }
+    finally:
+        tiktoken.load.read_file = original_read_file
+
+
+async def mcp(config):
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
+
+    from agent_workbook.render import decode
+
+    encoders = offline_encoders()
 
     def counts(text):
         return {

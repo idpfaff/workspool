@@ -18,7 +18,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-benchmark = ["tokenizers>=0.21,<1", "pyarrow>=19,<24", "psutil>=6,<8"]
+# Streaming preparation and resource measurement are optional, not runtime requirements.
+benchmark = [
+    "tokenizers>=0.21,<1",
+    "pyarrow>=19,<24",
+    "psutil>=6,<8",
+]
 tokens = ["tiktoken>=0.12,<1", "tokenizers>=0.21,<1"]
 
 [project.scripts]

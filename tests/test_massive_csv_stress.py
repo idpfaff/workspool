@@ -17,6 +17,48 @@ bench = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(bench)
 
 
+@pytest.fixture
+def offline_tokenizers(monkeypatch):
+    """Use real byte-level tiktoken only in tests, without downloaded rank files."""
+    import tiktoken
+    import tiktoken.load
+
+    encoder = tiktoken.Encoding(
+        name="test-only-utf8-bytes",
+        pat_str=r"(?s:.)",
+        mergeable_ranks={bytes([value]): value for value in range(256)},
+        special_tokens={},
+    )
+    text = "ASCII, café, 漢字, 🌍\n"
+    assert len(encoder.encode(text)) == len(text.encode("utf-8"))
+    assert encoder.decode(encoder.encode(text)) == text
+    original_read_file = tiktoken.load.read_file
+
+    def get_encoding(name):
+        assert name in {"cl100k_base", "o200k_base"}
+        return encoder
+
+    monkeypatch.setattr(tiktoken, "get_encoding", get_encoding)
+    yield
+    assert tiktoken.load.read_file is original_read_file
+
+
+def test_offline_encoders_restore_loader_after_uncached_failure(tmp_path, monkeypatch):
+    import tiktoken
+    import tiktoken.load
+
+    original_read_file = tiktoken.load.read_file
+    monkeypatch.setenv("TIKTOKEN_CACHE_DIR", str(tmp_path / "empty-cache"))
+
+    def uncached_encoding(name):
+        return tiktoken.load.read_file_cached("https://example.invalid/uncached-ranks")
+
+    monkeypatch.setattr(tiktoken, "get_encoding", uncached_encoding)
+    with pytest.raises(ValueError, match="already be in the local cache"):
+        bench.offline_encoders()
+    assert tiktoken.load.read_file is original_read_file
+
+
 def fixture(directory, rows=20):
     directory.mkdir()
     records = {}
@@ -53,7 +95,7 @@ def fixture(directory, rows=20):
     return directory
 
 
-def test_concat_oracle_direct_and_actual_mcp_smoke(tmp_path):
+def test_concat_oracle_direct_and_actual_mcp_smoke(tmp_path, offline_tokenizers):
     source = tmp_path / "full.csv"
     data = fixture(tmp_path / "data")
     combined = bench.concatenate(data, source)
@@ -124,7 +166,9 @@ def test_oracle_rejects_invalid_ohlc_and_preview_truncation(tmp_path):
         )
 
 
-def test_decimal_mismatch_retains_observed_direct_and_mcp_results(tmp_path):
+def test_decimal_mismatch_retains_observed_direct_and_mcp_results(
+    tmp_path, offline_tokenizers
+):
     source = tmp_path / "precision.csv"
     source.write_text("ticker,t,o,h,l,c,v,n\nAAPL,1,10,12,9,11,10000000.001,3\n")
     oracle = bench.arrow_oracle(source, 1)

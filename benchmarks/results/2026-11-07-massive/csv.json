@@ -400,11 +400,6 @@
   "scope": "One diagnostic observation per arm/settings, not statistical latency evidence. Full dataset and exact oracle checks retained. All four executions complete computation and fail exact decimal validation; none counts as a successful performance result. Default settings run first, then tuned settings after failure. No runtime precision fix or relaxed numeric tolerance. Cache/order and concurrent-machine activity uncontrolled. MCP tokens count original instructions, schemas, requests and text replies once; no model call, provider billing, full-CSV token estimate or token-savings claim.",
   "publication": "Aggregate values, resource/timing measurements and token trace metrics only. Raw market rows, source paths, workbook IDs, import arguments and original MCP content omitted. Token counts were measured before publication redaction, so public metrics alone are not a byte-complete token recount trace.",
   "private_result_sha256": "1c6c4efe9a5b91d37c0401da4ae719bf6a58ab5a429192880120642681441797",
-  "source_sha256_at_publication": {
-    "benchmarks/massive_csv_stress.py": "f410ada1b12a0d71a605eca6841935d4ed6e117d07f5aa266fb7fe310f96304c",
-    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
-    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
-  },
   "checks": {
     "all_four_observed_aggregate_rows_identical": true,
     "all_34015435_rows_counted": true,
@@ -413,5 +408,11 @@
     "token_components_sum_to_payload_totals": true,
     "no_timeout_or_rss_limit_triggered": true,
     "explicit_decimal_csv_parsing_matches_exact_oracle": true
-  }
+  },
+  "source_sha256_for_recorded_run": {
+    "benchmarks/massive_csv_stress.py": "f410ada1b12a0d71a605eca6841935d4ed6e117d07f5aa266fb7fe310f96304c",
+    "src/agent_workbook/query.py": "9b1e71ed65a2e40637ada99f6ac671ac7cce484d73d0d4bab2780fa8e703fea1",
+    "src/agent_workbook/store.py": "1797795e9fd388a0d758b4f02c05df11e32766f1d85eda3fddfbc119fef4cfa9"
+  },
+  "harness_followup": "After this measurement, tokenizer loading was scoped so the offline file-reader override is restored on success or error. Unit tests use an explicitly synthetic offline encoding. These recorded counts still use the original real cl100k_base and o200k_base encodings; no measured values were replaced."
 }

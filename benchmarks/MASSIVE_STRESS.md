@@ -32,7 +32,7 @@ The full-size summary reply was **349 UTF-8 bytes / 121 `cl100k_base` tokens / 1
 
 The useful saving is that **34 million source rows remain outside the conversation while the agent receives the requested answer**. DuckDB performs the calculation; Workspool adds local retention, bounded previews, version references, saved recipes, freshness checks, and handoffs. This test does not establish a speed advantage over DuckDB or guarantee the same savings for tasks that require reading every record.
 
-Measured on macOS 26.6.2 / ARM64, Python 3.13.15, DuckDB 1.5.6, MCP 1.30.0, Arrow 23.0.1, and tiktoken 0.14.0. Preparation of all ten N/N−1 snapshots took 47.62 seconds and is separate from query/import timings. This release changes documentation and test tooling; the measured Workspool runtime is unchanged from v0.5.0.
+Measured on an **Apple M5 Max with 18 physical CPU cores and 128 GiB RAM**, running macOS 26.6.2 / ARM64, Python 3.13.15, DuckDB 1.5.6, MCP 1.30.0, Arrow 23.0.1, and tiktoken 0.14.0. Queries were limited to two threads. Preparation of all ten N/N−1 snapshots took 47.62 seconds and is separate from query/import timings. This release changes documentation and test tooling; the measured Workspool runtime is unchanged from v0.5.0.
 
 Evidence: [dataset manifest](results/2026-11-07-massive/dataset.json), [independent connector check](results/2026-11-07-massive/connector-check.json), and [Parquet measurements and exact checks](results/2026-11-07-massive/parquet.json).
 
@@ -69,6 +69,12 @@ Install the optional measurement dependencies:
 
 ```sh
 uv sync --locked --extra benchmark --extra tokens
+```
+
+Download the two tokenizer rank files into the local cache before measuring. This makes no model request:
+
+```sh
+uv run python -c 'import tiktoken; [tiktoken.get_encoding(n) for n in ("cl100k_base", "o200k_base")]'
 ```
 
 Supply a local environment file containing your authorized `MASSIVE_API_KEY`, and a file with the symbols you want to download. The published dataset manifest lists the 131 symbols used here. The downloader defaults to bounded concurrency and writes resumable per-symbol manifests; it never publishes the data.
