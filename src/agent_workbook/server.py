@@ -235,6 +235,10 @@ class _LocalMCP(FastMCP):
                 "claim_renew",
                 "claim_release",
                 "approve",
+                "skill_distill",
+                "skill_find",
+                "skill_inspect",
+                "skill_use",
             }
             and self.response_format != "full"
             and not (name == "inspect" and arguments.get("full", False))
@@ -381,6 +385,7 @@ OPTIONAL_TOOLS = ("import", "delete")
 RETRIEVAL_TOOLS = ("search", "describe", "diff")
 ROUNDTRIP_TOOLS = ("sync", "retrieve")
 TASK_TOOLS = ("task_define", "task_run", "task_status", "context")
+SKILL_TOOLS = ("skill_distill", "skill_find", "skill_inspect", "skill_use")
 RUNTIME_TOOLS = (
     "recall",
     "remember",
@@ -399,6 +404,7 @@ TOOL_NAMES = (
     + ROUNDTRIP_TOOLS
     + TASK_TOOLS
     + RUNTIME_TOOLS
+    + SKILL_TOOLS
     + OPTIONAL_TOOLS
 )
 
@@ -413,6 +419,8 @@ def _action(operation, arguments):
         "refresh",
         "task_define",
         "task_run",
+        "skill_distill",
+        "skill_use",
         "remember",
         "claim",
         "claim_renew",
@@ -466,7 +474,7 @@ def server_for(
         DEFAULT_TOOLS
         + (RETRIEVAL_TOOLS + ROUNDTRIP_TOOLS if optimized else ())
         + (TASK_TOOLS if profile in {"agent", "runtime"} else ())
-        + (RUNTIME_TOOLS if profile == "runtime" else ())
+        + (RUNTIME_TOOLS + SKILL_TOOLS if profile == "runtime" else ())
     )
     exposed = set(default_tools if tools is None else tools)
     exposed = {name for name in exposed if _action(name, {}) in PERMISSIONS[role]}
@@ -535,6 +543,13 @@ def server_for(
             " Claim task:NAME before task_run where required; renew before expiry and pass claim_ticket."
             " provenance explains stale ancestors; changes pages immutable actor events."
             " remember records an unverified observation, not proof. recall reports lexical/dense coverage."
+        )
+    if exposed & set(SKILL_TOOLS):
+        instructions += (
+            " skill_find discovers reusable analytical plans; skill_distill retains a successful published task."
+            " skill_inspect shows the exact plan and source contracts."
+            " skill_use validates explicit new source bindings and defines a pinned task; task_run executes it."
+            " Prior execution success is not independent factual verification."
         )
     counter = token_counter(tokenizer) if tokenizer is not None else None
     if goal:
@@ -836,6 +851,77 @@ def server_for(
             limit=limit,
             max_bytes=max_bytes,
             fits=fits,
+        )
+
+    @app.tool()
+    def skill_distill(
+        name: str,
+        task: str,
+        run_id: str | None = None,
+        description: str | None = None,
+        expected_version: StrictInt | None = None,
+    ) -> dict[str, Any]:
+        """Retain the exact reusable SQL plan and input contracts from a complete, current, successfully published task. No LLM synthesis; excludes failed or omitted work. Updates need expected_version."""
+        from .skills import distill
+
+        return distill(
+            workbook,
+            name,
+            task,
+            run_id=run_id,
+            description=description,
+            expected_version=expected_version,
+            principal=principal,
+        )
+
+    @app.tool()
+    def skill_find(
+        query: str = "",
+        limit: StrictInt = 8,
+        max_tokens: StrictInt | None = None,
+    ) -> dict[str, Any]:
+        """Discover bounded summaries of validated reusable analytical skills. Inspect a selected skill for its exact SQL and input contract."""
+        from .skills import find_skills
+
+        fits, _ = app.output_budget("skill_find", max_tokens)
+        result = find_skills(workbook, query=query, limit=limit)
+        if fits is not None and not fits(result):
+            raise ValueError("Skill discovery exceeds token budget; reduce limit")
+        return result
+
+    @app.tool()
+    def skill_inspect(
+        ref: str,
+        max_tokens: StrictInt | None = None,
+    ) -> dict[str, Any]:
+        """Read a validated skill's complete plan, input contracts, and execution provenance. Historical success does not establish correctness on new data."""
+        from .skills import inspect_skill
+
+        fits, _ = app.output_budget("skill_inspect", max_tokens)
+        result = inspect_skill(workbook, ref)
+        if fits is not None and not fits(result):
+            raise ValueError("Complete skill plan exceeds token budget")
+        return result
+
+    @app.tool()
+    def skill_use(
+        ref: str,
+        task_name: str,
+        bindings: dict[str, str],
+        parameters: dict[str, list[engine.Scalar]] | None = None,
+        expected_version: StrictInt | None = None,
+    ) -> dict[str, Any]:
+        """Bind every skill input to new schema-compatible sources and define a pinned task. Optional step parameter lists must keep their arity. Does not execute; call task_run next."""
+        from .skills import use_skill
+
+        return use_skill(
+            workbook,
+            ref,
+            task_name,
+            bindings,
+            parameters=parameters,
+            expected_version=expected_version,
+            principal=principal,
         )
 
     @app.tool()

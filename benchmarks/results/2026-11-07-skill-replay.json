@@ -1,0 +1,660 @@
+{
+  "format": 1,
+  "method": "Actual MCP agent-profile calls, separate workbooks and identical typed bytes. Known-plan task_define+task_run transfer control; existing rolling task after source update and unchanged retained task controls also measured. No model calls or automatic continuity capture.",
+  "tokenizer": "o200k_base",
+  "token_accounting": "Exact serialized MCP request/result counts. Initialization listed separately; operation schemas assumed known. Not provider billing or agent decision quality.",
+  "acquisition": {
+    "january": {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-01.parquet",
+      "file": "yellow_tripdata_2025-01.parquet",
+      "bytes": 59158238,
+      "etag": "\"3f99a46606c0c7e76a386f81167d8e15-12\"",
+      "last_modified": "Wed, 23 Apr 2025 16:31:58 GMT",
+      "retrieved_at": "2026-11-07T21:42:25.970425+00:00",
+      "sha256": "9af277e4c0d3f9deb30644da822981e1e7df6af58313170fd3aa8a474485488a",
+      "download_seconds": 0.9245538749964908
+    },
+    "february": {
+      "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-02.parquet",
+      "file": "yellow_tripdata_2025-02.parquet",
+      "bytes": 60343086,
+      "etag": "\"d19a36ff5f2728d5fb856785ff055bda-12\"",
+      "last_modified": "Wed, 23 Apr 2025 16:16:58 GMT",
+      "retrieved_at": "2026-11-07T21:44:25.708105+00:00",
+      "sha256": "037cba555a73663f3a51a2c27816e40e3feb364769942bdf122b9da31e377bd3",
+      "download_seconds": 120.686616083025
+    }
+  },
+  "oracle": {
+    "january": {
+      "totals": {
+        "columns": [
+          "trips",
+          "recorded_passenger_trips",
+          "passengers"
+        ],
+        "rows": [
+          [
+            3475226,
+            2935077,
+            3809316
+          ]
+        ]
+      },
+      "coverage": {
+        "columns": [
+          "missing_passenger_trips",
+          "recorded_passenger_trips",
+          "passengers"
+        ],
+        "rows": [
+          [
+            540149,
+            2935077,
+            3809316
+          ]
+        ]
+      },
+      "top_zones": {
+        "columns": [
+          "PULocationID",
+          "trips"
+        ],
+        "rows": [
+          [
+            161,
+            169977
+          ],
+          [
+            237,
+            163703
+          ],
+          [
+            236,
+            155647
+          ],
+          [
+            132,
+            146137
+          ],
+          [
+            230,
+            125829
+          ]
+        ]
+      }
+    },
+    "february": {
+      "totals": {
+        "columns": [
+          "trips",
+          "recorded_passenger_trips",
+          "passengers"
+        ],
+        "rows": [
+          [
+            3577543,
+            2770606,
+            3535370
+          ]
+        ]
+      },
+      "coverage": {
+        "columns": [
+          "missing_passenger_trips",
+          "recorded_passenger_trips",
+          "passengers"
+        ],
+        "rows": [
+          [
+            806937,
+            2770606,
+            3535370
+          ]
+        ]
+      },
+      "top_zones": {
+        "columns": [
+          "PULocationID",
+          "trips"
+        ],
+        "rows": [
+          [
+            161,
+            161411
+          ],
+          [
+            237,
+            157293
+          ],
+          [
+            236,
+            148093
+          ],
+          [
+            132,
+            125463
+          ],
+          [
+            230,
+            114528
+          ]
+        ]
+      }
+    }
+  },
+  "plan_steps": [
+    {
+      "name": "totals",
+      "inputs": [
+        "trips"
+      ],
+      "sql": "SELECT count(*) AS trips, count(passenger_count) AS recorded_passenger_trips, sum(passenger_count) AS passengers FROM input1"
+    },
+    {
+      "name": "coverage",
+      "inputs": [
+        "totals"
+      ],
+      "sql": "SELECT trips - recorded_passenger_trips AS missing_passenger_trips, recorded_passenger_trips, passengers FROM input1 ORDER BY ALL"
+    },
+    {
+      "name": "top_zones",
+      "inputs": [
+        "trips"
+      ],
+      "sql": "SELECT PULocationID, count(*) AS trips FROM input1 GROUP BY PULocationID ORDER BY trips DESC, PULocationID LIMIT 5"
+    }
+  ],
+  "comparison": {
+    "known_plan_transfer_tokens": 1161,
+    "skill_transfer_tokens": 1081,
+    "skill_transfer_token_saving": 80,
+    "extra_distillation_and_setup_tokens": 278,
+    "replays_to_amortize_distillation_and_setup": 4,
+    "discovery_tokens": 1398,
+    "rolling_task_updated_source_tokens": 857,
+    "transfer_saving_percent": 6.890611541774333,
+    "replays_to_amortize_distillation_setup_and_discovery": 21
+  },
+  "source_hashes": {
+    "benchmarks/skill_replay.py": "b8db2d6283683eb7d919f828241eadaf421f79d089a1f3f3de3c4a6049605096",
+    "benchmarks/public_table_stress.py": "743ef255207c4eea377d7539e347eaa0f3e78ac4c922f66cd6efe559db12e907",
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "a754cae2b8d50c1e3347f9fca3d740276bb4103e3ca82c5142d97b9bfa528629",
+    "src/agent_workbook/cli.py": "3c6ba0c3b2769417f0f5b9564e9a2ce3922a3531357df9e6477e2e7fb9410f86",
+    "src/agent_workbook/context_index.py": "25dd9b0fa3c1f05c7ae75ba23e66aea9b72b1614e260ff53aac32bb976d2a980",
+    "src/agent_workbook/continuity.py": "4e22dcad11b20d04c6dea718cc095fa2bcd59799b17a54fccba09d4cb711b9ae",
+    "src/agent_workbook/coordination.py": "8bad5381c6dcf1bec5936722bb84b449fc2bb2c8b39a7f26295432962fc6f9c0",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/host_setup.py": "503bc97baeb4999d84f2995b837b036c93ed03749663218afadaf2922fae73e9",
+    "src/agent_workbook/materialize.py": "7b11d4174d4b7bfd81eb36a5134c2d42d5e961f6482ad8a02ef89927d1617f8c",
+    "src/agent_workbook/query.py": "c2f3778419cc2369421e0bd9a0fcc28882179879c39a9d2d74f0b8e227185ce2",
+    "src/agent_workbook/query_cache.py": "14466b8ab77f4097a0efbead7d305805728e106898406f000597fb58d7a455e3",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/semantic.py": "431e1b4169a057fa3a961bdf54e979ae07142ba45560dcd65714dfe0e6464349",
+    "src/agent_workbook/server.py": "5816fe2d0e841655c6d61b9d02536775e07aeb64626994e7a10ecf79bbca2042",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/skills.py": "69bc256613cd4aac395ff03d9c2e2c092911778ab3b93988f1d0581dd34167d4",
+    "src/agent_workbook/store.py": "1129c772b2cc926deb7b526f2c6206a5ea413ee84d2c2b467e00010594981b3e",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0",
+    "src/agent_workbook/tasks.py": "350e6033ce38a84628061389f1867094faefb2d786c243a14aaeb9735d1bb61f"
+  },
+  "source_files_unchanged": true,
+  "raw_sources_unchanged": true,
+  "success": true,
+  "recorded_on": "2026-11-07",
+  "private_result_sha256": "ad4bdf6eedbb0827b7df48b44e8e14a79653dfd8eff4be2e72011671d4da12cc",
+  "prepared": {
+    "january": {
+      "sha256": "7f93725ac749e95c247ddce91cdc877635219dfb989e698dc46df49693a9b309",
+      "bytes": 3118552,
+      "rows": 3475226,
+      "largest_batch_rows": 65536,
+      "schema": "PULocationID: int64\npassenger_count: int64"
+    },
+    "february": {
+      "sha256": "6a1411f1874e52816347cba9396b6589b1ba83526532501760a0508d17e27582",
+      "bytes": 3190146,
+      "rows": 3577543,
+      "largest_batch_rows": 65536,
+      "schema": "PULocationID: int64\npassenger_count: int64"
+    }
+  },
+  "arms": {
+    "known_plan": {
+      "arm": "known_plan",
+      "tokenizer": "o200k_base",
+      "setup_tokens": 197,
+      "validations": [
+        {
+          "step": "totals",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "top_zones",
+          "rows": 5,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "coverage",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "totals",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        },
+        {
+          "step": "top_zones",
+          "rows": 5,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        },
+        {
+          "step": "coverage",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        }
+      ],
+      "totals": {
+        "common_origin": {
+          "calls": 2,
+          "errors": 0,
+          "request_tokens": 232,
+          "response_tokens": 951,
+          "elapsed_seconds": 0.32163887505885214
+        },
+        "distillation": {
+          "calls": 0,
+          "errors": 0,
+          "request_tokens": 0,
+          "response_tokens": 0,
+          "elapsed_seconds": 0
+        },
+        "discovery": {
+          "calls": 0,
+          "errors": 0,
+          "request_tokens": 0,
+          "response_tokens": 0,
+          "elapsed_seconds": 0
+        },
+        "transfer": {
+          "calls": 2,
+          "errors": 0,
+          "request_tokens": 232,
+          "response_tokens": 929,
+          "elapsed_seconds": 0.3073507089866325
+        },
+        "retained_task": {
+          "calls": 1,
+          "errors": 0,
+          "request_tokens": 45,
+          "response_tokens": 192,
+          "elapsed_seconds": 0.025355582940392196
+        }
+      },
+      "success": true,
+      "calls": [
+        {
+          "arm": "common_origin",
+          "tool": "task_define",
+          "is_error": false,
+          "elapsed_seconds": 0.005516708013601601,
+          "request_tokens": 209,
+          "response_tokens": 129
+        },
+        {
+          "arm": "common_origin",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.31612216704525054,
+          "request_tokens": 23,
+          "response_tokens": 822
+        },
+        {
+          "arm": "transfer",
+          "tool": "task_define",
+          "is_error": false,
+          "elapsed_seconds": 0.005060042021796107,
+          "request_tokens": 209,
+          "response_tokens": 121
+        },
+        {
+          "arm": "transfer",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.3022906669648364,
+          "request_tokens": 23,
+          "response_tokens": 808
+        },
+        {
+          "arm": "retained_task",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.025355582940392196,
+          "request_tokens": 45,
+          "response_tokens": 192
+        }
+      ]
+    },
+    "skill": {
+      "arm": "skill",
+      "tokenizer": "o200k_base",
+      "setup_tokens": 265,
+      "validations": [
+        {
+          "step": "totals",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "top_zones",
+          "rows": 5,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "coverage",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "totals",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        },
+        {
+          "step": "top_zones",
+          "rows": 5,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        },
+        {
+          "step": "coverage",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        }
+      ],
+      "totals": {
+        "common_origin": {
+          "calls": 2,
+          "errors": 0,
+          "request_tokens": 233,
+          "response_tokens": 957,
+          "elapsed_seconds": 0.32066437508910894
+        },
+        "distillation": {
+          "calls": 1,
+          "errors": 0,
+          "request_tokens": 69,
+          "response_tokens": 141,
+          "elapsed_seconds": 0.008108499925583601
+        },
+        "discovery": {
+          "calls": 2,
+          "errors": 0,
+          "request_tokens": 64,
+          "response_tokens": 1334,
+          "elapsed_seconds": 0.0030294578755274415
+        },
+        "transfer": {
+          "calls": 2,
+          "errors": 0,
+          "request_tokens": 97,
+          "response_tokens": 984,
+          "elapsed_seconds": 0.31197125010658056
+        },
+        "retained_task": {
+          "calls": 1,
+          "errors": 0,
+          "request_tokens": 47,
+          "response_tokens": 195,
+          "elapsed_seconds": 0.02171000000089407
+        }
+      },
+      "success": true,
+      "calls": [
+        {
+          "arm": "common_origin",
+          "tool": "task_define",
+          "is_error": false,
+          "elapsed_seconds": 0.005660125054419041,
+          "request_tokens": 210,
+          "response_tokens": 136
+        },
+        {
+          "arm": "common_origin",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.3150042500346899,
+          "request_tokens": 23,
+          "response_tokens": 821
+        },
+        {
+          "arm": "distillation",
+          "tool": "skill_distill",
+          "is_error": false,
+          "elapsed_seconds": 0.008108499925583601,
+          "request_tokens": 69,
+          "response_tokens": 141
+        },
+        {
+          "arm": "discovery",
+          "tool": "skill_find",
+          "is_error": false,
+          "elapsed_seconds": 0.0014239998999983072,
+          "request_tokens": 22,
+          "response_tokens": 154
+        },
+        {
+          "arm": "discovery",
+          "tool": "skill_inspect",
+          "is_error": false,
+          "elapsed_seconds": 0.0016054579755291343,
+          "request_tokens": 42,
+          "response_tokens": 1180
+        },
+        {
+          "arm": "transfer",
+          "tool": "skill_use",
+          "is_error": false,
+          "elapsed_seconds": 0.006372875068336725,
+          "request_tokens": 74,
+          "response_tokens": 166
+        },
+        {
+          "arm": "transfer",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.30559837503824383,
+          "request_tokens": 23,
+          "response_tokens": 818
+        },
+        {
+          "arm": "retained_task",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.02171000000089407,
+          "request_tokens": 47,
+          "response_tokens": 195
+        }
+      ]
+    },
+    "rolling_task": {
+      "arm": "rolling_task",
+      "tokenizer": "o200k_base",
+      "setup_tokens": 197,
+      "validations": [
+        {
+          "step": "totals",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "top_zones",
+          "rows": 5,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "coverage",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "january"
+        },
+        {
+          "step": "totals",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        },
+        {
+          "step": "top_zones",
+          "rows": 5,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        },
+        {
+          "step": "coverage",
+          "rows": 1,
+          "exact_result": true,
+          "exact_dependencies": true,
+          "cache_hit": false,
+          "month": "february"
+        }
+      ],
+      "totals": {
+        "common_origin": {
+          "calls": 2,
+          "errors": 0,
+          "request_tokens": 211,
+          "response_tokens": 906,
+          "elapsed_seconds": 0.319687332957983
+        },
+        "distillation": {
+          "calls": 0,
+          "errors": 0,
+          "request_tokens": 0,
+          "response_tokens": 0,
+          "elapsed_seconds": 0
+        },
+        "discovery": {
+          "calls": 0,
+          "errors": 0,
+          "request_tokens": 0,
+          "response_tokens": 0,
+          "elapsed_seconds": 0
+        },
+        "transfer": {
+          "calls": 1,
+          "errors": 0,
+          "request_tokens": 22,
+          "response_tokens": 835,
+          "elapsed_seconds": 0.30483366595581174
+        },
+        "retained_task": {
+          "calls": 1,
+          "errors": 0,
+          "request_tokens": 49,
+          "response_tokens": 192,
+          "elapsed_seconds": 0.021788957994431257
+        }
+      },
+      "success": true,
+      "calls": [
+        {
+          "arm": "common_origin",
+          "tool": "task_define",
+          "is_error": false,
+          "elapsed_seconds": 0.005366333061829209,
+          "request_tokens": 189,
+          "response_tokens": 100
+        },
+        {
+          "arm": "common_origin",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.3143209998961538,
+          "request_tokens": 22,
+          "response_tokens": 806
+        },
+        {
+          "arm": "transfer",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.30483366595581174,
+          "request_tokens": 22,
+          "response_tokens": 835
+        },
+        {
+          "arm": "retained_task",
+          "tool": "task_run",
+          "is_error": false,
+          "elapsed_seconds": 0.021788957994431257,
+          "request_tokens": 49,
+          "response_tokens": 192
+        }
+      ]
+    }
+  },
+  "notes": [
+    "One scripted local trial, not model decision quality or statistical evidence. Parent full-suite work overlapped this period; timings are indicative.",
+    "All three arms use the same exact typed source rows. Projection, imports, and the rolling-source update are common acquisition/rebinding work outside measured MCP plan-reuse calls.",
+    "Discovery is measured over one saved skill. This does not establish discovery ranking quality over a large skill library.",
+    "The transfer comparison reuses a plan with different explicit immutable bindings. A stable recurring task with a rolling logical source is cheaper and is reported separately.",
+    "Random immutable IDs affect tokenization; projected amortization uses this single observed per-transfer difference, not a guarantee for other workflows.",
+    "An initial pilot failed the retained receipt check because a one-row projection lacked ORDER BY. The final plan explicitly orders it, and a focused regression verifies reuse. The failure and corrected pilot traces remain local.",
+    "Public evidence includes aggregate results and checks only, not individual taxi trip rows, local absolute paths, generated workspace identifiers, or credentials."
+  ]
+}

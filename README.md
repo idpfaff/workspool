@@ -9,10 +9,11 @@ Workspool gives AI agents a shared local workspace for work that continues acros
 - **Run recurring work.** Save source aliases and dependent SQL steps, reuse eligible exact calculations, and recompute affected steps when inputs change.
 - **Coordinate agents.** Give each server a configured identity and role, claim a task before execution, and inspect producer events and stale dependency versions.
 - **Keep evidence inspectable.** Reopen complete task briefs after context loss, with immutable source references, exact byte citations, and explicit omissions.
+- **Reuse successful analytical plans.** Distill a published task into a discoverable skill, validate new inputs against its saved schema, and run its SQL again without reconstructing the plan.
 
 Works with local or hosted models through an MCP-compatible agent. Workspace files and embedding inference stay local; the host receives selected context and tool replies. Automatic capture covers calls through the configured Workspool server. Other tools and conversations need explicit host hooks, and the MCP host must forward initialization instructions for startup recall to reach the model. Workspool does not monitor your desktop, schedule tasks, or watch external files.
 
-[Runtime setup, host hooks, roles, and claims](benchmarks/RUNTIME.md) · [Public dataset stress](benchmarks/PUBLIC_DATA.md) · [Task reference](benchmarks/TASKS.md)
+[Connect Claude Desktop, Cursor, or Codex](docs/HOSTS.md) · [Reusable analytical skills](docs/SKILLS.md) · [Runtime guide](benchmarks/RUNTIME.md) · [Public dataset stress](benchmarks/PUBLIC_DATA.md)
 
 ## What you can save
 
@@ -54,26 +55,49 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.7.0 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.8.0 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
 Run these from the project directory. The command is `workspool` (`agent-workbook` still works); the Python package is `agent-workbook`.
 
 ```sh
-uv sync --locked --python 3.12 --extra tokens --extra semantic
+uv sync --locked --python 3.12 --extra tokens
 .venv/bin/workspool --help
 ```
 
-Python 3.11 or newer, SQLite with FTS5, and supported DuckDB/ONNX wheels. Runs on macOS and Linux. The first install downloads dependencies. Explicitly provision the optional embedding model once:
+Python 3.11 or newer, SQLite with FTS5, and supported DuckDB wheels. Runs on macOS and Linux. The first install downloads dependencies. The [host walkthrough](docs/HOSTS.md) also provides a standard Python `venv` and `pip` install using the release wheel.
+
+Keyword recall works immediately. For optional semantic recall, install the local inference extra and explicitly provision the embedding model once:
 
 ```sh
+uv sync --locked --python 3.12 --extra tokens --extra semantic
 .venv/bin/workspool model-download "$HOME/.cache/workspool/bge-small-en-v1.5"
 ```
 
 This downloads and hashes the supported local model; the destination must be new. Retrieval never downloads a model. Omit `--model-dir` below to use the disclosed lexical fallback. Named tokenizer encodings may download their ranks on first use; a local `tokenizer.json` also works.
 
 ## Connect your agent
+
+Generate and install the configuration for your host without editing JSON:
+
+```sh
+.venv/bin/workspool --workspace "$HOME/Workspool" host-config claude-desktop \
+  --goal "Continue the spending review and recover prior decisions" --install
+```
+
+Use `cursor` or `codex` in place of `claude-desktop` for those hosts. Omit `--install` to preview the configuration. Installation preserves other server entries and makes a backup before changing an existing file. Conflicting Workspool entries require an explicit decision; Codex TOML conflicts are left for manual editing.
+
+Check the generated launch command through a disposable MCP session:
+
+```sh
+.venv/bin/workspool host-doctor claude-desktop \
+  --goal "Continue the spending review and recover prior decisions"
+```
+
+Then fully restart the host. The [host walkthrough](docs/HOSTS.md) covers where to find the tools, a two-session continuity check, and troubleshooting. The doctor checks the generated command and MCP exchange; it does not establish that a particular host forwards startup context to its model.
+
+### Manual configuration
 
 Use stdio with a local MCP host. Give each host the same absolute workspace path when they should share the work.
 
@@ -178,6 +202,30 @@ In a fresh session, reopen the brief without executing SQL:
 ```
 
 The default is the newest attempt; `latest_success` points to the last successful publication. Supply `run_id` to reopen a particular attempt. To retry an interrupted or partial attempt with its original definition and source versions, call `task_run` with `resume_from` set to that attempt's returned ID. This preserves the historical snapshot even when the plan normally follows latest sources. Use `force: true` to recompute results deliberately. The corresponding terminal commands are `task-run spending-review` and `task-status spending-review`.
+
+### Turn a successful task into a reusable skill
+
+Keep the exact calculation plan after it succeeds:
+
+```json
+{"tool":"skill_distill","arguments":{"name":"spending-review","task":"spending-review"}}
+```
+
+The `runtime` profile exposes skill tools. Later, another session can discover the skill with `skill_find`, inspect its SQL and source requirements with `skill_inspect`, and apply it to new inputs:
+
+```json
+{"tool":"skill_find","arguments":{"query":"spending"}}
+```
+
+```json
+{"tool":"skill_use","arguments":{"ref":"spending-review","task_name":"next-spending-review","bindings":{"spending":"demo/next-spending","policy":"demo/next-policy"}}}
+```
+
+Import those new sources first. Applying the skill checks their media types and exact ordered table schemas, then defines a task pinned to those validated versions. It retains the skill version and inputs for later inspection. Run it with `task_run` using `"name":"next-spending-review"`; execution still obeys the workspace's claim policy. Optional parameter overrides let a caller change existing SQL placeholders without rewriting the steps.
+
+Skills retain successful execution provenance; they do not certify the data's truth or that a calculation suits a new business question. Distillation preserves the actual plan, without an external model call. [Skill guide and limits](docs/SKILLS.md) · [Measured public-data replay](docs/SKILL_REPLAY.md).
+
+In the January-to-February taxi replay, applying a known skill used **1,081 request-and-response tokens versus 1,161 for resending the known plan: 80 tokens saved (6.9%)**. An existing recurring task was cheaper at 857 tokens. Distillation and added setup cost 278 tokens, reaching break-even after four similar transfers; fresh discovery and inspection add more. These are scripted MCP payload counts, with exact results checked over **7,052,769 real rows**, not provider billing or a general accuracy claim. [Full comparison](docs/SKILL_REPLAY.md).
 
 ### Reuse a brief the agent still retains
 

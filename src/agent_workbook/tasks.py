@@ -190,12 +190,19 @@ def define_task(
     csv_types=None,
     pin_sources=False,
     principal=None,
+    provenance_refs=None,
 ):
     """Save a versioned plan; this does not execute queries or acquire sources."""
     from .coordination import authorize, current_principal, record_event
 
     principal = principal or current_principal()
     authorize(principal, "write")
+    if provenance_refs is not None and (
+        not isinstance(provenance_refs, list)
+        or len(provenance_refs) > 8
+        or any(not isinstance(ref, str) or not ref for ref in provenance_refs)
+    ):
+        raise ValueError("Task provenance requires at most eight artifact references")
     artifact_name = _name(name)
     plan = _validate(objective, sources, steps, searches, csv_types)
     if type(pin_sources) is not bool:
@@ -232,6 +239,10 @@ def define_task(
         media_type="application/json",
         summary=plan["objective"],
         expected_version=expected_version,
+        dependencies=list(dict.fromkeys(plan["sources"].values()))
+        if pin_sources
+        else None,
+        provenance=provenance_refs,
     )
     record_event(
         workbook,

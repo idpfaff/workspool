@@ -36,6 +36,10 @@ TOOL_CHOICES = [
     "provenance",
     "changes",
     "approve",
+    "skill_distill",
+    "skill_find",
+    "skill_inspect",
+    "skill_use",
 ]
 
 
@@ -76,6 +80,36 @@ def main() -> None:
         help="most rows a query preview may return (default: 25)",
     )
     commands = parser.add_subparsers(dest="command", required=True)
+
+    host_config = commands.add_parser(
+        "host-config",
+        help="Generate or install a runtime configuration for your MCP host",
+    )
+    host_doctor = commands.add_parser(
+        "host-doctor", help="Smoke-test a generated host command through real local MCP"
+    )
+    for host in (host_config, host_doctor):
+        host.add_argument("host", choices=["claude-desktop", "cursor", "codex"])
+        host.add_argument("--goal", required=True)
+        host.add_argument("--tokenizer", default="o200k_base")
+        host.add_argument("--recall-tokens", type=int, default=1500)
+        host.add_argument("--model-dir", type=Path)
+        host.add_argument("--agent-id")
+    host_config.add_argument(
+        "--install",
+        action="store_true",
+        help="Merge into the host configuration, keeping a backup",
+    )
+    host_config.add_argument("--config-path", type=Path)
+    host_config.add_argument(
+        "--project", type=Path, help="Project directory for Cursor configuration"
+    )
+    host_config.add_argument(
+        "--replace",
+        action="store_true",
+        help="Replace an existing conflicting JSON Workspool entry",
+    )
+    host_doctor.add_argument("--timeout", type=float, default=60)
 
     serve = commands.add_parser("serve", help="Start the local MCP server")
     serve.add_argument(
@@ -227,6 +261,37 @@ def main() -> None:
     )
     task_status.add_argument("name")
     task_status.add_argument("--run-id")
+    skill_distill = commands.add_parser(
+        "skill-distill", help="Retain a successful task as a reusable analytical skill"
+    )
+    skill_distill.add_argument("name")
+    skill_distill.add_argument("--task", required=True)
+    skill_distill.add_argument("--run-id")
+    skill_distill.add_argument("--description")
+    skill_distill.add_argument("--expected-version", type=int)
+    skill_find = commands.add_parser(
+        "skill-find", help="Discover reusable analytical skills"
+    )
+    skill_find.add_argument("query", nargs="?", default="")
+    skill_find.add_argument("--limit", type=int, default=8)
+    skill_inspect = commands.add_parser(
+        "skill-inspect", help="Read a complete reusable skill plan and provenance"
+    )
+    skill_inspect.add_argument("ref")
+    skill_use = commands.add_parser(
+        "skill-use", help="Bind a skill to new inputs and define a pinned task"
+    )
+    skill_use.add_argument("ref")
+    skill_use.add_argument("--task-name", required=True)
+    skill_use.add_argument(
+        "--bindings",
+        required=True,
+        help="JSON object mapping every input alias to an artifact",
+    )
+    skill_use.add_argument(
+        "--parameters", help="JSON object mapping step names to parameter lists"
+    )
+    skill_use.add_argument("--expected-version", type=int)
     for task_command in (task_run, task_status):
         task_command.add_argument(
             "--base-run", help="Only when retaining the prior unabridged brief"
@@ -247,7 +312,16 @@ def main() -> None:
     recall.add_argument("--max-bytes", type=int, default=16384)
     for bounded in (task_run, task_status, context):
         bounded.add_argument("--max-bytes", type=int, default=16384)
-    for bounded in (sync, retrieve, task_run, task_status, context, recall):
+    for bounded in (
+        sync,
+        retrieve,
+        task_run,
+        task_status,
+        context,
+        recall,
+        skill_find,
+        skill_inspect,
+    ):
         bounded.add_argument("--max-tokens", type=int)
         bounded.add_argument(
             "--tokenizer", help="encoding name or local tokenizer.json"
@@ -303,7 +377,36 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        if args.command == "model-download":
+        if args.command in {"host-config", "host-doctor"}:
+            from .host_setup import default_config_path, doctor, generate, install
+
+            options = {
+                "goal": args.goal,
+                "tokenizer": args.tokenizer,
+                "recall_tokens": args.recall_tokens,
+                "model_dir": args.model_dir,
+                "agent_id": args.agent_id,
+            }
+            if args.command == "host-doctor":
+                result = doctor(args.host, **options, timeout=args.timeout)
+            else:
+                if args.replace and not args.install:
+                    raise ValueError("--replace requires --install")
+                if args.config_path and args.project:
+                    raise ValueError("Choose --config-path or --project")
+                destination = args.config_path or default_config_path(
+                    args.host, project=args.project
+                )
+                config = generate(args.host, args.workspace, **options)
+                if not args.install:
+                    print(config, end="" if config.endswith("\n") else "\n")
+                    return
+                checked = doctor(args.host, **options)
+                result = install(
+                    args.host, config, path=destination, replace=args.replace
+                )
+                result["protocol_check"] = checked
+        elif args.command == "model-download":
             from .semantic import provision_model
 
             result = provision_model(args.directory)
@@ -327,6 +430,8 @@ def main() -> None:
                 "task-status",
                 "context",
                 "recall",
+                "skill-find",
+                "skill-inspect",
             }:
                 from .budget import token_counter, validate_limit
 
@@ -347,6 +452,44 @@ def main() -> None:
                     else None
                 )
             match args.command:
+                case "skill-distill":
+                    from .skills import distill
+
+                    result = distill(
+                        workbook,
+                        args.name,
+                        args.task,
+                        run_id=args.run_id,
+                        description=args.description,
+                        expected_version=args.expected_version,
+                    )
+                case "skill-find":
+                    from .skills import find_skills
+
+                    result = find_skills(workbook, query=args.query, limit=args.limit)
+                    if fits is not None and not fits(result):
+                        raise ValueError(
+                            "Skill discovery exceeds token budget; reduce limit"
+                        )
+                case "skill-inspect":
+                    from .skills import inspect_skill
+
+                    result = inspect_skill(workbook, args.ref)
+                    if fits is not None and not fits(result):
+                        raise ValueError("Complete skill plan exceeds token budget")
+                case "skill-use":
+                    from .skills import use_skill
+
+                    result = use_skill(
+                        workbook,
+                        args.ref,
+                        args.task_name,
+                        json.loads(args.bindings),
+                        parameters=json.loads(args.parameters)
+                        if args.parameters is not None
+                        else None,
+                        expected_version=args.expected_version,
+                    )
                 case "serve":
                     from .server import server_for
 

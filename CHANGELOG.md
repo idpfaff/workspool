@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.0 — 2026-11-07
+
+- Generate runtime configurations for Claude Desktop, Cursor, and Codex on macOS and Linux. The explicit installer checks a disposable MCP session before merging settings, preserves unrelated servers, and creates a private backup. Preview requires no configuration edits; `host-doctor` reports protocol readiness without claiming host UI or model-context validation.
+- Distill successfully published tasks into discoverable, versioned analytical skills with exact SQL, parameter values, input contracts, producer identity, and retained execution provenance. Failed, superseded, and incomplete work cannot establish a skill; full materialized outputs may be retained without echoing every row.
+- Apply a skill to explicit new bindings, validate exact source media types and ordered schemas, and define a task pinned to those immutable inputs. Retain the originating skill and pinned input versions before the first run. Existing task execution, claims, and cache rules remain in force.
+- Add CLI and runtime MCP operations for skill distillation, discovery, inspection, and application. Discovery and inspection support exact tokenizer budgets; no external model API is required.
+- Publish host walkthroughs, a standard Python `venv`/`pip` release-wheel installation path, and public-data skill replay measurements against both plan resubmission and retained-task controls.
+- Include the copyright holder's commercial license notice above the existing MIT License with Commons Clause text.
+
 ## 0.7.0 — 2026-11-07
 
 - Add an opt-in runtime profile that automatically captures bounded tool observations, task results, failures, and source references. Restore relevant context in MCP initialization instructions for a configured goal and exact tokenizer budget; expose stdin hooks for other host integrations.

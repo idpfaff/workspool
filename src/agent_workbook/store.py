@@ -50,6 +50,13 @@ CREATE TABLE IF NOT EXISTS dependencies (
     position INTEGER NOT NULL,
     PRIMARY KEY (artifact_id, dependency_id)
 );
+CREATE TABLE IF NOT EXISTS provenance_links (
+    artifact_id TEXT NOT NULL REFERENCES artifacts(artifact_id) ON DELETE CASCADE,
+    provenance_id TEXT NOT NULL REFERENCES artifacts(artifact_id),
+    position INTEGER NOT NULL,
+    PRIMARY KEY (artifact_id, provenance_id)
+);
+CREATE INDEX IF NOT EXISTS provenance_retention ON provenance_links(provenance_id);
 CREATE VIEW IF NOT EXISTS latest AS
     SELECT a.* FROM artifacts a
     WHERE a.version = (SELECT MAX(b.version) FROM artifacts b WHERE b.name = a.name);
@@ -138,6 +145,17 @@ class Workbook:
             row[0]
             for row in db.execute(
                 "SELECT dependency_id FROM dependencies WHERE artifact_id = ? ORDER BY position",
+                (artifact_id,),
+            )
+        ]
+
+    @staticmethod
+    def _provenance(db, artifact_id: str) -> list[str]:
+        """Historical references retained for attribution, not computational inputs."""
+        return [
+            row[0]
+            for row in db.execute(
+                "SELECT provenance_id FROM provenance_links WHERE artifact_id = ? ORDER BY position",
                 (artifact_id,),
             )
         ]
@@ -248,6 +266,7 @@ class Workbook:
         summary: str = "",
         source: str = "",
         dependencies: list[str] | None = None,
+        provenance: list[str] | None = None,
         expected_version: int | None = None,
         checkpoint: dict | None = None,
         recipe: dict | None = None,
@@ -263,6 +282,14 @@ class Workbook:
             raise ValueError("Summary and source must each be at most 360 characters")
         if len(dependencies or []) > 16:
             raise ValueError("At most 16 dependencies are supported")
+        if provenance is not None and (
+            not isinstance(provenance, list)
+            or len(provenance) > 16
+            or any(not isinstance(ref, str) or not ref for ref in provenance)
+        ):
+            raise ValueError(
+                "Provenance must be a list of at most 16 artifact references"
+            )
         digest = hashlib.sha256()
         index_bytes = self.settings.index_bytes
         with self._staging() as staged:
@@ -306,6 +333,12 @@ class Workbook:
                         dict.fromkeys(parent["artifact_id"] for parent in parents)
                     )
                     self._check_lineage(db, name, ids)
+                    provenance_ids = list(
+                        dict.fromkeys(
+                            self._get(db, ref)["artifact_id"]
+                            for ref in provenance or []
+                        )
+                    )
                     blob = self.blobs / content_hash
                     if not blob.exists():
                         os.replace(staged_path, blob)
@@ -332,6 +365,13 @@ class Workbook:
                         "INSERT INTO dependencies VALUES (?, ?, ?)",
                         ((artifact_id, ref, pos) for pos, ref in enumerate(ids)),
                     )
+                    db.executemany(
+                        "INSERT INTO provenance_links VALUES (?, ?, ?)",
+                        (
+                            (artifact_id, ref, pos)
+                            for pos, ref in enumerate(provenance_ids)
+                        ),
+                    )
                     db.execute(
                         "INSERT INTO artifact_search VALUES (?, ?, ?, ?)",
                         (artifact_id, name, summary + " " + source, text),
@@ -348,7 +388,8 @@ class Workbook:
                             "sha256": content_hash,
                             "size_bytes": size,
                             "dependencies": ids,
-                        },
+                        }
+                        | ({"provenance": provenance_ids} if provenance_ids else {}),
                     )
                     return self._summary(db, self._get(db, artifact_id))
             finally:
@@ -457,6 +498,9 @@ class Workbook:
                     "previous_id": row["previous_id"],
                     "dependencies": self._dependencies(db, row["artifact_id"]),
                 }
+                provenance = self._provenance(db, row["artifact_id"])
+                if provenance:
+                    item["provenance"] = provenance
                 if row["checkpoint"]:
                     item["checkpoint"] = json.loads(row["checkpoint"])
                 if row["recipe"]:
@@ -564,16 +608,25 @@ class Workbook:
 
     @staticmethod
     def _blockers(db, ids: list[str]) -> list[dict]:
-        """Artifacts outside `ids` that still pin one of `ids` as a dependency."""
+        """Artifacts outside `ids` that retain a computational or provenance ref."""
         slots = ", ".join("?" for _ in ids)
         rows = db.execute(
             f"""
+            WITH selected(id) AS (
+                SELECT artifact_id FROM artifacts WHERE artifact_id IN ({slots})
+            )
             SELECT DISTINCT a.artifact_id, a.name, a.version
             FROM dependencies d JOIN artifacts a ON a.artifact_id = d.artifact_id
-            WHERE d.dependency_id IN ({slots}) AND d.artifact_id NOT IN ({slots})
+            WHERE d.dependency_id IN (SELECT id FROM selected)
+              AND d.artifact_id NOT IN (SELECT id FROM selected)
+            UNION
+            SELECT a.artifact_id, a.name, a.version
+            FROM provenance_links p JOIN artifacts a ON a.artifact_id = p.artifact_id
+            WHERE p.provenance_id IN (SELECT id FROM selected)
+              AND p.artifact_id NOT IN (SELECT id FROM selected)
             ORDER BY a.name, a.version LIMIT 6
             """,
-            (*ids, *ids),
+            ids,
         ).fetchall()
         return [dict(row) for row in rows]
 
@@ -593,7 +646,12 @@ class Workbook:
                     (row["previous_id"], row["artifact_id"]),
                 )
         slots = ", ".join("?" for _ in ids)
-        for table in ("dependencies", "artifact_search", "artifacts"):
+        for table in (
+            "dependencies",
+            "provenance_links",
+            "artifact_search",
+            "artifacts",
+        ):
             db.execute(f"DELETE FROM {table} WHERE artifact_id IN ({slots})", ids)
         return [
             {key: row[key] for key in ("artifact_id", "name", "version")}
@@ -767,6 +825,8 @@ class Workbook:
                            WHERE b.name = a.name AND b.version > a.version) >= ?
                       AND NOT EXISTS (SELECT 1 FROM dependencies d
                                       WHERE d.dependency_id = a.artifact_id)
+                      AND NOT EXISTS (SELECT 1 FROM provenance_links p
+                                      WHERE p.provenance_id = a.artifact_id)
                     ORDER BY a.name, a.version
                     """,
                     (keep,),
