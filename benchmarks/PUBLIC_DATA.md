@@ -1,5 +1,10 @@
 # Public dataset stress: tables and research context
 
+The published MCP counts below are historical scripted measurements with known
+operation arguments. Their lazy interface was not model-validated. Current profiles
+use eager typed tools; rerunning the current harness changes setup/request counts.
+The original result files remain unchanged.
+
 Recorded November 7, 2026 against the v0.7 release candidate. Workspool passed exact result, incremental reuse, and
 context recovery checks on **48,722,602 NYC taxi trips**, **38,470,483 NOAA
 observations**, and **8,192 Wikipedia articles containing 463,555,655 UTF-8
@@ -180,7 +185,7 @@ table has two open critical issues. The first session saves the table and
 queries the count; the server automatically captures the observed result and
 records session close. No `remember` call is made.
 
-The second process starts with the goal `launch_blockers`. Its startup
+**Historical initialization transport, removed in v0.9.2.** The recorded second process starts with the goal `launch_blockers`. Its startup
 instructions recover the prior query episode containing the exact answer
 `2`, with byte-verified citations, in **607 tokens including the full restored
 context prefix and JSON**, below the requested 2,000-token budget. It reports
@@ -189,6 +194,11 @@ model/API call or semantic-quality claim is involved. This is an end-to-end
 capability demonstration, not an additional large-data benchmark or a measured
 savings comparison. The [sanitized demo result](results/2026-11-07-public/runtime-demo.json)
 records the actual call counts, token counts and implementation hashes.
+
+The current `runtime_demo.py` instead makes an explicit named `recall` call in
+the new session and checks the exact projected observation and citations. It
+asserts that source text is absent from initialization instructions. Running it
+writes a new result; it does not reproduce the historical 607-token transport.
 
 ## Limits of the measurement
 

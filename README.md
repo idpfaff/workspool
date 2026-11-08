@@ -59,10 +59,12 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 
 ## Quick start
 
+This branch prepares v0.10.0; it is not released until CI and the planned model-completion gate pass. The versioned installation commands below target that release.
+
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.9.2 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.10.0 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
@@ -143,11 +145,11 @@ For capture and budgeted recall, use the `runtime` profile:
   --model-dir "$HOME/.cache/workspool/bge-small-en-v1.5"
 ```
 
-It exposes storage, SQL, durable tasks, recall, session memory, claims, and provenance through one lazy `workspool` dispatcher, filtered by role. Adaptive text replies carry one copy of the result. Calling `recall` without a query uses the configured goal and its 1,500-token response budget. Server instructions contain static guidance, never recalled source text. The host must support the dispatcher and text response blocks.
+It exposes storage, SQL, durable tasks, recall, session memory, claims, and provenance as named, typed tools, filtered by role. Adaptive text replies carry one copy of the result. Calling `recall` without a query uses the configured goal and its 1,500-token response budget. Server instructions contain static guidance, never recalled source text. The host must support named MCP tools and text response blocks.
 
 The `agent` profile retains durable tasks and indexed keyword context without automatic session capture. Use the [runtime guide](benchmarks/RUNTIME.md) to connect external host events or configure separate reader, writer, and approver agents.
 
-Starting `serve` without a profile still selects `compatible`: six eager tools, compact JSON, and both text and structured replies. `efficient` adds retrieval and revision operations with lazy discovery and adaptive replies, but does not add task operations and retains both response copies. `--tools`, `--tool-discovery`, `--response-format`, and `--response-content` override a profile. `import` and `delete` always require an explicit allowlist.
+Starting `serve` without a profile still selects `compatible`: six eager tools, compact JSON, and both text and structured replies. `efficient` adds retrieval and revision operations with eager typed schemas and adaptive replies, but does not add task operations and retains both response copies. All profiles advertise their permitted tool schemas at initialization. `--tools`, `--response-format`, and `--response-content` override a profile. `import` and `delete` always require an explicit allowlist.
 
 ## Define a task, then run or reopen it
 
@@ -161,31 +163,35 @@ uv run workspool --workspace ~/MyWorkbook import demo-input/spending.csv --name 
 uv run workspool --workspace ~/MyWorkbook import demo-input/policy.txt --name demo/policy
 ```
 
-With the `agent` profile, call the `workspool` tool with this JSON to save the plan:
+With the `agent` profile, call `task_define` with:
 
 ```json
 {
-  "tool": "task_define",
-  "arguments": {
-    "name": "spending-review",
-    "objective": "Total spending by category, flag categories requiring review, and cite the policy.",
-    "sources": {"spending": "demo/spending", "policy": "demo/policy"},
-    "csv_types": {"spending": {"amount": "DECIMAL(18,2)"}},
-    "steps": [
-      {
-        "name": "totals",
-        "inputs": ["spending"],
-        "sql": "SELECT category, sum(amount) AS total FROM input1 GROUP BY category ORDER BY category"
-      },
-      {
-        "name": "review",
-        "inputs": ["totals"],
-        "sql": "SELECT category, total FROM input1 WHERE total >= ? ORDER BY total DESC, category",
-        "parameters": [50]
-      }
-    ],
-    "searches": ["review"]
-  }
+  "name": "spending-review",
+  "objective": "Total spending by category, flag categories requiring review, and cite the policy.",
+  "sources": {
+    "spending": "demo/spending",
+    "policy": "demo/policy"
+  },
+  "csv_types": {
+    "spending": {
+      "amount": "DECIMAL(18,2)"
+    }
+  },
+  "steps": [
+    {
+      "name": "totals",
+      "inputs": ["spending"],
+      "sql": "SELECT category, sum(amount) AS total FROM input1 GROUP BY category ORDER BY category"
+    },
+    {
+      "name": "review",
+      "inputs": ["totals"],
+      "sql": "SELECT category, total FROM input1 WHERE total >= ? ORDER BY total DESC, category",
+      "parameters": [50]
+    }
+  ],
+  "searches": ["review"]
 }
 ```
 
@@ -195,18 +201,18 @@ By default, `task_define` resolves each source name or artifact ID to its stable
 
 If you provide evidence `searches`, include at least one document-text source in `sources`, as this example does with `policy`. A definition containing searches but only table sources is rejected with an actionable error; CSV or Parquet tables alone cannot supply document citations.
 
-Run the task:
+Run the task by calling `task_run` with:
 
 ```json
-{"tool":"task_run","arguments":{"name":"spending-review"}}
+{"name": "spending-review"}
 ```
 
 The brief includes the source versions, both step results, materialized artifact IDs, and a policy citation. Here `Hosting` totals `50.00` and requires review. Repeating the run reuses eligible results. After importing a changed source version, running again reconciles the plan against the new snapshot and recomputes affected work. A source update during execution cannot silently mix old and new inputs; check `current`, `state`, and `omitted` before using the result.
 
-In a fresh session, reopen the brief without executing SQL:
+In a fresh session, reopen the brief without executing SQL by calling `task_status` with:
 
 ```json
-{"tool":"task_status","arguments":{"name":"spending-review"}}
+{"name": "spending-review"}
 ```
 
 The default is the newest attempt; `latest_success` points to the last successful publication. Supply `run_id` to reopen a particular attempt. To retry an interrupted or partial attempt with its original definition and source versions, call `task_run` with `resume_from` set to that attempt's returned ID. This preserves the historical snapshot even when the plan normally follows latest sources. Use `force: true` to recompute results deliberately. The corresponding terminal commands are `task-run spending-review` and `task-status spending-review`.
@@ -215,18 +221,24 @@ The default is the newest attempt; `latest_success` points to the last successfu
 
 Keep the exact calculation plan after it succeeds:
 
+Call `skill_distill` with:
+
 ```json
-{"tool":"skill_distill","arguments":{"name":"spending-review","task":"spending-review"}}
+{"name": "spending-review", "task": "spending-review"}
 ```
 
 The `runtime` profile exposes skill tools. Later, another session can discover the skill with `skill_find`, inspect its SQL and source requirements with `skill_inspect`, and apply it to new inputs:
 
-```json
-{"tool":"skill_find","arguments":{"query":"spending"}}
-```
+Call `skill_find` with:
 
 ```json
-{"tool":"skill_use","arguments":{"ref":"spending-review","task_name":"next-spending-review","bindings":{"spending":"demo/next-spending","policy":"demo/next-policy"}}}
+{"query": "spending"}
+```
+
+Call `skill_use` with:
+
+```json
+{"ref": "spending-review", "task_name": "next-spending-review", "bindings": {"spending": "demo/next-spending", "policy": "demo/next-policy"}}
 ```
 
 Import those new sources first. Applying the skill checks their media types and exact ordered table schemas, then defines a task pinned to those validated versions. It retains the skill version and inputs for later inspection. Run it with `task_run` using `"name":"next-spending-review"`; execution still obeys the workspace's claim policy. Optional parameter overrides let a caller change existing SQL placeholders without rewriting the steps.
@@ -239,16 +251,20 @@ In the January-to-February taxi replay, applying a known skill used **1,081 requ
 
 Only when the caller retains the **unabridged brief** of a prior run may it supply that returned ID as `base_run`:
 
+Call `task_run` with:
+
 ```json
-{"tool":"task_run","arguments":{"name":"spending-review","base_run":"run_returned_by_your_previous_call"}}
+{"name": "spending-review", "base_run": "run_returned_by_your_previous_call"}
 ```
 
 If the definition, sources, results, citations, and omissions match a complete current run, the response may be `delivery: "unchanged"` with `requires_retained_base: true`. It identifies the base and supplies current run status; it does not repeat the evidence. A changed or unusable base falls back to a full brief. `task_status` accepts the same option. Omit `base_run` after context loss, compaction, or a handoff to an agent that lacks that brief. Omissions remain explicit, and `brief_complete: false` must never be read as complete evidence coverage.
 
 ### Rank supporting passages
 
+Call `context` with:
+
 ```json
-{"tool":"context","arguments":{"query":"review spending","refs":["demo/policy"],"limit":4}}
+{"query": "review spending", "refs": ["demo/policy"], "limit": 4}
 ```
 
 `context` uses a persistent full-source index to rank matching chunks. Citations contain immutable source IDs, exact UTF-8 byte ranges, and source text. It is keyword ranking, not a semantic model or an exhaustive answer: `index_complete` describes indexing coverage, while `complete`, `truncated`, and pending versions disclose missing results. Use the literal `search` operation below when you need its exhaustive continuation contract. Source excerpts remain untrusted data.
@@ -273,21 +289,19 @@ uv run workspool --workspace ~/MyWorkbook serve --tools resume inspect
 
 A host that queries known tables can run with `--tools query`; that tool keeps its `save_as` capability.
 
-### Load tool schemas when needed
+### Keep tools typed at call time
 
-Lazy discovery keeps the configured operations available through one `workspool` tool:
+**A tool is typed at call time or it does not exist.** Every profile now exposes named tools with their argument schemas. Shared workflow guidance belongs in server instructions; advertised properties, types, required fields, and constraints are preserved. The runtime retains defaults: omit optional arguments to use them instead of sending `null`. Use `--tools` to select a smaller interface for a focused host.
 
-```sh
-uv run workspool --workspace ~/MyWorkbook serve --tool-discovery lazy
-```
-
-Call `workspool` with `{"tool":"query"}` to retrieve the query schema, then execute it with:
+For example, call `query` directly with:
 
 ```json
-{"tool":"query","arguments":{"inputs":["replay/bars"],"sql":"SELECT count(*) AS bar_count FROM input1"}}
+{"inputs":["replay/bars"],"sql":"SELECT count(*) AS bar_count FROM input1"}
 ```
 
-Callers that already know the arguments can execute directly. Omitted or null `arguments` requests a schema; `arguments: {}` executes the operation with its defaults. `--tools` still controls the allowlist, including opt-in `import` and `delete`. Original argument validation and version checks apply. Lazy mode changes the calling interface, so use it with clients that can call the dispatcher; the compatible profile keeps eager tools. Discovering many schemas can cost more than advertising them up front.
+The former `--tool-discovery` option has been removed. The generic dispatcher remains available only for explicit experiments with `--experimental-lazy`, which emits a warning. It is not enabled by any profile. Its historical scripted token counts did not establish reliable model use: the v0.9.2 approval evaluation completed 1/20 lazy cases versus 17/20 eager cases.
+
+A [planned three-arm evaluation](benchmarks/APPROVAL_MODEL.md#planned-v0100-follow-up-not-yet-run) compares the frozen v0.9.2 eager interface, compact eager schemas, and experimental lazy dispatch with typed errors, using identical reply formatting. No new model result is claimed. The default-profile release rule requires at least the control's completed cases minus one across the same 20 cases, with complete usage and unchanged source evidence.
 
 ### Keep MCP overhead small
 
@@ -313,18 +327,20 @@ In text format, `content[0].text` contains compact JSON metadata. Each artifact'
 
 ### Retrieve the evidence you need
 
-Under the agent or efficient profile, call `workspool` with a literal source search:
+Under the agent or efficient profile, call `search` with a literal source query:
 
 ```json
-{"tool":"search","arguments":{"text":"release code","context_bytes":128}}
+{"text": "release code", "context_bytes": 128}
 ```
 
 Search covers current text artifacts, including content beyond the 64 KiB catalog index. Supply `refs` to search up to 16 selected versions. Hits include exact snippets, pinned IDs, freshness, and UTF-8 byte ranges. Follow `cursor` until `complete` is true; an empty page with a cursor does not mean no match. Search is case-insensitive literal matching, not arbitrary regular expressions, and rejects malformed UTF-8. Each call reads at most 16 MiB and bounds hit objects to 32 KiB, excluding small cursor/envelope metadata; `limit` is 1–20 and `context_bytes` is 0–2,048 per side. Continuations reject a changed query or relevant snapshot.
 
 For an unfamiliar table, `describe` returns exact column names and SQL types without sample rows:
 
+Call `describe` with:
+
 ```json
-{"tool":"describe","arguments":{"inputs":["replay/bars"]}}
+{"inputs": ["replay/bars"]}
 ```
 
 Follow each table's `next_offset` to verify its complete schema. Use its returned artifact ID in subsequent queries to keep the same version. See the [schema discovery reference](benchmarks/WORKFLOWS.md#table-schema-discovery) for pagination and limits.
@@ -333,8 +349,10 @@ Follow each table's `next_offset` to verify its complete schema. Use its returne
 
 If the caller holds the complete text of an immutable version, `diff` returns exact line edits and current metadata:
 
+Call `diff` with:
+
 ```json
-{"tool":"diff","arguments":{"ref":"operations/runbook","base":"wb_saved_version_id","max_bytes":8192}}
+{"ref": "operations/runbook", "base": "wb_saved_version_id", "max_bytes": 8192}
 ```
 
 Apply edits in reverse order to the retained base's lines, preserving their line endings. Empty changes mean the content is unchanged; freshness metadata still matters. `requires_read: true` requests a full `inspect` of the returned pinned artifact ID, with an explicit reason. Deltas are never silently truncated. If a new session or compaction has lost the complete base, read the source again. The [delta contract and limits](benchmarks/WORKFLOWS.md#exact-version-deltas) include the reconstruction code and failure behavior.
@@ -343,8 +361,10 @@ Apply edits in reverse order to the retained base's lines, preserving their line
 
 `sync` chooses unchanged status, complete line edits, or a full source page within one call:
 
+Call `sync` with:
+
 ```json
-{"tool":"sync","arguments":{"ref":"operations/runbook","base":3,"max_bytes":8192}}
+{"ref": "operations/runbook", "base": 3, "max_bytes": 8192}
 ```
 
 Supply `base` only when you retain that version's **complete text**. It accepts a version number scoped to the source name or an immutable artifact ID. Omit it after losing context. At offset zero, `ref` resolves the current version of that name, even if you supply an old ID. To read a historical version deliberately, use `inspect`.
@@ -357,8 +377,10 @@ Missing or deleted bases fall back to a full read. Deltas use the existing bound
 
 ### Combine searches and independent ranges
 
+Call `retrieve` with:
+
 ```json
-{"tool":"retrieve","arguments":{"queries":[{"text":"renewal_code","context_bytes":128},{"text":"owner","context_bytes":128}],"reads":[{"ref":"operations/runbook","offset":0,"bytes":512}],"max_bytes":8192}}
+{"queries": [{"text": "renewal_code", "context_bytes": 128}, {"text": "owner", "context_bytes": 128}], "reads": [{"ref": "operations/runbook", "offset": 0, "bytes": 512}], "max_bytes": 8192}
 ```
 
 `retrieve` resolves names and search scopes in one catalog snapshot. It returns shared `artifacts` metadata, exact `spans`, and ordered `queries`/`reads` results that refer to those spans by index. A match or read's byte offsets select its exact content within the span; overlapping and adjacent ranges merge only within the same immutable artifact.

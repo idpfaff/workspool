@@ -141,8 +141,10 @@ uv run python -c 'import tiktoken; tiktoken.get_encoding("cl100k_base"); tiktoke
 ```
 
 Acquire the Wikipedia manifest using the [public-data reproduction
-instructions](PUBLIC_DATA.md#reproduce), then run the offline probe in a fresh
-output directory:
+instructions](PUBLIC_DATA.md#reproduce). To reproduce the historical probe, use
+the archived measured source (or its v0.8.1 checkout) in a fresh output directory.
+Its initialization-context check was removed from the product in v0.9.2; this is
+not a current host-readiness command:
 
 ```sh
 uv run python benchmarks/semantic_probe.py \

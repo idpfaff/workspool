@@ -5,6 +5,14 @@ or tool adapter, branch on a calculated value, and pause for approval. Its run
 keeps the exact input versions, worker identity, outputs, and review references.
 Input changes can trigger another run through an explicit local runner.
 
+All profiles expose named, typed MCP tools by default. Call `task_define`,
+`task_run`, and `task_status` directly with their advertised argument objects;
+there is no discovery dispatcher in the default path. The old `--tool-discovery`
+flag is removed. `--experimental-lazy` is a warned, explicitly opted-in experiment,
+not a profile default. Historical scripted dispatcher measurements do not establish
+model reliability. The [planned three-arm follow-up](../benchmarks/APPROVAL_MODEL.md#planned-v0100-follow-up-not-yet-run)
+requires the eager default to complete at least the control's cases minus one.
+
 ## Conditional steps and approval
 
 Existing SQL definitions continue to work. Add `when` to select a branch and
@@ -194,7 +202,7 @@ Available grants are `read`, `artifact:write`, `artifact:delete`, `task:define`,
 `task:run`, `skill:write`, `claims`, `remember`, `approve`, `workers`, `schedule`,
 `export`, and `import`. Omission preserves the role's existing grants. Grants
 cannot expand a role; an approver still cannot run a writer task. Both direct
-and lazy MCP dispatch enforce the restrictions, including materializing queries.
+and experimental lazy MCP dispatch enforce the restrictions, including materializing queries.
 
 These are server request permissions. They do not isolate principals with local
 filesystem access, authenticate multiple users behind one bearer token, or

@@ -11,7 +11,7 @@ and returns a versioned brief. The caller supplies the plan; the runtime does
 not invent SQL, infer investment decisions, or perform semantic search.
 
 Start an MCP server with `workspool serve --profile agent --tokenizer o200k_base`.
-The agent profile uses lazy discovery and adaptive text responses. An explicit
+The agent profile exposes named eager tools with typed schemas and adaptive text responses. An explicit
 tokenizer is necessary for `max_tokens`; a local `tokenizer.json` is also accepted.
 
 ## API and delivery contract

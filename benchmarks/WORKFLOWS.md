@@ -4,7 +4,7 @@ This reevaluation compares the previous implementation at `bdc6561ecf759d32868db
 
 The new suite executes both implementations against cloned local fixtures with identical initial artifact IDs. Each workflow uses a small explicit eager tool allowlist, text-only responses, and fully counted cold schemas. The previous implementation already batches reads, uses raw text where useful, queries table schemas without sampling data rows, and reuses unchanged bodies after metadata checks. The comparison does not make the old implementation resend everything unnecessarily.
 
-The convenient `--profile efficient` enables nine operations, lazy discovery, and adaptive replies. **That profile is not the measured configuration below.** It retains both MCP representations by default and does not select an optimal workflow automatically.
+At measurement time, `--profile efficient` enabled nine operations, lazy discovery, and adaptive replies. **That profile is not the measured configuration below.** It retains both MCP representations by default and does not select an optimal workflow automatically.
 
 ## Results, including the losses
 
@@ -54,7 +54,7 @@ Execution plans are deterministic and use observed tool responses. No model choo
 uv run workspool --workspace ~/MyWorkbook serve --profile efficient
 ```
 
-The profile adds the read-only `search`, `describe`, and `diff` operations to `save`, `find`, `inspect`, `resume`, `query`, and `refresh`. It uses the lazy `workspool` dispatcher and adaptive text rendering. Compatibility defaults remain the original six eager tools and compact JSON. `import` and `delete` still require an explicit allowlist. Explicit `--tools`, `--tool-discovery`, and `--response-format` flags override profile choices.
+The profile adds the read-only `search`, `describe`, and `diff` operations to `save`, `find`, `inspect`, `resume`, `query`, and `refresh`. The measured version used the lazy `workspool` dispatcher and adaptive text rendering. Current profiles expose eager typed tools; that historical dispatcher configuration is an explicit `--experimental-lazy` experiment. Compatibility defaults remain the original six eager tools and compact JSON. `import` and `delete` still require an explicit allowlist. Explicit `--tools` and `--response-format` flags override profile choices.
 
 Retrieve an operation's schema with `{"tool":"search"}`. Execute with `{"tool":"search","arguments":{"text":"release code"}}`. An omitted or null `arguments` requests a schema; an empty object executes defaults. A compatible text-only host can add `--response-content text`; structured consumers can select `structured`. Both representations remain the default.
 

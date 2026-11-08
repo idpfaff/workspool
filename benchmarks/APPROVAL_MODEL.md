@@ -146,12 +146,96 @@ and opens retained catalogs read-only. Runtime metadata was Workspool 0.9.2,
 MCP 1.30.0, DuckDB 1.5.6, httpx 0.28.1, and tiktoken 0.14.0. The provider
 reported `gpt-6-luna`, an alias rather than a pinned model-weight snapshot.
 
-```bash
-# Paid reproduction: use a new private output directory and authorized key.
-.venv/bin/python benchmarks/approval_model_eval.py \
-  --env-file .env.local --output .local-benchmarks/approval-new --concurrency 2
+To reproduce either historical run, use its archived measured source ZIP and
+recorded protocol. The current evaluator implements the planned protocol below;
+it is not a byte-for-byte reproduction of the earlier two-arm experiment.
+The supplementary auditor still accepts the retained historical workbooks and
+preserves the original strict scores.
 
-# Read-only supplementary audit of the resulting retained workbooks.
-.venv/bin/python benchmarks/approval_model_regrade.py \
-  --run .local-benchmarks/approval-new --output .local-benchmarks/approval-new-audit.json
+## Planned v0.10.0 follow-up (not yet run)
+
+The follow-up retains the same 20 cases, prompts, task graph, five scenarios,
+independent reviewer interventions, six model rounds per phase, 1,600 output-token
+limit, and fresh-history handoff rule. It adds a third arm and fixes the exact-numeric
+grader before measurement. This section is a protocol, not a new performance result.
+
+| Arm | Model-facing tool interface | Execution and successful replies |
+| --- | --- | --- |
+| `eager_baseline` | Exact ten eager schemas and instructions captured from the published v0.9.2 wheel | Current runtime; full JSON, text-only |
+| `eager_compact` | Current named, typed schemas with shared guidance in instructions | Same current runtime; full JSON, text-only |
+| `lazy_typed_errors` | Explicit experimental dispatcher with schema help and typed errors | Same current runtime; full JSON, text-only |
+
+The baseline wheel is pinned to commit
+`89528472182ee4f830d99c5cab590855df28d545` and SHA-256
+`b4d124650c83d73712c63684892bddaafbfe9224dd18123ecedfc56e3a383c06`.
+An offline subprocess loads that exact package and captures its actual `tools/list`
+and initialization instructions. The harness records every extracted package-file
+hash and the captured interface. It does not rebuild old annotations from current
+code. Baseline model calls dispatch to the same current implementation as the other
+arms: this freezes the old advertised interface, not the old execution engine.
+Current validation and typed errors therefore apply to all three arms.
+
+All replies use the same full JSON/text-only configuration, removing the earlier
+adaptive-versus-full formatting confound. Compact eager schemas also move shared
+workflow guidance into instructions, so this compares complete interfaces rather
+than attributing every difference to schema length alone. The experimental facade
+changes invocation and discovery behavior as well. Provider input counts will
+include the actual tools, instructions, accumulated conversation and failed calls.
+No failures are replaced or given extra rounds.
+
+Every published numeric answer must pass the audited exact-integer rule: canonical
+integer previews or integer-string previews, backed by a hash-verified complete
+integral numeric Parquet result matching the independent oracle. Floating-point
+approximations, booleans, text result columns and incorrect model answers still fail.
+The historical strict and supplementary reports are not rewritten.
+
+**Default-profile release rule:** after all 20 cases in all three arms are attempted,
+with complete usage and unchanged measured sources, `eager_compact` must complete
+at least `eager_baseline - 1` cases. This is a predeclared acceptance threshold,
+not a statistical non-inferiority claim. Report both candidate comparisons,
+all failures, and costs for pairs where both arms passed. Lower token consumption
+on incomplete work cannot establish savings. Experimental lazy results do not
+qualify it as a default. The gate remains **unmeasured** until the paid run is
+explicitly authorized and completed.
+
+The ceiling is 60 arms / 120 phases / 720 provider requests, 7.5 million input
+tokens, 1,152,000 output tokens, and a $10 conservative guard. Concurrency stays at
+two; case order rotates arm positions. These limits scale the earlier per-phase
+budget without prematurely truncating a third arm. Model alias and prices must
+be reverified before an authorized live run; no paid calls were made for this change.
+
+The default invocation is offline. It verifies the wheel, starts disposable local
+MCP sessions, records interface schemas and counts, and **does not read an API key**:
+
+```bash
+.venv/bin/python benchmarks/approval_model_eval.py \
+  --baseline-wheel .local-benchmarks/v092-package/dist/agent_workbook-0.9.2-py3-none-any.whl \
+  --output .local-benchmarks/approval-v010-plan --plan-only
 ```
+
+It reports both encodings using explicit serialization scopes: compact JSON for
+`[{name,description,inputSchema},...]`, the actual OpenAI function list (including
+`type` and `strict:false`), and instructions counted separately. These exclude MCP
+wire envelopes and provider framing; they are not billed usage. Different list or
+envelope serialization can legitimately yield a different setup-token number.
+
+The November 8 offline preflight measured these `o200k_base` counts for the
+evaluation's exact ten-tool allowlist:
+
+| Interface | MCP definition list | OpenAI function list | Server instructions | Function list + instructions |
+| --- | ---: | ---: | ---: | ---: |
+| Archived v0.9.2 eager | 1,415 | 1,485 | 155 | 1,640 |
+| Current compact eager | 928 | 998 | 239 | 1,237 |
+
+The last column sums the separately counted function list and server instructions:
+**403 fewer tokens (24.6%)** for that subtotal. The MCP list is an alternative
+serialization, not an additional component. This offline schema measurement
+excludes the evaluator's common guidance, prompts, history, replies, and provider
+framing. It establishes a smaller advertised interface, not completed-work savings,
+model reliability, or satisfaction of the release gate. The preflight writes exact
+interfaces and source hashes for independent recounting; no model was called.
+
+After separate authorization, use a new output directory and append `--execute`
+instead of `--plan-only`, plus `--env-file .env.local`. Preflight still completes
+before any key is loaded. All results and source fingerprints go to that new
+directory; existing published evidence is never overwritten.
