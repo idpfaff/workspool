@@ -120,8 +120,16 @@ class _LocalMCP(FastMCP):
     async def _call_tool(self, name: str, arguments: dict[str, Any]):
         from .coordination import authorize_capability
 
-        operation = arguments.get("tool", "") if name == "workspool" else name
-        supplied = arguments.get("arguments") if name == "workspool" else arguments
+        registered = self._tool_manager.get_tool(name)
+        envelope = arguments if isinstance(arguments, dict) else {}
+        if registered is not None:
+            # Authorize the same JSON-decoded arguments the SDK will execute.
+            # Encoded experimental arguments must not hide save_as or identity.
+            envelope = registered.fn_metadata.pre_parse_json(envelope)
+        operation = envelope.get("tool", "") if name == "workspool" else name
+        if not isinstance(operation, str):
+            operation = name
+        supplied = envelope.get("arguments") if name == "workspool" else envelope
         help_only = name == "workspool" and supplied is None
         supplied = supplied if isinstance(supplied, dict) else {}
         if set(supplied) & {
@@ -141,12 +149,16 @@ class _LocalMCP(FastMCP):
         )
         started = time.monotonic()
         try:
-            result = await super().call_tool(name, arguments)
             result = (
-                result
-                if name == "workspool"
-                else self._format_result(name, arguments, result)
+                self._argument_result(registered, arguments) if registered else None
             )
+            if result is None:
+                result = await super().call_tool(name, arguments)
+                result = (
+                    result
+                    if name == "workspool"
+                    else self._format_result(name, arguments, result)
+                )
         except Exception as error:
             if not help_only:
                 self._measure(
@@ -165,6 +177,23 @@ class _LocalMCP(FastMCP):
                 operation, supplied, result=result, elapsed=time.monotonic() - started
             )
         return result
+
+    @staticmethod
+    def _argument_result(tool, arguments):
+        from .tool_errors import argument_error
+
+        error = argument_error(tool, arguments)
+        if error is None:
+            return None
+        return CallToolResult(
+            isError=True,
+            content=[
+                TextContent(
+                    type="text",
+                    text=json.dumps(error, ensure_ascii=False, separators=(",", ":")),
+                )
+            ],
+        )
 
     def _measure(self, operation, *, result=None, elapsed=0, failed=False):
         if not self.collect_metrics or operation in {"metrics", "verify"}:
