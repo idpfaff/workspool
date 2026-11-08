@@ -44,7 +44,7 @@ def test_sync_token_limit_counts_actual_result_and_exact_pages(
         workbook,
         tools=["sync"],
         tokenizer="cl100k_base",
-        tool_discovery=discovery,
+        experimental_lazy=discovery == "lazy",
         response_content=representation,
         response_format=format,
     )

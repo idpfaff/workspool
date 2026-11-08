@@ -150,13 +150,12 @@ def test_agent_profile_provenance_budgets_and_new_client(tmp_path):
     async def run():
         app = server_for(book, profile="agent", tokenizer="cl100k_base")
         definitions = await app.list_tools()
-        assert [tool.name for tool in definitions] == ["workspool"]
-        operations = definitions[0].inputSchema["properties"]["tool"]["enum"]
+        operations = [tool.name for tool in definitions]
         assert {"task_define", "task_run", "task_status", "context"} <= set(operations)
         assert "import" not in operations and "delete" not in operations
 
         async def call(app, name, args):
-            result = await app.call_tool("workspool", {"tool": name, "arguments": args})
+            result = await app.call_tool(name, args)
             assert not result.isError, result.content
             assert result.structuredContent is None
             return result, decode(result.content)
@@ -181,11 +180,8 @@ def test_agent_profile_provenance_budgets_and_new_client(tmp_path):
         assert count(serialized_result(raw)) <= 600 and context["hits"]
         with pytest.raises(ToolError, match="Brief budget"):
             await fresh.call_tool(
-                "workspool",
-                {
-                    "tool": "task_status",
-                    "arguments": {"name": "volume", "max_tokens": 10},
-                },
+                "task_status",
+                {"name": "volume", "max_tokens": 10},
             )
 
     asyncio.run(run())

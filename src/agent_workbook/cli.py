@@ -140,9 +140,9 @@ def main() -> None:
         help="return both MCP representations, or one copy for compatible hosts",
     )
     serve.add_argument(
-        "--tool-discovery",
-        choices=["eager", "lazy"],
-        help="advertise all tool schemas, or discover them on demand through workspool",
+        "--experimental-lazy",
+        action="store_true",
+        help="experimental schema-on-demand facade; every profile uses eager tool schemas by default",
     )
     serve.add_argument(
         "--tokenizer",
@@ -471,6 +471,14 @@ def main() -> None:
         schedule.add_argument("--limit", type=int, default=10)
     schedule_tick.add_argument("--after", default="")
     schedule_run.add_argument("--poll-seconds", type=int, default=30)
+    if any(
+        argument == "--tool-discovery" or argument.startswith("--tool-discovery=")
+        for argument in sys.argv[1:]
+    ):
+        parser.error(
+            "--tool-discovery has been removed. Remove it to use eager tool schemas "
+            "(the default for every profile). For opt-in experiments only, use --experimental-lazy."
+        )
     args = parser.parse_args()
 
     try:
@@ -696,7 +704,7 @@ def main() -> None:
                         args.port,
                         response_format=args.response_format,
                         response_content=args.response_content,
-                        tool_discovery=args.tool_discovery,
+                        experimental_lazy=args.experimental_lazy,
                         tools=args.tools,
                         profile=args.profile,
                         tokenizer=args.tokenizer,

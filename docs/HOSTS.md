@@ -1,6 +1,6 @@
 # Connect Claude Desktop, Cursor, or Codex
 
-Workspool can generate and install a local MCP configuration for these hosts on macOS and Linux. The configuration starts the `runtime` profile with automatic capture of Workspool tool activity and a distinct host identity. Each conversation calls `recall` with its current objective. An optional `--goal` provides a default query for that explicit tool call. Initialization instructions contain static guidance, never retrieved artifact or observation text. You can use a standard Python virtual environment; `uv` is optional.
+Workspool can generate and install a local MCP configuration for these hosts on macOS and Linux. The configuration starts the `runtime` profile with eager tool schemas, automatic capture of Workspool tool activity, and a distinct host identity. Hosts see and call tools such as `recall` and `task_run` directly. Each conversation calls `recall` with its current objective. An optional `--goal` provides a default query for that explicit tool call. Initialization instructions contain static guidance, never retrieved artifact or observation text. You can use a standard Python virtual environment; `uv` is optional.
 
 ## Install Workspool once
 
@@ -16,6 +16,8 @@ workspool_workspace="$HOME/.local/share/workspool/workspace"
 ```
 
 The generated config records the absolute path to this Python interpreter and runs `-m agent_workbook.cli`. It does not depend on shell activation, your working directory, or a globally installed `workspool` command. Keep the environment at that path; regenerate the config if you move it. Updating the package inside the same environment preserves the configured command.
+
+All profiles now use eager schemas by default. If an existing command contains `--tool-discovery eager`, `--tool-discovery lazy`, or either `--tool-discovery=...` form, remove that option and its value; the old flag produces a migration error. The separate `serve --experimental-lazy` switch is reserved for explicit experiments and is never emitted by `host-config` or used by `host-doctor`. The [paired model evaluation](../benchmarks/APPROVAL_MODEL.md) found substantially lower completion with lazy discovery under its six-round limit.
 
 ## Preview, then connect
 
@@ -88,7 +90,7 @@ Before changing an existing file, the installer creates an exact backup beside i
   --tokenizer o200k_base --recall-tokens 1500 --timeout 60
 ```
 
-The doctor parses the generated host fragment and launches its command in a disposable workspace. It performs real MCP initialization, lists runtime tools, calls `session_status`, and checks the capture session and configured identity. It checks that the old injected-context section is absent. With `--goal`, it also calls `recall` without a query and verifies that the disposable fixture is returned. Success returns JSON; failure exits nonzero with troubleshooting guidance. It does not read or write personal host configurations, use your real workspace, or forward API keys to its child process.
+The doctor parses the generated host fragment and launches its command in a disposable workspace. It performs real MCP initialization, checks that runtime tools are individually listed, calls `session_status` directly, and checks the capture session and configured identity. It checks that the old injected-context section is absent. With `--goal`, it also calls `recall` directly without a query and verifies that the disposable fixture is returned. Success returns JSON; failure exits nonzero with troubleshooting guidance. It does not read or write personal host configurations, use your real workspace, or forward API keys to its child process.
 
 These are **protocol smoke tests**, including transport round trips for all three generated formats. They do not prove a particular Claude Desktop, Cursor, or Codex application session connected or selected Workspool tools correctly. Confirm those behaviors in your actual host by asking its agent to call `recall` explicitly.
 
@@ -116,7 +118,7 @@ To reproduce the historical experiment, use a separate checkout of **v0.8.1** an
 .venv/bin/python benchmarks/host_delivery.py --output /absolute/new/proof-directory
 ```
 
-Claude Desktop and Cursor model delivery remain unverified. Their generated configurations have protocol coverage only. For ordinary conversations in any host, ask the agent to use `recall` with the current question; optional `--goal` context is selected once per server process, not once per chat.
+Claude Desktop and Cursor model delivery remain unverified. Their generated configurations have protocol coverage only. For ordinary conversations in any host, ask the agent to use `recall` with the current question; optional `--goal` supplies a default query only when that explicit call omits its query.
 
 ## Optional local semantic recall
 

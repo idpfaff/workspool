@@ -1,4 +1,4 @@
-"""Expose a small, validated facade while loading individual tool schemas on demand."""
+"""Experimental facade; never enabled by a profile (see APPROVAL_MODEL.md)."""
 
 from typing import Any, Literal
 

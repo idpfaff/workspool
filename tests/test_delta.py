@@ -231,14 +231,8 @@ def test_diff_roundtrip_over_efficient_cli(tmp_path):
         ):
             await client.initialize()
             result = await client.call_tool(
-                "workspool",
-                {
-                    "tool": "diff",
-                    "arguments": {
-                        "ref": "draft",
-                        "base": base["artifact_id"],
-                    },
-                },
+                "diff",
+                {"ref": "draft", "base": base["artifact_id"]},
             )
             assert not result.isError, result.content
             data = decode(result.content)
@@ -246,14 +240,8 @@ def test_diff_roundtrip_over_efficient_cli(tmp_path):
             assert data["artifact"]["version"] == 2
             assert result.structuredContent is None
             invalid = await client.call_tool(
-                "workspool",
-                {
-                    "tool": "diff",
-                    "arguments": {
-                        "ref": "draft",
-                        "base": "draft",
-                    },
-                },
+                "diff",
+                {"ref": "draft", "base": "draft"},
             )
             assert invalid.isError
 

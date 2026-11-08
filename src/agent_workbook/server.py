@@ -506,7 +506,7 @@ def _text_content(data, *, raw_excerpts: bool) -> list[TextContent]:
     ]
 
 
-# The default set is the one the published benchmarks measured. `import` reads
+# Historical benchmarks measured older schemas for this default set. `import` reads
 # files from the machine the server runs on and `delete` removes work, so a
 # host gets them only when its configuration lists them.
 DEFAULT_TOOLS = ("save", "find", "inspect", "resume", "query", "refresh")
@@ -570,7 +570,7 @@ def server_for(
     *,
     response_format: Literal["compact", "full", "text", "adaptive"] | None = None,
     response_content: Literal["both", "text", "structured"] | None = None,
-    tool_discovery: Literal["eager", "lazy"] | None = None,
+    experimental_lazy: bool = False,
     tools: list[str] | None = None,
     profile: Literal["compatible", "efficient", "agent", "runtime"] = "compatible",
     tokenizer: str | None = None,
@@ -613,14 +613,12 @@ def server_for(
         response_content = "text" if profile in {"agent", "runtime"} else "both"
     if response_format is None:
         response_format = "adaptive" if optimized else "compact"
-    if tool_discovery is None:
-        tool_discovery = "lazy" if optimized else "eager"
     if response_format not in {"compact", "full", "text", "adaptive"}:
         raise ValueError("Response format must be compact, full, text, or adaptive")
     if response_content not in {"both", "text", "structured"}:
         raise ValueError("Response content must be both, text, or structured")
-    if tool_discovery not in {"eager", "lazy"}:
-        raise ValueError("Tool discovery must be eager or lazy")
+    if type(experimental_lazy) is not bool:
+        raise ValueError("experimental_lazy must be a bool")
     if tools is not None and (not tools or set(tools) - set(TOOL_NAMES)):
         raise ValueError("Choose at least one supported tool")
     default_tools = (
@@ -1287,8 +1285,12 @@ def server_for(
     for name in TOOL_NAMES:
         if name not in exposed:
             app.remove_tool(name)
-    if tool_discovery == "lazy":
+    if experimental_lazy:
         from .discovery import configure_discovery
 
+        logging.getLogger(__name__).warning(
+            "Experimental lazy discovery: the v0.9.2 evaluation completed 1/20 "
+            "cases versus 17/20 with eager schemas; see benchmarks/APPROVAL_MODEL.md"
+        )
         configure_discovery(app, exposed)
     return app

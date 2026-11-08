@@ -408,29 +408,19 @@ async def _smoke(entry, workspace, agent_id, timeout, errlog, *, expect_startup=
         ):
             initialized = await client.initialize()
             listed = await client.list_tools()
-            operations = set()
-            for tool in listed.tools:
-                if tool.name == "workspool":
-                    operations.update(
-                        tool.inputSchema.get("properties", {})
-                        .get("tool", {})
-                        .get("enum", [])
-                    )
-            result = await client.call_tool(
-                "workspool", {"tool": "session_status", "arguments": {}}
-            )
+            operations = {tool.name for tool in listed.tools}
+            result = await client.call_tool("session_status", {})
             status = {} if result.isError else decode(result.content)
             recall_ok = True
             if expect_startup:
-                recalled = await client.call_tool(
-                    "workspool", {"tool": "recall", "arguments": {}}
-                )
+                recalled = await client.call_tool("recall", {})
                 recall_ok = not recalled.isError and bool(
                     decode(recalled.content).get("hits")
                 )
             checks = {
                 "initialize": True,
-                "runtime_tools": {"recall", "remember", "session_status"} <= operations,
+                "runtime_tools": {"recall", "remember", "session_status"} <= operations
+                and "workspool" not in operations,
                 "startup_context": STARTUP_PREFIX
                 not in (initialized.instructions or ""),
                 "explicit_recall": recall_ok,

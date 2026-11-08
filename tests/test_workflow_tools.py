@@ -33,7 +33,7 @@ async def session(workspace, *options, efficient=True):
 
 
 async def call(client, name, arguments, *, error=False):
-    result = await client.call_tool("workspool", {"tool": name, "arguments": arguments})
+    result = await client.call_tool(name, arguments)
     assert bool(result.isError) == error, result.content
     if error:
         return result
@@ -64,8 +64,7 @@ def test_efficient_profile_and_explicit_cli_overrides(tmp_path):
     async def run():
         async with session(tmp_path) as client:
             definitions = await client.list_tools()
-            assert [tool.name for tool in definitions.tools] == ["workspool"]
-            operations = definitions.tools[0].inputSchema["properties"]["tool"]["enum"]
+            operations = [tool.name for tool in definitions.tools]
             assert set(operations) == {
                 "save",
                 "find",
@@ -83,13 +82,10 @@ def test_efficient_profile_and_explicit_cli_overrides(tmp_path):
                 await call(client, name, {}, error=True)
                 assert (await client.call_tool(name, {})).isError
             raw = await client.call_tool(
-                "workspool",
+                "inspect",
                 {
-                    "tool": "inspect",
-                    "arguments": {
-                        "ref": [f"doc/{index}" for index in range(16)],
-                        "excerpt_bytes": 8192,
-                    },
+                    "ref": [f"doc/{index}" for index in range(16)],
+                    "excerpt_bytes": 8192,
                 },
             )
             assert not raw.isError
@@ -106,8 +102,6 @@ def test_efficient_profile_and_explicit_cli_overrides(tmp_path):
             tmp_path,
             "--tools",
             "query",
-            "--tool-discovery",
-            "eager",
             "--response-format",
             "compact",
         ) as client:
