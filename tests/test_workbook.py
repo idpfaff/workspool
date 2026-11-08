@@ -519,7 +519,7 @@ def test_tool_allowlist_rejects_hidden_writes_and_preserves_exact_query_output(
             assert [tool.name for tool in tools.tools] == ["query"]
             schema = tools.tools[0].inputSchema
             assert set(schema["required"]) == {"inputs", "sql"}
-            assert schema["properties"]["allow_historical"]["default"] is False
+            assert schema["properties"]["allow_historical"] == {"type": "boolean"}
             invalid = await session.call_tool("query", {"sql": "SELECT 1"})
             assert invalid.isError
             failed = await session.call_tool(

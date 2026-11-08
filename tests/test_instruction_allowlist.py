@@ -20,7 +20,7 @@ def advertised(app, discovery):
 ADVICE = {
     "task_define": "task_define saves",
     "task_run": "task_run pins",
-    "task_status": "task_status reopens",
+    "task_status": "task_status defaults",
     "context": "context ranks",
     "provenance": "provenance explains",
     "changes": "changes pages",
