@@ -44,6 +44,8 @@ CREATE TABLE IF NOT EXISTS coordination_events (
 );
 CREATE INDEX IF NOT EXISTS coordination_events_resource
     ON coordination_events(resource, event_id);
+CREATE INDEX IF NOT EXISTS coordination_restore_floor
+    ON coordination_events(event_id) WHERE kind='workbook.restored';
 CREATE TRIGGER IF NOT EXISTS coordination_events_no_update
 BEFORE UPDATE ON coordination_events
 BEGIN SELECT RAISE(ABORT, 'Coordination events are immutable'); END;
@@ -68,6 +70,21 @@ PERMISSIONS = {
     "writer": frozenset({"read", "write"}),
     "approver": frozenset({"read", "approve"}),
 }
+CAPABILITY_ACTIONS = {
+    "read": "read",
+    "artifact:write": "write",
+    "artifact:delete": "write",
+    "task:define": "write",
+    "task:run": "write",
+    "skill:write": "write",
+    "claims": "write",
+    "remember": "write",
+    "approve": "approve",
+    "workers": "write",
+    "schedule": "write",
+    "export": "read",
+    "import": "write",
+}
 
 
 @dataclass(frozen=True)
@@ -76,6 +93,7 @@ class Principal:
 
     identity: str
     role: str = "writer"
+    capabilities: frozenset[str] | None = None
 
     def __post_init__(self):
         if not isinstance(self.identity, str) or not re.fullmatch(
@@ -84,6 +102,17 @@ class Principal:
             raise ValueError("Identity must be 1–128 ASCII name characters")
         if not isinstance(self.role, str) or self.role not in PERMISSIONS:
             raise ValueError("Role must be reader, writer, or approver")
+        if self.capabilities is not None:
+            if not isinstance(self.capabilities, (list, tuple, set, frozenset)) or any(
+                not isinstance(capability, str)
+                or capability not in CAPABILITY_ACTIONS
+                or CAPABILITY_ACTIONS[capability] not in PERMISSIONS[self.role]
+                for capability in self.capabilities
+            ):
+                raise ValueError(
+                    "Capabilities must be a subset of the configured role's grants"
+                )
+            object.__setattr__(self, "capabilities", frozenset(self.capabilities))
 
 
 _ACTING_PRINCIPAL = ContextVar("workspool_principal", default=None)
@@ -120,12 +149,46 @@ class ClaimLost(ValueError):
 
 
 def authorize(principal, action):
+    """Check a coarse role, or a detailed capability at an operation boundary.
+
+    Coarse read/write checks intentionally allow nested internal operations.
+    Server dispatch must use authorize_capability, including for read requests.
+    These checks are not isolation from Python or local filesystem owners.
+    """
     if not isinstance(principal, Principal):
         raise PermissionError("A server-configured principal is required")
-    if action not in ("read", "write", "approve"):
+    if action not in ("read", "write"):
+        if action in CAPABILITY_ACTIONS:
+            return authorize_capability(principal, action)
         raise ValueError("Unknown authorization action")
     if action not in PERMISSIONS[principal.role]:
         raise PermissionError(f"Role {principal.role!r} cannot {action}")
+
+
+def capabilities_for(principal):
+    """Effective immutable grants from trusted launch configuration."""
+    if not isinstance(principal, Principal):
+        raise PermissionError("A server-configured principal is required")
+    if principal.capabilities is not None:
+        return principal.capabilities
+    return frozenset(
+        name
+        for name, action in CAPABILITY_ACTIONS.items()
+        if action in PERMISSIONS[principal.role]
+    )
+
+
+def authorize_capability(principal, capability):
+    """Check a specific operation, including explicit restrictions on reads."""
+    if not isinstance(principal, Principal):
+        raise PermissionError("A server-configured principal is required")
+    if capability not in CAPABILITY_ACTIONS:
+        raise ValueError("Unknown authorization capability")
+    action = CAPABILITY_ACTIONS[capability]
+    if action not in PERMISSIONS[principal.role]:
+        raise PermissionError(f"Role {principal.role!r} cannot {capability}")
+    if capability not in capabilities_for(principal):
+        raise PermissionError(f"Configured principal cannot {capability}")
 
 
 def initialize(workbook):
@@ -157,7 +220,8 @@ def _expire_events(db, cutoff):
         WHERE occurred_at < ?
           AND (kind IN ('artifact.created','artifact.publication','task.defined',
                         'task.finished','task.published','skill.distilled','approval',
-                        'session.started','session.episode','claim.acquired',
+                        'session.started','session.episode','schedule.configured',
+                        'schedule.attempted','claim.acquired',
                         'claim.renewed','claim.released') OR kind LIKE 'approval.%')
           AND NOT EXISTS (SELECT 1 FROM artifacts a WHERE a.artifact_id=e.resource)
           AND NOT EXISTS (
@@ -309,8 +373,15 @@ def record_event(workbook, principal, kind, resource, details=None):
         return append_event(db, principal, kind, resource, details)
 
 
+def approval_floor(db):
+    """Imported audit history is evidence, not fresh approval authority."""
+    return db.execute(
+        "SELECT coalesce(max(event_id),0) FROM coordination_events WHERE kind='workbook.restored'"
+    ).fetchone()[0]
+
+
 def claim(workbook, principal, resource, ttl=300):
-    authorize(principal, "write")
+    authorize_capability(principal, "claims")
     _resource(resource)
     _ttl(ttl)
     initialize(workbook)
@@ -387,6 +458,7 @@ def validate_claim(db, principal, ticket, *, resource, required=True):
 
 
 def renew(workbook, principal, ticket, ttl=300):
+    authorize_capability(principal, "claims")
     _ttl(ttl)
     resource = _resource(ticket.get("resource") if isinstance(ticket, dict) else None)
     initialize(workbook)
@@ -403,6 +475,7 @@ def renew(workbook, principal, ticket, ttl=300):
 
 
 def release(workbook, principal, ticket):
+    authorize_capability(principal, "claims")
     resource = _resource(ticket.get("resource") if isinstance(ticket, dict) else None)
     initialize(workbook)
     with workbook.connect() as db:

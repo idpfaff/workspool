@@ -40,6 +40,9 @@ TOOL_CHOICES = [
     "skill_find",
     "skill_inspect",
     "skill_use",
+    "verify",
+    "metrics",
+    "task_schedule",
 ]
 
 
@@ -163,6 +166,21 @@ def main() -> None:
         "--role", choices=["reader", "writer", "approver"], default="writer"
     )
     serve.add_argument(
+        "--capability",
+        action="append",
+        help="Restrict this configured principal to explicit action grants; repeat for each grant",
+    )
+    serve.add_argument(
+        "--worker-registry",
+        type=Path,
+        help="Trusted local worker manifest; never supplied through task arguments",
+    )
+    serve.add_argument(
+        "--metrics",
+        action="store_true",
+        help="Record bounded tool latency and same-content formatting token metrics",
+    )
+    serve.add_argument(
         "--goal",
         help="restore relevant context automatically on startup; requires --tokenizer",
     )
@@ -264,6 +282,9 @@ def main() -> None:
     task_run.add_argument("name")
     task_run.add_argument("--resume-from")
     task_run.add_argument("--force", action="store_true")
+    task_run.add_argument("--worker-registry", type=Path)
+    task_run.add_argument("--agent-id", default="local")
+    task_run.add_argument("--capability", action="append")
     task_status = commands.add_parser(
         "task-status", help="Reopen a task run without recomputing"
     )
@@ -387,6 +408,69 @@ def main() -> None:
 
     bench = commands.add_parser("bench", help="Compare raw and referenced handoffs")
     bench.add_argument("--tokenizer", type=Path)
+
+    review = commands.add_parser(
+        "approve", help="Approve or revoke an exact artifact as a configured approver"
+    )
+    review.add_argument("ref")
+    review.add_argument("--decision", choices=["approve", "revoke"], default="approve")
+    review.add_argument("--note", default="")
+    review.add_argument("--agent-id", default="local-approver")
+    verify = commands.add_parser(
+        "verify", help="Inspect stale inputs, affected tasks, and approvals"
+    )
+    verify.add_argument("--ref", action="append")
+    verify.add_argument("--after", type=int, default=0)
+    verify.add_argument("--through", type=int)
+    verify.add_argument("--cursor")
+    verify.add_argument("--limit", type=int, default=20)
+    metrics = commands.add_parser(
+        "metrics",
+        help="Read measured latency, cache, coverage, and formatting reductions",
+    )
+    metrics.add_argument("--days", type=int, default=30)
+    metrics.add_argument("--tool")
+    metrics.add_argument("--limit", type=int, default=20)
+    metrics.add_argument("--offset", type=int, default=0)
+    export_book = commands.add_parser(
+        "workbook-export", help="Export a verified coherent workbook snapshot"
+    )
+    export_book.add_argument("path", type=Path)
+    export_book.add_argument("--max-bytes", type=int, default=10 * 1024**3)
+    import_book = commands.add_parser(
+        "workbook-import", help="Restore a workbook archive into a new destination only"
+    )
+    import_book.add_argument("path", type=Path)
+    import_book.add_argument("destination", type=Path)
+    import_book.add_argument("--max-bytes", type=int, default=10 * 1024**3)
+    schedule_set = commands.add_parser(
+        "schedule-set", help="Configure an interval or input-change task trigger"
+    )
+    schedule_set.add_argument("name")
+    schedule_set.add_argument("--task", required=True)
+    schedule_set.add_argument("--interval-seconds", type=int)
+    schedule_set.add_argument("--on-change", action="store_true")
+    schedule_set.add_argument("--disabled", action="store_true")
+    schedule_set.add_argument("--expected-version", type=int)
+    schedule_set.add_argument("--agent-id", default="local")
+    schedule_list = commands.add_parser(
+        "schedule-list", help="List durable task triggers"
+    )
+    schedule_list.add_argument("--after", default="")
+    schedule_list.add_argument("--limit", type=int, default=50)
+    schedule_tick = commands.add_parser(
+        "schedule-tick", help="Run one bounded page of due tasks"
+    )
+    schedule_run = commands.add_parser(
+        "schedule-run", help="Run an explicit local polling loop until stopped"
+    )
+    for schedule in (schedule_tick, schedule_run):
+        schedule.add_argument("--worker-registry", type=Path)
+        schedule.add_argument("--agent-id", default="local")
+        schedule.add_argument("--capability", action="append")
+        schedule.add_argument("--limit", type=int, default=10)
+    schedule_tick.add_argument("--after", default="")
+    schedule_run.add_argument("--poll-seconds", type=int, default=30)
     args = parser.parse_args()
 
     try:
@@ -427,6 +511,12 @@ def main() -> None:
             from .bench import benchmark
 
             result = benchmark(args.tokenizer)
+        elif args.command == "workbook-import":
+            from .workbook_bundle import import_bundle
+
+            result = import_bundle(
+                args.path, args.destination, max_bytes=args.max_bytes
+            )
         else:
             settings = Settings(
                 index_bytes=args.index_bytes,
@@ -465,6 +555,101 @@ def main() -> None:
                     else None
                 )
             match args.command:
+                case "workbook-export":
+                    from .workbook_bundle import export_bundle
+
+                    result = export_bundle(
+                        workbook, args.path, max_bytes=args.max_bytes
+                    )
+                case "approve":
+                    from .coordination import Principal
+                    from .review import review_artifact
+
+                    result = review_artifact(
+                        workbook,
+                        args.ref,
+                        note=args.note,
+                        decision=args.decision,
+                        principal=Principal(args.agent_id, "approver"),
+                    )
+                case "verify":
+                    from .verification import verify as check
+
+                    result = check(
+                        workbook,
+                        args.ref,
+                        after=args.after,
+                        through=args.through,
+                        cursor=args.cursor,
+                        limit=args.limit,
+                    )
+                case "metrics":
+                    from .observability import metrics as read_metrics
+
+                    result = read_metrics(
+                        workbook,
+                        args.days,
+                        args.tool,
+                        limit=args.limit,
+                        offset=args.offset,
+                    )
+                case "schedule-set":
+                    from .coordination import Principal
+                    from .scheduler import configure_schedule
+
+                    result = configure_schedule(
+                        workbook,
+                        args.name,
+                        args.task,
+                        interval_seconds=args.interval_seconds,
+                        on_change=args.on_change,
+                        enabled=not args.disabled,
+                        expected_version=args.expected_version,
+                        principal=Principal(args.agent_id),
+                    )
+                case "schedule-list":
+                    from .scheduler import schedules
+
+                    result = schedules(workbook, after=args.after, limit=args.limit)
+                case "schedule-tick" | "schedule-run":
+                    from .coordination import Principal
+                    from .scheduler import tick
+                    from .task_workers import load_registry
+
+                    workers = (
+                        load_registry(args.worker_registry)
+                        if args.worker_registry
+                        else None
+                    )
+                    principal = Principal(args.agent_id, capabilities=args.capability)
+                    if args.command == "schedule-tick":
+                        result = tick(
+                            workbook,
+                            workers=workers,
+                            limit=args.limit,
+                            after=args.after,
+                            principal=principal,
+                        )
+                    else:
+                        import time
+
+                        if not 1 <= args.poll_seconds <= 3600:
+                            raise ValueError("poll-seconds must be between 1 and 3600")
+                        after = ""
+                        try:
+                            while True:
+                                page = tick(
+                                    workbook,
+                                    workers=workers,
+                                    limit=args.limit,
+                                    after=after,
+                                    principal=principal,
+                                )
+                                print(json.dumps(page, ensure_ascii=False), flush=True)
+                                after = page["next_after"] or ""
+                                time.sleep(args.poll_seconds)
+                        except KeyboardInterrupt:
+                            return
                 case "skill-distill":
                     from .skills import distill
 
@@ -522,6 +707,9 @@ def main() -> None:
                         model_dir=args.model_dir,
                         require_claims=args.require_claims,
                         episode_retention=args.episode_retention,
+                        capabilities=args.capability,
+                        worker_registry=args.worker_registry,
+                        collect_metrics=args.metrics,
                     )
                     try:
                         app.run(transport=args.transport)
@@ -629,6 +817,8 @@ def main() -> None:
                         expected_version=args.expected_version,
                     )
                 case "task-run":
+                    from .coordination import Principal
+                    from .task_workers import load_registry
                     from .tasks import run_task
 
                     result = run_task(
@@ -639,6 +829,12 @@ def main() -> None:
                         args.max_bytes,
                         fits,
                         args.base_run,
+                        principal=Principal(
+                            args.agent_id, capabilities=args.capability
+                        ),
+                        workers=load_registry(args.worker_registry)
+                        if args.worker_registry
+                        else None,
                     )
                 case "task-status":
                     from .tasks import status

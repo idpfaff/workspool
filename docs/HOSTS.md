@@ -9,7 +9,7 @@ Use Python 3.11 or later. Install the versioned release wheel into an environmen
 ```bash
 python3 -m venv "$HOME/.local/share/workspool/venv"
 "$HOME/.local/share/workspool/venv/bin/python" -m pip install \
-  'agent-workbook[tokens] @ https://github.com/idpfaff/workspool/releases/download/v0.8.1/agent_workbook-0.8.1-py3-none-any.whl'
+  'agent-workbook[tokens] @ https://github.com/idpfaff/workspool/releases/download/v0.9.0/agent_workbook-0.9.0-py3-none-any.whl'
 
 workspool_python="$HOME/.local/share/workspool/venv/bin/python"
 workspool_workspace="$HOME/.local/share/workspool/workspace"
@@ -98,7 +98,7 @@ If startup fails, check that the recorded interpreter still exists and that its 
 
 ## Verified model delivery: Codex CLI
 
-On 2026-11-07, **Codex CLI 0.167.0 returned a fresh random phrase and its exact immutable artifact ID from Workspool's MCP initialization instructions**. The phrase and ID were absent from the prompt. The disconnected fresh-conversation control returned `NOT RECEIVED`. Both traces contain zero non-message items, and the connected Workspool writer recorded zero tool-execution episodes.
+On 2026-11-07, using **Workspool v0.8.1**, **Codex CLI 0.167.0 returned a fresh random phrase and its exact immutable artifact ID from Workspool's MCP initialization instructions**. The phrase and ID were absent from the prompt. The disconnected fresh-conversation control returned `NOT RECEIVED`. Both traces contain zero non-message items, and the connected Workspool writer recorded zero tool-execution episodes. This is retained evidence for that version, not a new host-model evaluation of v0.9.0.
 
 The test used `host-config`'s generated runtime configuration, default lazy tool discovery, bundled `o200k_base`, and the CLI's existing authenticated account with no model override. It supplied the configuration for that invocation only; saved settings were unchanged. The prompt explicitly permitted metadata discovery while forbidding Workspool tool execution and file reads:
 
@@ -122,7 +122,7 @@ Without a configured embedding model, recall uses lexical search and reports den
 
 ```bash
 "$workspool_python" -m pip install \
-  'agent-workbook[tokens,semantic] @ https://github.com/idpfaff/workspool/releases/download/v0.8.1/agent_workbook-0.8.1-py3-none-any.whl'
+  'agent-workbook[tokens,semantic] @ https://github.com/idpfaff/workspool/releases/download/v0.9.0/agent_workbook-0.9.0-py3-none-any.whl'
 "$workspool_python" -m agent_workbook.cli model-download \
   "$HOME/.local/share/workspool/model"
 ```

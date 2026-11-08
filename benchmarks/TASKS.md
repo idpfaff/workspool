@@ -1,5 +1,10 @@
 # Task execution and context reference
 
+For configured Python/tool workers, conditional steps, exact-input approvals,
+scheduled/input-change execution, and shared-workbook operations, see
+[Recurring work](../docs/RECURRING_WORK.md). The SQL/cache mechanics below still
+apply to SQL steps; existing format-1 definitions remain compatible.
+
 Workspool tasks save an explicit SQL dependency graph and evidence searches. A
 run pins its definition and sources, computes or reuses each eligible result,
 and returns a versioned brief. The caller supplies the plan; the runtime does

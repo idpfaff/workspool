@@ -6,14 +6,17 @@ Workspool gives AI agents a shared local workspace for work that continues acros
 
 - **Capture useful work automatically.** Configured MCP hooks retain bounded result previews, artifact references, task status, and failures. Bulk source bodies and SQL literals stay out of session memory.
 - **Restore relevant context.** Supply a startup goal and tokenizer to receive a bounded recall package. Add a provisioned local embedding model for paraphrase retrieval alongside keyword matches.
-- **Run recurring work.** Save source aliases and dependent SQL steps, reuse eligible exact calculations, and recompute affected steps when inputs change.
+- **Run recurring work.** Combine SQL with registered local Python programs or tool adapters, branch on results, and pause for exact-input approval. An explicit runner handles intervals and input-change triggers.
 - **Coordinate agents.** Give each server a configured identity and role, claim a task before execution, and inspect producer events and stale dependency versions.
 - **Keep evidence inspectable.** Reopen complete task briefs after context loss, with immutable source references, exact byte citations, and explicit omissions.
 - **Reuse successful analytical plans.** Distill a published task into a discoverable skill, validate new inputs against its saved schema, and run its SQL again without reconstructing the plan.
+- **Review changes and delivered value.** See which source versions made a result stale, check current approvals, and inspect measured latency, result reuse, and formatting token reductions.
 
-Works with local or hosted models through an MCP-compatible agent. Workspace files and embedding inference stay local; the host receives selected context and tool replies. Automatic capture covers calls through the configured Workspool server. Other tools and conversations need explicit host hooks, and the MCP host must forward initialization instructions for startup recall to reach the model. Workspool does not monitor your desktop, schedule tasks, or watch external files.
+Works with local or hosted models through an MCP-compatible agent. Workspace files and embedding inference stay local; the host receives selected context and tool replies. Automatic capture covers calls through the configured Workspool server. Other tools and conversations need explicit host hooks, and the MCP host must forward initialization instructions for startup recall to reach the model. Workspool does not monitor your desktop or watch external files. Scheduled execution requires an explicitly started local runner; configured workers run with that account's permissions.
 
 [Connect Claude Desktop, Cursor, or Codex](docs/HOSTS.md) · [Reusable analytical skills](docs/SKILLS.md) · [Runtime guide](benchmarks/RUNTIME.md) · [Public dataset stress](benchmarks/PUBLIC_DATA.md)
+
+[Recurring work, approvals, shared workbooks, and metrics](docs/RECURRING_WORK.md) covers the complete workflow, trusted-worker contract, capability grants, and portable snapshots.
 
 ## What you can save
 
@@ -30,6 +33,8 @@ Workspool reduces the material your agent needs to read again. Use it for everyd
 | **Switch agents or resume later** | The objective, verified results, supporting files, and next step | Give the next agent a focused handoff instead of rebuilding the task history. |
 
 Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not replay it into the conversation; configured startup recall or an explicit retrieval selects what the host receives.
+
+For recurring spending reviews, v0.9.0 can calculate totals, run a registered Python check, pause for approval, rerun when inputs change, and transfer the workbook with its evidence. The complete workflow passed 25 checks. Its 18 measured writer replies used **11,148 tokens versus 21,680 for full JSON replies containing the same information: 10,532 fewer tokens (48.6%)**. This measures response formatting with `o200k_base`, excluding request/setup tokens and model billing; it is not a comparison against a SQL script. [Workflow results and exact counts](benchmarks/RECURRING_WORKFLOW.md).
 
 In the local recall probe, keyword and hybrid retrieval both found **5/5 target Wikipedia articles first**. A separate four-question synthetic paraphrase diagnostic found **4/4 targets with the real local model versus no keyword hits**; it demonstrates a narrow capability, not a general accuracy gain. The MCP initialization response also included an exact source citation within its 1,200-token context budget. A separate [real Codex host test](docs/HOSTS.md#verified-model-delivery-codex-cli) confirms model delivery after metadata discovery. [Semantic recall results and limits](benchmarks/SEMANTIC.md).
 
@@ -55,7 +60,7 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.8.1 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.9.0 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
@@ -542,7 +547,7 @@ Over MCP, `delete` is available only to hosts whose `--tools` list includes it.
 | `resume` | Open a checkpoint and preview every artifact it pins. |
 | `query` | Run one SELECT over selected CSV or Parquet artifacts as `input1`, `input2`, and so on. Optionally save the full result as Parquet. |
 | `refresh` | Rerun a saved query using the current versions of its direct inputs. |
-| `task_define` | Agent profile or explicit allowlist. Save a versioned plan with source aliases, dependent SQL steps, optional CSV types, and evidence searches. Sources follow latest versions by default; `pin_sources: true` fixes the resolved versions. |
+| `task_define` | Agent profile or explicit allowlist. Save sources, SQL or configured-worker steps, scalar conditions, approval gates, and evidence searches. Sources follow latest versions by default; `pin_sources: true` fixes the resolved versions. |
 | `task_run` | Agent profile or explicit allowlist. Pin a source snapshot, reuse eligible materialized results, and return results with exact evidence and status. |
 | `task_status` | Agent profile or explicit allowlist. Reopen a persisted attempt without recomputing; default replies are self-contained. |
 | `context` | Agent profile or explicit allowlist. Rank exact document chunks through a persistent full-source index, reporting coverage and omitted matches. |
@@ -555,7 +560,10 @@ Over MCP, `delete` is available only to hosts whose `--tools` list includes it.
 | `claim_owner` | Runtime profile. Inspect current ownership and expiry. |
 | `provenance` | Runtime profile. Explain source dependencies, producer events, and why evidence is stale. |
 | `changes` | Runtime profile. Page through actor-attributed events with explicit history-expiry markers. |
-| `approve` | Runtime approver. Record approval for an exact artifact version. |
+| `approve` | Runtime approver. Approve an exact current artifact or revoke its attestation. Task gates bind exact inputs and worker identity. |
+| `verify` | Runtime profile. Report exact changed inputs, affected published tasks, current approvals, and suggested reruns with bounded pagination. |
+| `metrics` | Runtime profile. Read observed latency, failures, step-result reuse, recall coverage, and signed same-content formatting token reductions. Missing coverage is explicit. |
+| `task_schedule` | Runtime profile. List or configure interval and input-change triggers. An explicit local runner executes due tasks; updates require the current version. |
 | `skill_distill` | Runtime writer. Retain a reusable SQL plan and source contracts from a successful published task. |
 | `skill_find` | Runtime profile. Find reusable analytical plans by name or description. |
 | `skill_inspect` | Runtime profile. Inspect a skill's plan, contracts, and origin proof. |
@@ -584,7 +592,7 @@ The `find` indexing limit applies when saving a new version. Existing versions k
 
 Fixed bounds include names up to 120 characters, summaries and source labels up to 360, at most 16 dependencies per artifact, at most 8 inputs and 6,000 characters of SQL per query, and 8 KiB per `inspect` excerpt page. The existing `query`/`refresh` path serializes queries within its server process. Task steps use separate bounded workers and coordinate same-key cache computation across processes.
 
-A task supports up to 8 source aliases, 8 SQL steps, and 8 evidence searches. Steps execute sequentially, with at most 1 million materialized rows and 64 MiB per cached result. The reuse cache defaults to 256 MiB and 128 entries, with leased reservations and eviction. These are per-step/cache limits: they are not a whole-run deadline, a process RSS cap, or a total workbook storage quota. Durable task results and source/run anchors remain pinned after cache eviction. See [task limits and recovery](benchmarks/TASKS.md) for the precise guarantees; `sync` and `retrieve` limits are documented above.
+A task supports up to 8 source aliases, 8 steps, and 8 evidence searches. SQL steps execute sequentially, with at most 1 million materialized rows and 64 MiB per cached result. The reuse cache defaults to 256 MiB and 128 entries, with leased reservations and eviction. Registered workers have explicit input/output/row/deadline limits and run with the local account's permissions. These are per-step/cache limits: they are not a whole-run deadline, a process RSS cap, or a total workbook storage quota. Durable task results and source/run anchors remain pinned after cache eviction. See [task limits and recovery](benchmarks/TASKS.md) and [worker/trigger behavior](docs/RECURRING_WORK.md); `sync` and `retrieve` limits are documented above.
 
 ## Try a local example
 
@@ -607,7 +615,7 @@ Detailed measurements, evaluation results, and reproduction instructions are ava
 
 SQLite stores the artifact catalog, checkpoints, dependency links, and task ledger. Separate local databases hold the reusable query cache and ranked text index. File contents live under their SHA-256 hashes in the workspace directory.
 
-Ordinary `query` calls use a restricted in-memory DuckDB connection. Task steps execute in bounded DuckDB worker processes, materialize exact results, and promote them into versioned artifacts. Cache keys bind the exact SQL, typed parameters, ordered immutable inputs, reader types, engine version, and relevant settings. Only conservatively classified deterministic queries qualify for reuse; other accepted queries still execute but are not reused. Cross-process leases coordinate eligible computations and allow recovery after an owner dies.
+Ordinary `query` calls use a restricted in-memory DuckDB connection. SQL task steps execute in bounded DuckDB worker processes, materialize exact results, and promote them into versioned artifacts. Cache keys bind the exact SQL, typed parameters, ordered immutable inputs, reader types, engine version, and relevant settings. Only conservatively classified deterministic queries qualify for reuse; other accepted queries still execute but are not reused. Cross-process leases coordinate eligible computations and allow recovery after an owner dies. Configured external workers use hash-verified scratch inputs and a typed result protocol; fresh runs execute them again, while explicit resume can reuse validated pinned materializations.
 
 Each task run pins its definition and sources before executing steps. Publication checks freshness and generation order, so an older finishing run cannot replace a newer successful brief. Interrupted attempts retain completed progress; explicitly resume their snapshot to continue. Immutable run artifacts describe computation snapshots and direct readers to `task_status` for publication and freshness status.
 

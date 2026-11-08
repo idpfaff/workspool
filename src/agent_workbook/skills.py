@@ -199,6 +199,10 @@ def _origin(workbook, db, task, run_id, *, require_current=False):
         )
     definition = workbook._get(db, row["definition_id"])
     plan = tasks._read_plan(workbook, definition)
+    if plan["format"] != 1:
+        raise ValueError(
+            "Reusable skills currently support unconditional SQL-only tasks; conditional, approval-gated and worker tasks cannot be distilled or replayed as skills"
+        )
     if set(payload["sources"]) != set(plan["sources"]):
         raise ValueError("Run sources differ from its definition")
     sources = {}

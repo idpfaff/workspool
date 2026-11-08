@@ -106,55 +106,9 @@ def _validate(objective, sources, steps, searches, csv_types=None):
         )
     ):
         raise ValueError("CSV types must map source aliases to column/type mappings")
-    if not isinstance(steps, list) or len(steps) > 8:
-        raise ValueError("At most eight SQL steps are supported")
-    known = set(sources)
-    normalized = []
-    for step in steps:
-        if not isinstance(step, dict) or set(step) - {
-            "name",
-            "inputs",
-            "sql",
-            "parameters",
-        }:
-            raise ValueError("A step supports name, inputs, sql and parameters only")
-        name = step.get("name", "")
-        if not isinstance(name, str) or not ALIAS.fullmatch(name) or name in known:
-            raise ValueError("Step names must be distinct simple aliases")
-        known.add(name)
-        inputs = step.get("inputs")
-        if (
-            not isinstance(inputs, list)
-            or not 1 <= len(inputs) <= 8
-            or any(not isinstance(value, str) for value in inputs)
-            or len(set(inputs)) != len(inputs)
-        ):
-            raise ValueError("Each step needs 1–8 distinct input aliases")
-        sql = step.get("sql")
-        if not isinstance(sql, str) or not 1 <= len(sql.strip()) <= 6000:
-            raise ValueError("Each step needs SQL of at most 6000 characters")
-        parameters = step.get("parameters", [])
-        if not isinstance(parameters, list) or len(parameters) > 30:
-            raise ValueError("At most 30 scalar parameters are supported")
-        if any(
-            type(p) not in (str, int, float, bool, type(None))
-            or (isinstance(p, str) and len(p) > 1000)
-            for p in parameters
-        ):
-            raise ValueError("Parameters must be bounded JSON scalars")
-        _json(parameters)
-        normalized.append(
-            {"name": name, "inputs": inputs, "sql": sql, "parameters": parameters}
-        )
-    ordered, ready, pending = [], set(sources), list(normalized)
-    while pending:
-        available = [step for step in pending if set(step["inputs"]) <= ready]
-        if not available:
-            raise ValueError("Task has a dependency cycle or unknown input alias")
-        for step in available:
-            ordered.append(step)
-            ready.add(step["name"])
-            pending.remove(step)
+    from .task_flow import normalize_steps
+
+    ordered = normalize_steps(sources, steps)
     searches = [] if searches is None else searches
     if (
         not isinstance(searches, list)
@@ -165,7 +119,9 @@ def _validate(objective, sources, steps, searches, csv_types=None):
     ):
         raise ValueError("Provide at most eight nonempty evidence searches")
     plan = {
-        "format": 1,
+        "format": 2
+        if any(set(step) & {"kind", "when", "approval"} for step in ordered)
+        else 1,
         "objective": objective.strip(),
         "sources": sources,
         "steps": ordered,
@@ -196,7 +152,7 @@ def define_task(
     from .coordination import authorize, current_principal, record_event
 
     principal = principal or current_principal()
-    authorize(principal, "write")
+    authorize(principal, "task:define")
     if provenance_refs is not None and (
         not isinstance(provenance_refs, list)
         or len(provenance_refs) > 8
@@ -288,7 +244,7 @@ def _read_plan(workbook, row):
     plan = json.loads(data)
     if (
         not isinstance(plan, dict)
-        or plan.get("format") != 1
+        or plan.get("format") not in (1, 2)
         or set(plan) - {"csv_types"}
         != {"format", "objective", "sources", "steps", "searches"}
     ):
@@ -313,11 +269,13 @@ def _pin(workbook, name, resume_from):
                 raise ValueError("Unknown run for this task")
             payload = json.loads(previous["payload"])
             definition = workbook._get(db, previous["definition_id"])
+            pinned_workers = payload.get("workers", {})
             sources = {
                 alias: _record(workbook, db, workbook._get(db, item["artifact_id"]))
                 for alias, item in payload["sources"].items()
             }
         else:
+            pinned_workers = None
             definition = workbook._get(db, _name(name))
             plan = _read_plan(workbook, definition)
             sources = {
@@ -368,6 +326,8 @@ def _pin(workbook, name, resume_from):
             "state": "running",
             "resume_from": resume_from,
         }
+        if pinned_workers is not None:
+            payload["workers"] = pinned_workers
         db.execute(
             "INSERT INTO task_runs VALUES(?,?,?,?,?,?,NULL,?,?)",
             (
@@ -523,9 +483,16 @@ def _finish(workbook, payload, anchor_id, principal, claim_ticket):
         "evidence_failed",
     }
     successful = all(
-        step["state"] == "complete" for step in payload["steps"]
+        step["state"] in {"complete", "skipped"} for step in payload["steps"]
     ) and not any(item["reason"] in failures for item in payload["omitted"])
-    payload["state"] = "complete" if successful else "partial"
+    waiting = any(
+        step["state"] == "awaiting_approval"
+        or step.get("reason") == "approval_dependency"
+        for step in payload["steps"]
+    )
+    payload["state"] = (
+        "complete" if successful else "awaiting_approval" if waiting else "partial"
+    )
     snapshot = payload | {
         "record_type": "computation_snapshot",
         "state": "computed" if successful else "partial",
@@ -549,6 +516,11 @@ def _finish(workbook, payload, anchor_id, principal, claim_ticket):
                 if step.get("artifact_id")
             ],
         ],
+        provenance=[
+            step["approval_ref"]
+            for step in payload["steps"]
+            if step.get("approval_ref")
+        ],
     )
     payload["artifact_id"] = report["artifact_id"]
     with workbook.connect() as db:
@@ -559,6 +531,13 @@ def _finish(workbook, payload, anchor_id, principal, claim_ticket):
         ).fetchone()
         if head["success_generation"] > payload["generation"]:
             payload["current"] = False
+        from .task_flow import revalidate_approvals
+
+        if not revalidate_approvals(workbook, db, payload):
+            successful = False
+            payload["state"] = "awaiting_approval"
+            if not waiting:
+                payload["omitted"].append({"reason": "approval_changed"})
         try:
             validate_claim(
                 db,
@@ -676,7 +655,11 @@ def _deliver(workbook, payload, max_bytes, fits, base_run):
                 "definition": value["definition_id"],
                 "sources": value["sources"],
                 "steps": [
-                    {k: v for k, v in step.items() if k != "cache"}
+                    {
+                        k: v
+                        for k, v in step.items()
+                        if k not in {"cache", "elapsed_seconds"}
+                    }
                     for step in value["steps"]
                 ],
                 "citations": [
@@ -735,12 +718,13 @@ def run_task(
     base_run=None,
     principal=None,
     claim_ticket=None,
+    workers=None,
 ):
     from .coordination import authorize, current_principal, initialize, validate_claim
 
     _name(name)
     principal = principal or current_principal()
-    authorize(principal, "write")
+    authorize(principal, "task:run")
     initialize(workbook)
     with workbook.connect() as db:
         db.execute("BEGIN IMMEDIATE")
@@ -756,6 +740,42 @@ def run_task(
         raise ValueError("Brief max_bytes must be between 256 and 131072")
     plan, payload, anchor_id = _pin(workbook, name, resume_from)
     payload["producer"] = {"identity": principal.identity, "role": principal.role}
+    worker_steps = [step for step in plan["steps"] if step.get("kind") == "worker"]
+    if worker_steps:
+        try:
+            authorize(principal, "workers")
+            from .task_workers import WorkerRegistry
+
+            if workers is None or not isinstance(workers, WorkerRegistry):
+                raise ValueError(
+                    "This task requires a host-configured local worker registry"
+                )
+            identities = {
+                step["worker"]: workers.resolve(step["worker"]).digest
+                for step in worker_steps
+            }
+            if resume_from and payload.get("workers") != identities:
+                raise ValueError(
+                    "Configured workers changed from the pinned run; start a fresh run"
+                )
+            payload["workers"] = identities
+        except Exception as error:
+            payload["steps"] = [
+                {
+                    "name": step["name"],
+                    "state": "blocked",
+                    "reason": "worker_configuration",
+                    "elapsed_seconds": 0.0,
+                }
+                for step in plan["steps"]
+            ]
+            payload["omitted"].append(
+                {"reason": "worker_configuration", "error": str(error)[:500]}
+            )
+            completed = _finish(workbook, payload, anchor_id, principal, claim_ticket)
+            if isinstance(error, PermissionError):
+                raise
+            return _deliver(workbook, completed, max_bytes, fits, base_run)
     _progress(workbook, payload)
     try:
         if base_run is None:
@@ -772,21 +792,118 @@ def run_task(
             "Brief budget cannot hold required provenance; retry with a larger budget"
         ) from None
     aliases = {alias: item["artifact_id"] for alias, item in payload["sources"].items()}
+    resume_steps = {}
+    if resume_from and not force:
+        with workbook.connect() as db:
+            previous = db.execute(
+                "SELECT payload FROM task_runs WHERE run_id=? AND name=?",
+                (resume_from, name),
+            ).fetchone()
+        resume_steps = {
+            step["name"]: step for step in json.loads(previous["payload"])["steps"]
+        }
     for step in plan["steps"]:
-        if any(alias not in aliases for alias in step["inputs"]):
+        started = time.monotonic()
+        required = [
+            *step["inputs"],
+            *([step["when"]["step"]] if "when" in step else []),
+        ]
+        if any(alias not in aliases for alias in required):
+            missing = [
+                entry
+                for entry in payload["steps"]
+                if entry["name"] in required and entry["name"] not in aliases
+            ]
+            waiting = any(
+                entry["state"] == "awaiting_approval"
+                or entry.get("reason") == "approval_dependency"
+                for entry in missing
+            )
+            skipped = bool(missing) and all(
+                entry["state"] == "skipped" for entry in missing
+            )
+            reason = (
+                "approval_dependency"
+                if waiting
+                else "dependency_skipped"
+                if skipped
+                else "failed_dependency"
+            )
             payload["steps"].append(
                 {
                     "name": step["name"],
-                    "state": "blocked",
-                    "reason": "failed_dependency",
+                    "state": "skipped" if skipped else "blocked",
+                    "reason": reason,
+                    "elapsed_seconds": time.monotonic() - started,
                 }
             )
-            payload["omitted"].append(
-                {"step": step["name"], "reason": "failed_dependency"}
-            )
+            if not skipped:
+                payload["omitted"].append({"step": step["name"], "reason": reason})
             _progress(workbook, payload)
             continue
+        flow = {}
         try:
+            from .task_flow import (
+                approval_status,
+                condition_matches,
+                gate,
+                resumed_result,
+            )
+
+            with workbook.connect() as db:
+                db.execute("BEGIN")
+                revoked = any(
+                    not approval_status(workbook, db, prior["approval_ref"])["approved"]
+                    for prior in payload["steps"]
+                    if prior.get("approval_ref") and prior["state"] == "complete"
+                )
+            if revoked:
+                payload["steps"].append(
+                    {
+                        "name": step["name"],
+                        "state": "blocked",
+                        "reason": "approval_dependency",
+                        "elapsed_seconds": time.monotonic() - started,
+                    }
+                )
+                payload["omitted"].append(
+                    {"step": step["name"], "reason": "approval_dependency"}
+                )
+                _progress(workbook, payload)
+                continue
+            if "when" in step:
+                condition_ref = aliases[step["when"]["step"]]
+                matched = condition_matches(workbook, step["when"], condition_ref)
+                flow = {"condition_ref": condition_ref, "condition_matched": matched}
+                if not matched:
+                    payload["steps"].append(
+                        {
+                            "name": step["name"],
+                            "state": "skipped",
+                            "reason": "condition_false",
+                            "elapsed_seconds": time.monotonic() - started,
+                            **flow,
+                        }
+                    )
+                    _progress(workbook, payload)
+                    continue
+            if step.get("approval"):
+                ref, approval = gate(workbook, payload, step)
+                flow.update(approval_ref=ref, approval=approval)
+                if not approval["approved"]:
+                    payload["steps"].append(
+                        {
+                            "name": step["name"],
+                            "state": "awaiting_approval",
+                            "elapsed_seconds": time.monotonic() - started,
+                            **flow,
+                        }
+                    )
+                    payload["omitted"].append(
+                        {"step": step["name"], "reason": "awaiting_approval"}
+                    )
+                    _progress(workbook, payload)
+                    continue
             execution_step = step | {
                 "_csv_types": {
                     index: plan["csv_types"][alias]
@@ -794,12 +911,41 @@ def run_task(
                     if alias in plan.get("csv_types", {})
                 }
             }
-            result = _execute_step(
-                workbook,
-                execution_step,
-                [aliases[alias] for alias in step["inputs"]],
-                force,
+            step_inputs = [aliases[alias] for alias in step["inputs"]]
+            result = (
+                resumed_result(workbook, resume_steps[step["name"]], step_inputs)
+                if step["name"] in resume_steps
+                else None
             )
+            if result is not None:
+                pass
+            elif step.get("kind") == "worker":
+                from .task_workers import execute
+
+                with workbook.connect() as db:
+                    db.execute("BEGIN IMMEDIATE")
+                    validate_claim(
+                        db,
+                        principal,
+                        claim_ticket,
+                        resource="task:" + name,
+                        required=False,
+                    )
+                result = execute(
+                    workbook,
+                    step,
+                    step_inputs,
+                    workers,
+                    definition_id=payload["definition_id"],
+                    expected_digest=payload["workers"][step["worker"]],
+                )
+            else:
+                result = _execute_step(
+                    workbook,
+                    execution_step,
+                    step_inputs,
+                    force,
+                )
             artifact_id = result["saved"]["artifact_id"]
             aliases[step["name"]] = artifact_id
             if result.get("preview_truncated"):
@@ -817,6 +963,8 @@ def run_task(
                     "artifact_id": artifact_id,
                     "cache": result.pop("cache"),
                     "result": {k: v for k, v in result.items() if k != "saved"},
+                    "elapsed_seconds": time.monotonic() - started,
+                    **flow,
                 }
             )
         except Exception as error:  # noqa: BLE001 - persist failures at the task boundary
@@ -826,6 +974,8 @@ def run_task(
                     "state": "failed",
                     "error": str(error)[:500],
                     "error_type": type(error).__name__,
+                    "elapsed_seconds": time.monotonic() - started,
+                    **flow,
                 }
             )
             payload["omitted"].append(
@@ -887,4 +1037,12 @@ def status(workbook, name, run_id=None, max_bytes=16384, fits=None, base_run=Non
         payload["latest_success"] = head["latest_success"]
         if payload["state"] == "complete" and not payload["current"]:
             payload["state"] = "superseded"
+        if any(step.get("approval_ref") for step in payload["steps"]):
+            from .task_flow import revalidate_approvals
+
+            payload["approval_current"] = revalidate_approvals(workbook, db, payload)
+            if not payload["approval_current"]:
+                payload["current"] = False
+                if payload["state"] in {"complete", "superseded", "awaiting_approval"}:
+                    payload["state"] = "awaiting_approval"
     return _deliver(workbook, payload, max_bytes, fits, base_run)

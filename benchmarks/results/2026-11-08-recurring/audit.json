@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks_passed": 25,
+  "mcp_calls": 30,
+  "measured_calls": 18,
+  "public_trace_token_recount_matches": true,
+  "same_content_metrics_recount_matches": true,
+  "source_hashes_match": true,
+  "absolute_personal_paths_found": false,
+  "common_credential_patterns_found": false,
+  "files_sha256": {
+    "results.json": "af9bf8cb660effc024fefa925f72cdc004c0d0820d6f32a5c415d4a343be23da",
+    "traces.json.gz": "5edd6202737fc42ba11900c669beb9181f2f886f9412d91514df29abc737ca48"
+  }
+}

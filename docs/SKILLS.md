@@ -4,6 +4,8 @@ A Workspool skill stores an exact task plan extracted from a successful local ru
 
 This is deterministic extraction, without an LLM. `proof: "successful_execution"` means the originating task finished and published successfully with recorded provenance. It does not mean the SQL is analytically correct, the data is trustworthy, or the plan generalizes to every compatible table. Review the plan with `skill_inspect` when those judgments matter.
 
+Distillation currently accepts SQL-only plans. Tasks with conditions, approval gates, or configured workers are rejected explicitly until their additional replay proof is supported. A [workbook export](RECURRING_WORK.md#share-a-workbook-and-restrict-agent-actions) transfers existing skill packages together with their authoritative task and audit history; copying a package's JSON alone does not.
+
 ## Example
 
 After an existing task called `spending-review` completes successfully:

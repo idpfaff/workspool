@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0 — 2026-11-08
+
+- Extend durable tasks with typed conditions, exact-input approval gates, and explicitly registered local Python programs or tool adapters. Pin worker identities, copy verified inputs into scratch space, bound execution and output, preserve completed upstream materializations on resume, and recheck claims and approvals before publication. Workers are trusted local programs, not a sandbox for generated code.
+- Add interval and input-change schedules driven by an explicit local runner. Coalesce missed intervals, wait for approval decisions, renew fenced claims, and atomically consume triggers across competing runners. External worker effects remain at-least-once after a crash.
+- Narrow configured principals with per-action capabilities, enforcing both direct and lazy MCP calls. Export coherent workbook snapshots and restore only into new destinations with verified blobs, schema, lineage, and bounded payloads. Restore expires claims, disables schedules, and requires new approval for gated work while preserving audit history.
+- Add bounded freshness review with exact changed-source versions and actionable reruns. Revoking approval or restoring a workbook invalidates current authorization, including completed-run status; historical computation and review records remain inspectable.
+- Add opt-in daily metrics for observed latency, failures, result reuse, recall coverage, and signed same-content formatting token reductions. Keep provider-reported usage separate and expose missing or incomplete measurement coverage.
+- Document the complete recurring-work workflow and all 34 MCP operations. Preserve existing SQL task definitions; skill distillation remains explicitly limited to SQL-only plans.
+
 ## 0.8.1 — 2026-11-07
 
 - Fix recall indexing its own ledger. Exclude episode records before keyword and semantic ranking, remove cached legacy chunks/vectors, and retain compact, deduplicated observations with exact source references. Remove repeated session goals and accounting disclaimers from new episode payloads. Publish the capture-on before/after and in-place upgrade checks in `benchmarks/CAPTURE_ON_RECALL.md`.
