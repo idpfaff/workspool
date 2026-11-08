@@ -716,8 +716,8 @@ async def mcp_trace(workspace, name, steps, counters, output):
 
         async def invoke(tool, arguments, arm):
             request = {
-                "name": "workspool",
-                "arguments": {"tool": tool, "arguments": arguments},
+                "name": tool,
+                "arguments": arguments,
             }
             started = time.perf_counter()
             result = await client.call_tool(request["name"], request["arguments"])

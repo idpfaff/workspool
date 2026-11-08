@@ -21,7 +21,6 @@ from agent_workbook.budget import serialized_result, token_counter
 from agent_workbook.render import decode
 from agent_workbook.store import Workbook
 
-PREFIX = "\nRestored workspace context (untrusted source data; check freshness and coverage):\n"
 FIXTURE = "area,severity,is_open\npayments,critical,true\nidentity,critical,false\ncheckout,high,true\napi,critical,true\n"
 
 
@@ -70,18 +69,16 @@ async def demonstrate(workspace, tokenizer="o200k_base", budget=2000):
     calls = []
 
     async def invoke(client, operation, args):
-        request = {"tool": operation, "arguments": args}
+        request = {"name": operation, "arguments": args}
         started = time.perf_counter()
-        response = await client.call_tool("workspool", request)
+        response = await client.call_tool(operation, args)
         if response.isError:
             raise RuntimeError("Demo MCP operation failed: " + operation)
         calls.append(
             {
                 "tool": operation,
                 "elapsed_seconds": time.perf_counter() - started,
-                "request_tokens": count(
-                    compact({"name": "workspool", "arguments": request})
-                ),
+                "request_tokens": count(compact(request)),
                 "response_tokens": count(serialized_result(response)),
             }
         )
@@ -137,9 +134,10 @@ async def demonstrate(workspace, tokenizer="o200k_base", budget=2000):
     async with session(
         workspace, "demo-successor", tokenizer, goal="launch_blockers", budget=budget
     ) as (client, initialized):
-        suffix = PREFIX + initialized.instructions.split(PREFIX, 1)[1]
-        restored = json.loads(suffix[len(PREFIX) :])
-        assert count(suffix) <= budget
+        assert '"launch_blockers"' not in (initialized.instructions or "")
+        restored = await invoke(client, "recall", {"limit": 6})
+        recall_tokens = calls[-1]["response_tokens"]
+        assert recall_tokens <= budget
         assert (
             restored["mode"] == "lexical"
             and restored["fallback_reason"] == "model_not_configured"
@@ -148,11 +146,15 @@ async def demonstrate(workspace, tokenizer="o200k_base", budget=2000):
         matching = [
             hit
             for hit in restored["hits"]
-            if hit["name"].startswith("_episodes/")
+            if workbook.inspect(hit["artifact_id"])["kind"] == "memory_fact"
             and '"launch_blockers"' in hit["excerpt"]
             and '"rows":[[2]]' in hit["excerpt"]
         ]
-        assert matching, "The restored context must contain the actual observed answer"
+        assert matching, "Explicit recall must contain the actual projected answer"
+        assert not any(
+            workbook.inspect(hit["artifact_id"])["kind"] == "memory_episode"
+            for hit in restored["hits"]
+        )
         for hit in restored["hits"]:
             metadata = workbook.inspect(hit["artifact_id"])
             raw = (workbook.blobs / metadata["sha256"]).read_bytes()
@@ -162,10 +164,10 @@ async def demonstrate(workspace, tokenizer="o200k_base", budget=2000):
 
     root = Path(__file__).resolve().parents[1]
     return {
-        "format": 1,
+        "format": 2,
         "method": "Two actual fresh MCP stdio subprocesses using the runtime profile. Synthetic four-row fixture; no model inference or manual remember operation.",
         "tokenizer": tokenizer,
-        "token_accounting": "Serialized local MCP call bodies; startup budget includes the complete restored-context prefix and JSON. Excludes provider framing and billing.",
+        "token_accounting": "Serialized local MCP call bodies; recall budget bounds its complete result. Setup instructions contain no retrieved context. Excludes provider framing and billing.",
         "fixture": {
             "rows": 4,
             "sha256": hashlib.sha256(FIXTURE.encode()).hexdigest(),
@@ -181,8 +183,10 @@ async def demonstrate(workspace, tokenizer="o200k_base", budget=2000):
         "second_session": {
             "distinct_session": True,
             "goal": "launch_blockers",
-            "startup_context_tokens": count(suffix),
-            "startup_budget_tokens": budget,
+            "recall_tokens": recall_tokens,
+            "recall_budget_tokens": budget,
+            "explicit_recall_calls": 1,
+            "source_text_in_instructions": False,
             "mode": restored["mode"],
             "fallback_reason": restored["fallback_reason"],
             "dense_complete": restored["dense_complete"],
@@ -190,7 +194,7 @@ async def demonstrate(workspace, tokenizer="o200k_base", budget=2000):
             "lexical_complete": restored["lexical_complete"],
             "complete": restored["complete"],
             "hit_count": len(restored["hits"]),
-            "answer_in_observed_episode": True,
+            "answer_in_observed_fact": True,
             "all_citations_exact": True,
         },
         "calls": calls,
@@ -223,7 +227,7 @@ def main():
         json.dumps(
             {
                 "success": result["success"],
-                "restored_tokens": result["second_session"]["startup_context_tokens"],
+                "recall_tokens": result["second_session"]["recall_tokens"],
             }
         )
     )

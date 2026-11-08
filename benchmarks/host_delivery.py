@@ -3,6 +3,9 @@
 Creates only synthetic fixtures, uses generated host configuration without
 installing it, and compares connected and disconnected fresh conversations.
 This is not an offline test and does not select or override the host's model.
+
+Historical-source probe: its initialization-context contract was removed in v0.9.2.
+Use the archived measured source to reproduce it; this is not a current host demo.
 """
 
 import argparse

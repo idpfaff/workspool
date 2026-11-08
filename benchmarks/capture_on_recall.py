@@ -2,6 +2,9 @@
 
 Synthetic hosting invoices, real MCP stdio processes, no model/provider API.
 Optional learned embeddings use an already provisioned local model only.
+
+Historical-source probe: its initialization-context contract was removed in v0.9.2.
+Use the archived measured source to reproduce it; this is not a current host demo.
 """
 
 import argparse

@@ -197,7 +197,7 @@ async def session(workspace, trace, profile, used_tools):
     if options["restricted"]:
         args += ["--tools", *used_tools]
     if options.get("lazy"):
-        args += ["--tool-discovery", "lazy"]
+        args += ["--experimental-lazy"]
     parameters = StdioServerParameters(command=sys.executable, args=args)
     async with (
         stdio_client(parameters) as (read, write),
