@@ -59,8 +59,6 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 
 ## Quick start
 
-This branch prepares v0.10.0; it is not released until CI and the planned model-completion gate pass. The versioned installation commands below target that release.
-
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
@@ -301,7 +299,7 @@ For example, call `query` directly with:
 
 The former `--tool-discovery` option has been removed. The generic dispatcher remains available only for explicit experiments with `--experimental-lazy`, which emits a warning. It is not enabled by any profile. Its historical scripted token counts did not establish reliable model use: the v0.9.2 approval evaluation completed 1/20 lazy cases versus 17/20 eager cases.
 
-A [planned three-arm evaluation](benchmarks/APPROVAL_MODEL.md#planned-v0100-follow-up-not-yet-run) compares the frozen v0.9.2 eager interface, compact eager schemas, and experimental lazy dispatch with typed errors, using identical reply formatting. No new model result is claimed. The default-profile release rule requires at least the control's completed cases minus one across the same 20 cases, with complete usage and unchanged source evidence.
+A [planned three-arm evaluation](benchmarks/APPROVAL_MODEL.md#planned-v0100-follow-up-not-yet-run) compares the frozen v0.9.2 eager interface, compact eager schemas, and experimental lazy dispatch with typed errors, using identical reply formatting. No new model result is claimed. The planned model acceptance rule requires at least the control's completed cases minus one across the same 20 cases, with complete usage and unchanged source evidence. The corrective v0.10.0 release uses the full-CI gate while this model evaluation remains pending.
 
 ### Keep MCP overhead small
 

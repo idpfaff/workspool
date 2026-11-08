@@ -196,7 +196,10 @@ not a statistical non-inferiority claim. Report both candidate comparisons,
 all failures, and costs for pairs where both arms passed. Lower token consumption
 on incomplete work cannot establish savings. Experimental lazy results do not
 qualify it as a default. The gate remains **unmeasured** until the paid run is
-explicitly authorized and completed.
+explicitly authorized and completed. The corrective v0.10.0 release is an explicit
+exception to this model gate and uses the existing full-CI release gate. This does
+not count as passing the planned model evaluation; its acceptance threshold is
+unchanged for subsequent default-profile changes.
 
 The ceiling is 60 arms / 120 phases / 720 provider requests, 7.5 million input
 tokens, 1,152,000 output tokens, and a $10 conservative guard. Concurrency stays at

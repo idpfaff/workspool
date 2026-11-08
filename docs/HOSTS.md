@@ -4,8 +4,6 @@ Workspool can generate and install a local MCP configuration for these hosts on 
 
 ## Install Workspool once
 
-The v0.10.0 wheel links below target the unreleased candidate and become available after its release gates pass.
-
 Use Python 3.11 or later. Install the versioned release wheel into an environment you intend to keep:
 
 ```bash

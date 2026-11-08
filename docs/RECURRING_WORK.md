@@ -11,7 +11,12 @@ there is no discovery dispatcher in the default path. The old `--tool-discovery`
 flag is removed. `--experimental-lazy` is a warned, explicitly opted-in experiment,
 not a profile default. Historical scripted dispatcher measurements do not establish
 model reliability. The [planned three-arm follow-up](../benchmarks/APPROVAL_MODEL.md#planned-v0100-follow-up-not-yet-run)
-requires the eager default to complete at least the control's cases minus one.
+sets this release rule: a profile may be a default only if it completes at least
+the control's cases minus one on the same 20 cases, with complete usage and
+unchanged source evidence. The corrective v0.10.0 release is an explicit exception:
+it uses the existing full-CI gate while compact-eager model completion remains
+unmeasured. The planned evaluation and its acceptance threshold are unchanged;
+subsequent default-profile changes must satisfy this rule.
 
 ## Conditional steps and approval
 
