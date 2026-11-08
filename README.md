@@ -60,7 +60,7 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.9.0 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.9.1 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 

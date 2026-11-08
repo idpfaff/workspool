@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.1 — 2026-11-08
+
+- Fix macOS process-group cleanup raising a permission error after a configured worker or materializer has already exited. Preserve the original operation result or error; inability to stop a live child still fails. Add focused regressions and retain complete worker failure details in CI.
+- Require the full CI matrix to succeed for the exact release commit before creating its tag or publishing packages. Preserve the v0.9.0 feature set and recorded workflow measurements.
+
 ## 0.9.0 — 2026-11-08
 
 - Extend durable tasks with typed conditions, exact-input approval gates, and explicitly registered local Python programs or tool adapters. Pin worker identities, copy verified inputs into scratch space, bound execution and output, preserve completed upstream materializations on resume, and recheck claims and approvals before publication. Workers are trusted local programs, not a sandbox for generated code.

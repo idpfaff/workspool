@@ -1,5 +1,6 @@
 """Only hash-pinned local adapters execute; test jobs use synthetic fixtures."""
 
+import errno
 import hashlib
 import json
 import os
@@ -259,9 +260,18 @@ print(json.dumps({"format":1,"parquet":"answer.parquet"}))
 
 
 @pytest.mark.skipif(os.name != "posix", reason="POSIX file-size limits")
-def test_materialization_is_capped_during_writes(tmp_path):
+@pytest.mark.parametrize("cleanup_eperm", [False, True])
+def test_materialization_is_capped_during_writes(tmp_path, monkeypatch, cleanup_eperm):
     from agent_workbook.task_workers import _materialize
 
+    cleanup_calls = []
+    if cleanup_eperm:
+
+        def deny_exited_group(pid, sig):
+            cleanup_calls.append((pid, sig))
+            raise PermissionError(errno.EPERM, "Synthetic exited group denial")
+
+        monkeypatch.setattr("agent_workbook.task_workers.os.killpg", deny_exited_group)
     workers, _ = registry(tmp_path, max_output_bytes=2048)
     spec = workers.resolve("sum_rows")
     book, _ = setup(tmp_path)
@@ -279,6 +289,60 @@ def test_materialization_is_capped_during_writes(tmp_path):
     partial_files = list(scratch.glob("*.parquet"))
     assert partial_files and all(path.stat().st_size <= 2048 for path in partial_files)
     assert not list(book.root.glob("worker-*"))
+    if cleanup_eperm:
+        assert len(cleanup_calls) == 1
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX process-group cleanup")
+@pytest.mark.parametrize("exit_code", [0, 1, -signal.SIGKILL, None])
+def test_group_eperm_is_tolerated_only_for_an_exited_leader(monkeypatch, exit_code):
+    from agent_workbook.task_workers import _terminate
+
+    class Process:
+        pid = 12345
+        waited = False
+
+        def poll(self):
+            return exit_code
+
+        def wait(self):
+            self.waited = True
+            return exit_code
+
+    error = PermissionError(errno.EPERM, "Synthetic group denial")
+
+    def deny_group(pid, sig):
+        assert (pid, sig) == (12345, signal.SIGKILL)
+        raise error
+
+    monkeypatch.setattr("agent_workbook.task_workers.os.killpg", deny_group)
+    process = Process()
+    if exit_code is None:
+        with pytest.raises(PermissionError) as caught:
+            _terminate(process)
+        assert caught.value is error
+        assert not process.waited
+    else:
+        _terminate(process)
+        assert process.waited
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX process-group cleanup")
+def test_group_cleanup_does_not_hide_other_permission_errors(monkeypatch):
+    from types import SimpleNamespace
+
+    from agent_workbook.task_workers import _terminate
+
+    error = PermissionError(errno.EACCES, "Synthetic unrelated denial")
+
+    def denied(pid, sig):
+        raise error
+
+    monkeypatch.setattr("agent_workbook.task_workers.os.killpg", denied)
+    process = SimpleNamespace(pid=12345, poll=lambda: 0)
+    with pytest.raises(PermissionError) as caught:
+        _terminate(process)
+    assert caught.value is error
 
 
 @pytest.mark.skipif(os.name != "posix", reason="POSIX process-group watchdog")

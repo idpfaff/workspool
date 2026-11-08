@@ -5,6 +5,7 @@ select a registry name and scalar parameters; they cannot supply code, commands,
 environment variables, paths or worker configuration. No worker runs at import.
 """
 
+import errno
 import hashlib
 import json
 import math
@@ -231,6 +232,12 @@ def _terminate(process):
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
+        except PermissionError as error:
+            # macOS may reject a group kill after its leader has exited. Preserve
+            # that completed child's result/error, but never hide a failure to
+            # stop a still-running child (or any unrelated permission error).
+            if error.errno != errno.EPERM or process.poll() is None:
+                raise
     elif process.poll() is None:
         process.kill()
     process.wait()

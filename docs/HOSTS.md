@@ -9,7 +9,7 @@ Use Python 3.11 or later. Install the versioned release wheel into an environmen
 ```bash
 python3 -m venv "$HOME/.local/share/workspool/venv"
 "$HOME/.local/share/workspool/venv/bin/python" -m pip install \
-  'agent-workbook[tokens] @ https://github.com/idpfaff/workspool/releases/download/v0.9.0/agent_workbook-0.9.0-py3-none-any.whl'
+  'agent-workbook[tokens] @ https://github.com/idpfaff/workspool/releases/download/v0.9.1/agent_workbook-0.9.1-py3-none-any.whl'
 
 workspool_python="$HOME/.local/share/workspool/venv/bin/python"
 workspool_workspace="$HOME/.local/share/workspool/workspace"
@@ -122,7 +122,7 @@ Without a configured embedding model, recall uses lexical search and reports den
 
 ```bash
 "$workspool_python" -m pip install \
-  'agent-workbook[tokens,semantic] @ https://github.com/idpfaff/workspool/releases/download/v0.9.0/agent_workbook-0.9.0-py3-none-any.whl'
+  'agent-workbook[tokens,semantic] @ https://github.com/idpfaff/workspool/releases/download/v0.9.1/agent_workbook-0.9.1-py3-none-any.whl'
 "$workspool_python" -m agent_workbook.cli model-download \
   "$HOME/.local/share/workspool/model"
 ```
