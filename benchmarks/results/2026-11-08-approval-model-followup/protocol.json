@@ -1,0 +1,144 @@
+{
+  "revision": 1,
+  "model": "gpt-6-luna",
+  "service_tier": "default",
+  "reasoning": "low",
+  "cases": [
+    {
+      "id": "approved-8201",
+      "scenario": "approved",
+      "seed": 8201
+    },
+    {
+      "id": "refused-8201",
+      "scenario": "refused",
+      "seed": 8201
+    },
+    {
+      "id": "revoked-8201",
+      "scenario": "revoked",
+      "seed": 8201
+    },
+    {
+      "id": "source_changed-8201",
+      "scenario": "source_changed",
+      "seed": 8201
+    },
+    {
+      "id": "handoff-8201",
+      "scenario": "handoff",
+      "seed": 8201
+    },
+    {
+      "id": "approved-9127",
+      "scenario": "approved",
+      "seed": 9127
+    },
+    {
+      "id": "refused-9127",
+      "scenario": "refused",
+      "seed": 9127
+    },
+    {
+      "id": "revoked-9127",
+      "scenario": "revoked",
+      "seed": 9127
+    },
+    {
+      "id": "source_changed-9127",
+      "scenario": "source_changed",
+      "seed": 9127
+    },
+    {
+      "id": "handoff-9127",
+      "scenario": "handoff",
+      "seed": 9127
+    },
+    {
+      "id": "approved-10459",
+      "scenario": "approved",
+      "seed": 10459
+    },
+    {
+      "id": "refused-10459",
+      "scenario": "refused",
+      "seed": 10459
+    },
+    {
+      "id": "revoked-10459",
+      "scenario": "revoked",
+      "seed": 10459
+    },
+    {
+      "id": "source_changed-10459",
+      "scenario": "source_changed",
+      "seed": 10459
+    },
+    {
+      "id": "handoff-10459",
+      "scenario": "handoff",
+      "seed": 10459
+    },
+    {
+      "id": "approved-11813",
+      "scenario": "approved",
+      "seed": 11813
+    },
+    {
+      "id": "refused-11813",
+      "scenario": "refused",
+      "seed": 11813
+    },
+    {
+      "id": "revoked-11813",
+      "scenario": "revoked",
+      "seed": 11813
+    },
+    {
+      "id": "source_changed-11813",
+      "scenario": "source_changed",
+      "seed": 11813
+    },
+    {
+      "id": "handoff-11813",
+      "scenario": "handoff",
+      "seed": 11813
+    }
+  ],
+  "phases": [
+    "prepare",
+    "followup"
+  ],
+  "max_rounds_per_phase": 6,
+  "max_output_tokens_per_response": 1600,
+  "limits": {
+    "requests": 480,
+    "reported_input_tokens": 5000000,
+    "reported_output_tokens": 768000,
+    "request_tokens_local": 24000,
+    "request_utf8_bytes": 100000,
+    "usd_absolute_guard": 10
+  },
+  "pricing": {
+    "verified_date": "2026-11-08",
+    "model_url": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "pricing_url": "https://developers.openai.com/api/docs/pricing",
+    "standard_per_million": {
+      "input": 0.1,
+      "cached_input": 0.01,
+      "cache_write_30m": 0.125,
+      "cache_write_12h": 0.25,
+      "output": 0.5
+    },
+    "reservation_rate_per_million": {
+      "input": 0.35,
+      "output": 0.5
+    },
+    "reservation_note": "Conservative input plus maximum listed short-context cache-write rate; no cache discount. This is a guard estimate, not an invoice."
+  },
+  "control": "Same actual tools and writer permissions; eager discovery, full JSON, text-only replies",
+  "candidate": "Same actual tools and writer permissions; lazy discovery, adaptive text-only replies",
+  "scope": "20 predeclared independent paired synthetic workbooks. Model-selected calls and authored task definitions; same required task/approval workload. Not a SQL-baseline or autonomous tool-adoption comparison.",
+  "reviewer": "Deterministic scenario intervention by a separate configured approver; only an actual valid pending final gate is reviewed. Approval is not model reasoning and is not credited as a model decision.",
+  "failures": "All 40 arms remain, including setup/answer/enforcement errors, limits and unattempted cases. No final-outcome tuning or replacement trials."
+}

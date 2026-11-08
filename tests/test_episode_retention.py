@@ -235,6 +235,63 @@ def test_expiry_removes_ledgers_facts_sessions_and_keeps_aggregate_usage(
     assert status["expired_usage_totals"] == totals
 
 
+def test_repeated_expiry_and_prune_keep_flat_cumulative_counter_shape(
+    tmp_path, monkeypatch
+):
+    book = Workbook(tmp_path)
+    now = time.time()
+    for index in range(3):
+        monkeypatch.setattr(
+            c.time, "time", lambda index=index: now + index * 32 * 86400
+        )
+        session = start(book)
+        decision(session, usage={"input_tokens": 7})
+        c.capture_event(session, "session_end", {})
+        monkeypatch.setattr(
+            c.time, "time", lambda index=index: now + (index * 32 + 31) * 86400
+        )
+        totals = json.loads(json.dumps(book.prune()))["retention"][
+            "expired_usage_totals"
+        ]
+        assert set(totals) == set(c._empty_counters())
+        assert totals["episode_count"] == (index + 1) * 2
+        assert totals["host_usage_totals"]["input_tokens"] == (index + 1) * 7
+        assert (
+            json.loads(json.dumps(book.prune()))["retention"]["expired_usage_totals"]
+            == totals
+        )
+
+
+def test_prune_discards_nested_legacy_status_without_recounting_usage(tmp_path):
+    book = Workbook(tmp_path)
+    session = start(book)
+    totals = c._empty_counters()
+    totals["episode_count"] = 9
+    totals["host_usage_totals"]["input_tokens"] = 101
+    nested = totals | {
+        "expired_usage_totals": totals | {"expired_usage_totals": totals}
+    }
+    with book.connect() as db:
+        db.execute(
+            "UPDATE continuity_retention SET retired_usage=?", (json.dumps(nested),)
+        )
+    for _ in range(2):
+        assert (
+            json.loads(json.dumps(book.prune()))["retention"]["expired_usage_totals"]
+            == totals
+        )
+        assert session.as_dict()["expired_usage_totals"] == totals
+    with book.connect() as db:
+        assert (
+            json.loads(
+                db.execute("SELECT retired_usage FROM continuity_retention").fetchone()[
+                    0
+                ]
+            )
+            == totals
+        )
+
+
 def test_active_session_protects_old_episodes_and_idle_open_session_expires(
     tmp_path, monkeypatch
 ):

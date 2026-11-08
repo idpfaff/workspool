@@ -233,12 +233,22 @@ observed duration, failures, step-result reuse, and recall/embedding coverage,
 plus available task and session history. Histories and sampled coverage are
 labeled; missing data is not treated as zero usage.
 
-With `--tokenizer`, formatting savings compare the exact returned content in a
-full JSON MCP reply containing both representations with the actual wire reply.
-`formatting_tokens_reduced` is signed and can be negative. It excludes omitted
-source text, host prompts, and provider framing. Host-reported usage remains
-separate; these counts do not claim lower provider bills. Aggregates retain
-90 UTC days with bounded groups, not an unbounded per-call ledger.
+With `--tokenizer`, `measurement_version: 2` compares one compact JSON encoding
+of the delivered data (`json_content_tokens`) with one rendered representation
+(`content_tokens`, summed across text blocks). Plain JSON and structured-only
+replies have zero `content_tokens_reduced`; reversible text/metadata formatting
+may produce a positive or negative difference. MCP envelopes, transport escaping,
+duplicate `structuredContent`, omitted source text, host prompts, and provider
+framing are excluded from this comparison. Actual serialized result counts remain
+separate as `wire_tokens`; they are not content-formatting savings.
+
+Legacy unversioned/v1 token comparisons used a duplicated representation as their
+control. Their token totals are excluded from corrected sums, with
+`legacy_token_calls_excluded` and `legacy_formatting_samples_excluded` reporting
+the missing comparable history. Historical call, duration, and reuse counters
+remain. Host-reported usage stays separate; these counts do not claim lower
+provider bills. Aggregates retain 90 UTC days with bounded groups, not an
+unbounded per-call ledger.
 
 Existing skill distillation continues to support completed SQL-only plans.
 Conditional, gated, and worker plans require additional replay proof and are

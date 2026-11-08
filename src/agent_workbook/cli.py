@@ -95,7 +95,7 @@ def main() -> None:
         host.add_argument("host", choices=["claude-desktop", "cursor", "codex"])
         host.add_argument(
             "--goal",
-            help="Optional server-startup objective; use recall for each conversation's current objective",
+            help="Optional default query for explicit recall; each conversation can supply its current objective",
         )
         host.add_argument("--tokenizer", default="o200k_base")
         host.add_argument("--recall-tokens", type=int, default=1500)
@@ -182,7 +182,7 @@ def main() -> None:
     )
     serve.add_argument(
         "--goal",
-        help="restore relevant context automatically on startup; requires --tokenizer",
+        help="default query for explicit recall calls; requires --tokenizer",
     )
     serve.add_argument("--recall-tokens", type=int, default=1500)
     serve.add_argument(

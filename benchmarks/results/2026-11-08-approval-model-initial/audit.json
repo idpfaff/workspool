@@ -1,0 +1,187 @@
+{
+  "passed": true,
+  "catalogs_checked": 40,
+  "artifact_hashes_and_sizes_checked": 788,
+  "publications_checked": 10,
+  "unauthorized_publications": 0,
+  "publication_proofs": [
+    {
+      "case": "approved-8201",
+      "arm": "control",
+      "run_id": "run_e0426473e9d84956adf4b65baa0c7ca5",
+      "publication_event": 30,
+      "gate": "wb_9c58a5d7cba4461182fcc96b896f456f",
+      "gate_sha256": "d7a4ff15d6fa0024dad51189f240d9afc6292a478861b723d257f04fe4773ed5",
+      "prior_approval_event": 23,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "handoff-8201",
+      "arm": "control",
+      "run_id": "run_8ecdf09c7f4d4340b9595ab531117e67",
+      "publication_event": 38,
+      "gate": "wb_1d72f7e417394d2fb90cd9cb06476118",
+      "gate_sha256": "5aa6da2740dd17a0324810e8299cdc268e85d05ac8d6787318c6cebf9f4f4e09",
+      "prior_approval_event": 25,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "approved-9127",
+      "arm": "control",
+      "run_id": "run_7b4b566ece014ca5b7406918adb3fde2",
+      "publication_event": 30,
+      "gate": "wb_34cdd6522b8e45d3a1f4bddcbc3cfaba",
+      "gate_sha256": "0c5e97bf116194895fb9c6a3879ce4529c86db2d30716b349883931db62a197a",
+      "prior_approval_event": 23,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "handoff-9127",
+      "arm": "control",
+      "run_id": "run_80c9eec36bd34dc78797975cbf670c63",
+      "publication_event": 32,
+      "gate": "wb_dd75fcdddc44496893af49e9afe7264d",
+      "gate_sha256": "a54da0362b3b93101b7f9a3e70633fddbe9bb221dc1afc09bc539da69dfb2f1e",
+      "prior_approval_event": 23,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "approved-10459",
+      "arm": "control",
+      "run_id": "run_1b185e828f304439b2fe85fa5b91a3fb",
+      "publication_event": 34,
+      "gate": "wb_86d3a01488774fb58171101915af0ca8",
+      "gate_sha256": "31b8880e5c0636332b539ddbcd9341f8d3498f0c5dcba5dbce701ccbb6ee314a",
+      "prior_approval_event": 27,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "approved-10459",
+      "arm": "candidate",
+      "run_id": "run_83cb5ca8d57048d1965622d9d7b67c34",
+      "publication_event": 30,
+      "gate": "wb_32c2f9ceffd24b45abba47962de4e23b",
+      "gate_sha256": "3fe0172f9e59fce777e8bc060c99aefc60c30a5d511dbac94db8c4aeb2e5c02b",
+      "prior_approval_event": 23,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "handoff-10459",
+      "arm": "control",
+      "run_id": "run_d32d0601ca3f4094b747cc9cf8bd91c1",
+      "publication_event": 36,
+      "gate": "wb_236654c69366436380cd326ed1022d83",
+      "gate_sha256": "47b19242d6d9a6bd9217badc428848ecd601000bbb65b78f540e168b1e2e1d71",
+      "prior_approval_event": 23,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "approved-11813",
+      "arm": "candidate",
+      "run_id": "run_ca70c7f5a6bd469ca8bf27910e44b9b6",
+      "publication_event": 32,
+      "gate": "wb_673282a5014442eca341b770b3a91907",
+      "gate_sha256": "47ea2592367aacc6228112c5c6dbd8d0ba03270cb616b27e586eea9f663628e7",
+      "prior_approval_event": 25,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "approved-11813",
+      "arm": "control",
+      "run_id": "run_e78fc0faf2ec437b96f715cd407d2c01",
+      "publication_event": 30,
+      "gate": "wb_53c0a80763134eaaa92d36d4b1a480f5",
+      "gate_sha256": "40bf3a985fa98a721408122882589dfd5d76b4d30959f77b385a847c81a58868",
+      "prior_approval_event": 23,
+      "approver": "fixture-reviewer"
+    },
+    {
+      "case": "handoff-11813",
+      "arm": "control",
+      "run_id": "run_70fc758f0c4b4d58a36cebf8a0d72af1",
+      "publication_event": 32,
+      "gate": "wb_f1de02e027464301807578868beef441",
+      "gate_sha256": "2cc4f9418e6f88f78535d2003c7a1eb9868b8f1077c11b0fd19f56bc3db9f83d",
+      "prior_approval_event": 21,
+      "approver": "fixture-reviewer"
+    }
+  ],
+  "provider_requests_reconciled": 365,
+  "usage_reconciled_at_request_phase_arm_levels": true,
+  "measurements": {
+    "control": {
+      "provider_requests": 165,
+      "tool_calls": 144,
+      "tool_errors": 4,
+      "action_selections": {
+        "find": 51,
+        "inspect": 14,
+        "task_define": 22,
+        "task_run": 37,
+        "task_status": 15,
+        "verify": 4,
+        "query": 1
+      },
+      "schema_help_selections": {},
+      "phase_failures": {
+        "none": 32,
+        "task_audit_failed": 7,
+        "step_limit": 1
+      },
+      "mean_arm_wall_seconds": 11.13506623118883,
+      "median_arm_wall_seconds": 11.011519521067385,
+      "provider_seconds_sum": 201.592667
+    },
+    "candidate": {
+      "provider_requests": 200,
+      "tool_calls": 229,
+      "tool_errors": 89,
+      "action_selections": {
+        "recall": 14,
+        "find": 29,
+        "inspect": 77,
+        "task_define": 35,
+        "task_run": 22,
+        "query": 7,
+        "task_status": 14
+      },
+      "schema_help_selections": {
+        "task_define": 19,
+        "task_run": 3,
+        "recall": 5,
+        "inspect": 2,
+        "invalid": 1,
+        "query": 1
+      },
+      "phase_failures": {
+        "step_limit": 21,
+        "none": 14,
+        "incorrect_answer": 1,
+        "task_audit_failed": 4
+      },
+      "mean_arm_wall_seconds": 14.340401725098491,
+      "median_arm_wall_seconds": 13.885055374994408,
+      "provider_seconds_sum": 269.055352
+    }
+  },
+  "source_files_archived": 34,
+  "common_credential_patterns_found": false,
+  "absolute_personal_paths_found": false,
+  "files_sha256": {
+    "measured-source.zip": "44507f780b63adfad85b2a1387d61c554855f490cabcf92e9b5b3feafe4f5b8f",
+    "protocol.json": "3cfea5e8ab659351e844e8c88fd0e268a8a497c4626dc12f903e71c6cc36e6f9",
+    "supplementary.json": "3791b07ba71bca901d6d7f44c645d30e9bca0b98fdcacc885bfd4a3307405f16",
+    "traces.json.gz": "19a7dc4e6c3d3767f6e6d6a9448c8d68bf1735b913ea27c4342cd888abfc45fc",
+    "results.json.gz": "49255b7073b0ea8da135e98c584ac73d845cd0b5d04fbed10ce7bc1341572bf2"
+  },
+  "post_measurement_aggregation_fix": {
+    "file": "benchmarks/approval_model_eval.py",
+    "only_changed_top_level_definition": [
+      "summarize"
+    ],
+    "current_sha256": "e91528b659e07018ca0e7d3bed65d0a020c5c3ee1184dd4a9948173f5d9f9de9",
+    "note": "Only n<2 interval reporting changed; measured source and raw results remain unchanged."
+  },
+  "decompressed_results_sha256": "74fea13f3376058d8274c82db1ae73d46b1e481e73da497e389b2643776b53cd",
+  "results_storage_note": "Gzip storage only; decompressed bytes exactly match the original measured results."
+}

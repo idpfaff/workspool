@@ -2,17 +2,17 @@
 
 **Carry useful context across sessions, retrieve evidence within a budget, and coordinate shared work.**
 
-Workspool gives AI agents a shared local workspace for work that continues across sessions. Its opt-in `runtime` profile captures compact facts from executed tools and restores relevant local context for a configured startup goal. Optional local embeddings combine semantic and keyword retrieval. Durable tasks keep source versions, calculated results, and evidence together; fenced claims coordinate agents sharing the same workspace.
+Workspool gives AI agents a shared local workspace for work that continues across sessions. Its opt-in `runtime` profile captures compact observations from executed tools; agents retrieve relevant context through explicit `recall` calls. Optional local embeddings combine semantic and keyword retrieval. Durable tasks keep source versions, calculated results, and evidence together; fenced claims coordinate agents sharing the same workspace.
 
 - **Capture useful work automatically.** Configured MCP hooks retain bounded result previews, artifact references, task status, and failures. Bulk source bodies and SQL literals stay out of session memory.
-- **Restore relevant context.** Supply a startup goal and tokenizer to receive a bounded recall package. Add a provisioned local embedding model for paraphrase retrieval alongside keyword matches.
+- **Retrieve relevant context.** Call `recall` with the current objective and a tokenizer budget. An optional configured goal supplies a default query. Add a provisioned local embedding model for paraphrase retrieval alongside keyword matches.
 - **Run recurring work.** Combine SQL with registered local Python programs or tool adapters, branch on results, and pause for exact-input approval. An explicit runner handles intervals and input-change triggers.
 - **Coordinate agents.** Give each server a configured identity and role, claim a task before execution, and inspect producer events and stale dependency versions.
 - **Keep evidence inspectable.** Reopen complete task briefs after context loss, with immutable source references, exact byte citations, and explicit omissions.
 - **Reuse successful analytical plans.** Distill a published task into a discoverable skill, validate new inputs against its saved schema, and run its SQL again without reconstructing the plan.
-- **Review changes and delivered value.** See which source versions made a result stale, check current approvals, and inspect measured latency, result reuse, and formatting token reductions.
+- **Review changes and measured usage.** See which source versions made a result stale, check current approvals, and inspect latency, result reuse, and content-token comparisons against one JSON copy.
 
-Works with local or hosted models through an MCP-compatible agent. Workspace files and embedding inference stay local; the host receives selected context and tool replies. Automatic capture covers calls through the configured Workspool server. Other tools and conversations need explicit host hooks, and the MCP host must forward initialization instructions for startup recall to reach the model. Workspool does not monitor your desktop or watch external files. Scheduled execution requires an explicitly started local runner; configured workers run with that account's permissions.
+Works with local or hosted models through an MCP-compatible agent. Workspace files and embedding inference stay local; the host receives selected context and tool replies. Automatic capture covers calls through the configured Workspool server. Other tools and conversations need explicit host hooks. Recalled source text is returned as tool data and is never inserted into server instructions. Workspool does not monitor your desktop or watch external files. Scheduled execution requires an explicitly started local runner; configured workers run with that account's permissions.
 
 [Connect Claude Desktop, Cursor, or Codex](docs/HOSTS.md) · [Reusable analytical skills](docs/SKILLS.md) · [Runtime guide](benchmarks/RUNTIME.md) · [Public dataset stress](benchmarks/PUBLIC_DATA.md)
 
@@ -32,11 +32,13 @@ Workspool reduces the material your agent needs to read again. Use it for everyd
 | **Manage projects and follow-ups** | Meeting notes, decisions, action items, and progress checkpoints | Start from the current status and next action, then open the supporting details when needed. |
 | **Switch agents or resume later** | The objective, verified results, supporting files, and next step | Give the next agent a focused handoff instead of rebuilding the task history. |
 
-Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not replay it into the conversation; configured startup recall or an explicit retrieval selects what the host receives.
+Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not replay it into the conversation; explicit retrieval selects what the host receives.
 
-For recurring spending reviews, v0.9.0 can calculate totals, run a registered Python check, pause for approval, rerun when inputs change, and transfer the workbook with its evidence. The complete workflow passed 25 checks. Its 18 measured writer replies used **11,148 tokens versus 21,680 for full JSON replies containing the same information: 10,532 fewer tokens (48.6%)**. This measures response formatting with `o200k_base`, excluding request/setup tokens and model billing; it is not a comparison against a SQL script. [Workflow results and exact counts](benchmarks/RECURRING_WORKFLOW.md).
+For recurring spending reviews, Workspool can calculate totals, run a registered Python check, pause for approval, rerun when inputs change, and transfer the workbook with its evidence. The corrected v0.9.2 integration workflow passed **25 checks** and preserved **61 artifact IDs, versions, and digests** through export/restore. Its 18 measured writer replies contained **10,513 tokens, exactly the same as one JSON copy of the same data: 0% formatting savings**. Across all 30 replies, both counts were 21,080. The former 48.6% claim used duplicated JSON as its control and is withdrawn. These `o200k_base` content counts exclude transport framing and provider usage. [Workflow results and corrected counts](benchmarks/RECURRING_WORKFLOW.md).
 
-In the local recall probe, keyword and hybrid retrieval both found **5/5 target Wikipedia articles first**. A separate four-question synthetic paraphrase diagnostic found **4/4 targets with the real local model versus no keyword hits**; it demonstrates a narrow capability, not a general accuracy gain. The MCP initialization response also included an exact source citation within its 1,200-token context budget. A separate [real Codex host test](docs/HOSTS.md#verified-model-delivery-codex-cli) confirms model delivery after metadata discovery. [Semantic recall results and limits](benchmarks/SEMANTIC.md).
+The live task/approval evaluation does **not establish an efficiency win**. In the final 20 paired synthetic cases with the same tools and single-copy replies, the eager interface completed **17/20 cases** and lazy discovery completed **1/20**, using a separately disclosed exact-numeric audit. Each phase allowed six model rounds. The initial run, strict representation scores, failed attempts, provider usage, and scoring correction are retained. Lower token totals accompanied less completed work; feature expansion remains paused while interface reliability is addressed. [Model evaluation and limits](benchmarks/APPROVAL_MODEL.md).
+
+In the local recall probe, keyword and hybrid retrieval both found **5/5 target Wikipedia articles first**. A separate four-question synthetic paraphrase diagnostic found **4/4 targets with the real local model versus no keyword hits**; it demonstrates a narrow capability, not a general accuracy gain. The historical initialization-delivery experiment used a transport that has since been removed; current hosts retrieve source content with `recall`. [Semantic recall results and limits](benchmarks/SEMANTIC.md).
 
 ### Earlier task measurements: v0.6.0
 
@@ -60,7 +62,7 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.9.1 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.9.2 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
@@ -92,7 +94,7 @@ Generate and install the configuration for your host without editing JSON:
 
 Use `cursor` or `codex` in place of `claude-desktop` for those hosts. Omit `--install` to preview the configuration. Installation preserves other server entries and makes a backup before changing an existing file. Conflicting Workspool entries require an explicit decision; Codex TOML conflicts are left for manual editing.
 
-Each conversation can use `recall` with its current objective. Optionally add `--goal "Continue the spending review"` for context selected when the server starts; a shared host configuration does not need a fixed conversation goal.
+Each conversation can use `recall` with its current objective. Optionally add `--goal "Continue the spending review"` as the default query when a recall call omits one; a shared host configuration does not need a fixed conversation goal.
 
 Check the generated launch command through a disposable MCP session:
 
@@ -101,7 +103,7 @@ Check the generated launch command through a disposable MCP session:
   --goal "Continue the spending review and recover prior decisions"
 ```
 
-Then fully restart the host. The [host walkthrough](docs/HOSTS.md) covers where to find the tools, a two-session continuity check, and troubleshooting. The doctor checks the generated command and MCP exchange; it does not establish that a particular host forwards startup context to its model.
+Then fully restart the host. The [host walkthrough](docs/HOSTS.md) covers where to find the tools, a two-session continuity check, and troubleshooting. The doctor checks the generated command and MCP exchange; actual host behavior still requires an explicit recall call.
 
 ### Manual configuration
 
@@ -131,7 +133,7 @@ The workbook defaults to `~/.agent-workbook/default`. Set `WORKSPOOL_HOME` or pa
 
 Workspool speaks MCP and runs independently of the model. Any host that supports MCP tool calls works, with a local MLX model, another local runtime, or a hosted model. The host decides which tool responses it forwards to its model.
 
-For capture and startup recall, use the `runtime` profile:
+For capture and budgeted recall, use the `runtime` profile:
 
 ```sh
 .venv/bin/workspool --workspace "$HOME/MyWorkbook" serve \
@@ -141,7 +143,7 @@ For capture and startup recall, use the `runtime` profile:
   --model-dir "$HOME/.cache/workspool/bge-small-en-v1.5"
 ```
 
-It exposes storage, SQL, durable tasks, recall, session memory, claims, and provenance through one lazy `workspool` dispatcher, filtered by role. Adaptive text replies carry one copy of the result. The added startup context section, including its label and metadata, must fit the configured 1,500-token budget; ordinary server instructions and tool schemas are separate. The host must support the dispatcher, text response blocks, and initialization instructions.
+It exposes storage, SQL, durable tasks, recall, session memory, claims, and provenance through one lazy `workspool` dispatcher, filtered by role. Adaptive text replies carry one copy of the result. Calling `recall` without a query uses the configured goal and its 1,500-token response budget. Server instructions contain static guidance, never recalled source text. The host must support the dispatcher and text response blocks.
 
 The `agent` profile retains durable tasks and indexed keyword context without automatic session capture. Use the [runtime guide](benchmarks/RUNTIME.md) to connect external host events or configure separate reader, writer, and approver agents.
 
@@ -515,7 +517,7 @@ Saved artifacts are not removed on their own. The query reuse cache can evict en
 - `delete <wb_id>` removes one superseded version. `delete <name> --expected-version N` removes every version of a name, with the same version check an update makes.
 - `prune` drops superseded versions nothing pins, keeping the newest `--keep` versions of each name (default 1). It runs to a fixed point, so an old result and the old input it pinned go together. `prune --dry-run` reports what would go.
 
-Runtime capture history has a separate **30-day retention policy**. Writer startup and `prune` collect expired inactive-session episodes, unreferenced observations, and disposable events in bounded passes. `--episode-retention DAYS` on `serve` or `prune` changes the persisted policy; `0` disables expiry. A dry run reports the proposed effect without changing policy. Active references preserve their evidence, including a skill's origin proof while that skill or a replay task still pins it. Aggregate usage and small version/claim identity records remain. Direct deletion of managed episodes gives an actionable error; use retention cleanup. See the [retention guide](benchmarks/RUNTIME.md#history-retention) for limits and reporting.
+Runtime capture history has a separate **30-day retention policy**. Captured observations expire with their episodes after 30 days of session inactivity; they are not permanent memory. Writer startup and `prune` collect eligible episodes, their unreferenced observations, and disposable events in bounded passes. Save important conclusions as ordinary artifacts for durable retention. `--episode-retention DAYS` on `serve` or `prune` changes the persisted policy; `0` disables expiry. A dry run reports the proposed effect without changing policy. Active references preserve their evidence, including a skill's origin proof while that skill or a replay task still pins it. Aggregate usage and small version/claim identity records remain. Direct deletion of managed episodes gives an actionable error; use retention cleanup. See the [retention guide](benchmarks/RUNTIME.md#history-retention) for limits and reporting.
 
 ```sh
 uv run workspool --workspace ~/MyWorkbook prune --dry-run
@@ -562,7 +564,7 @@ Over MCP, `delete` is available only to hosts whose `--tools` list includes it.
 | `changes` | Runtime profile. Page through actor-attributed events with explicit history-expiry markers. |
 | `approve` | Runtime approver. Approve an exact current artifact or revoke its attestation. Task gates bind exact inputs and worker identity. |
 | `verify` | Runtime profile. Report exact changed inputs, affected published tasks, current approvals, and suggested reruns with bounded pagination. |
-| `metrics` | Runtime profile. Read observed latency, failures, step-result reuse, recall coverage, and signed same-content formatting token reductions. Missing coverage is explicit. |
+| `metrics` | Runtime profile. Read latency, failures, step-result reuse, recall coverage, and content tokens compared with one JSON copy. Wire counts and excluded legacy measurements are separate. |
 | `task_schedule` | Runtime profile. List or configure interval and input-change triggers. An explicit local runner executes due tasks; updates require the current version. |
 | `skill_distill` | Runtime writer. Retain a reusable SQL plan and source contracts from a successful published task. |
 | `skill_find` | Runtime profile. Find reusable analytical plans by name or description. |

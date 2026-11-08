@@ -1,14 +1,26 @@
-# Recurring workflow integration — v0.9.0
+# Recurring workflow integration — corrected content metrics
 
-On November 8, 2026, the local v0.9.0 probe passed **25/25 integration
-assertions** in **4.07 seconds**. It used actual MCP subprocesses and explicit
+On November 8, 2026, the corrected local probe passed **25/25 integration
+assertions** in **4.06 seconds**. It used actual MCP subprocesses and explicit
 CLI schedule ticks, with synthetic CSVs and a configured local Python worker.
 No model, provider API, paid service, or external action was invoked.
 
-- [Results and all assertions](results/2026-11-08-recurring/results.json)
-- [Actual requests and replies, compressed JSON](results/2026-11-08-recurring/traces.json.gz)
-- [Independent recount and artifact audit](results/2026-11-08-recurring/audit.json)
+- [Results and all assertions](results/2026-11-08-recurring-content-v2/results.json)
+- [Actual requests and replies, compressed JSON](results/2026-11-08-recurring-content-v2/traces.json.gz)
+- [Independent content/wire recount and source audit](results/2026-11-08-recurring-content-v2/audit.json)
 - [Runnable harness](recurring_workflow.py)
+
+## Correction to the earlier report
+
+The previously reported **48.6% formatting reduction is withdrawn**. Its control
+duplicated the same data in both MCP response fields. That comparison did not
+measure content formatting against a single-representation alternative.
+
+Recounting the original trace gives **20,768 versus 20,768 content tokens** across
+30 tool replies, and **10,495 versus 10,495** for its 18 measured writer calls:
+zero content reduction. The [old evidence and report remain preserved and marked
+superseded](results/2026-11-08-recurring/SUPERSEDED.md). The new run below uses
+measurement version 2; it also measures zero content reduction.
 
 ## What passed
 
@@ -45,10 +57,10 @@ the bundled `o200k_base` encoding, emitted tool request/reply objects totaled:
 
 | Serialized payload | Tokens |
 | --- | ---: |
-| Tool requests | 1,467 |
-| Tool replies | 21,777 |
-| **Requests + replies** | **23,244** |
-| Initialization/list-tools response objects, separately | 1,861 |
+| Tool requests | 1,468 |
+| Tool replies | 22,089 |
+| **Requests + replies** | **23,557** |
+| Initialization/list-tools response objects, separately | 1,826 |
 
 These are each payload counted once, excluding JSON-RPC framing, CLI output,
 and model conversation replay. They are **not provider usage or billed
@@ -56,12 +68,23 @@ savings**. No comparison against a competent SQL script or another workflow
 system was measured.
 
 The original writer's `--metrics` snapshot covered **18 calls**, zero errors,
-and **1.63 seconds** of measured tool latency. For those same delivered
-values, full JSON in both MCP response fields counted **21,680 tokens**;
-the actual adaptive text responses counted **11,148**. The signed formatting
-difference was **10,532 tokens (48.6%)**. This comparison includes the removed
-duplicate representation; it does not estimate savings from omitted source
-data or claim that every host would forward both fields.
+and **1.65 seconds** of measured tool latency. Those replies contained
+**10,513 rendered-content tokens versus 10,513 tokens** for the same delivered
+data encoded once as compact JSON: **zero content reduction**. Their actual MCP
+wire result objects contained **11,166 tokens**, reported separately.
+
+Across all 30 tool replies, rendered content and the single-JSON control both
+contained **21,080 tokens**. Every reply in this fixture was plain JSON. The
+control counts one encoding of the decoded delivered data; the candidate counts
+each delivered text block once. Transport escaping, MCP envelopes, and duplicate
+`structuredContent` are excluded from content-formatting comparisons. Source
+omissions and provider context/billing are not measured. There is no demonstrated
+content-packing gain in this workflow.
+
+Persisted metrics now label `measurement_version: 2`. Legacy v1 token totals are
+excluded from corrected sums; excluded calls and comparison samples are explicit.
+Their valid historical duration, call, and reuse counts remain. The fresh workbook
+in this run contained no legacy samples.
 
 Execution replies recorded 12 step-result reuses, five SQL non-reuses, and
 four configured worker executions. Reuse includes eligible SQL cache hits
@@ -73,7 +96,7 @@ unknown. This probe did not exercise embedding coverage.
 
 All 32 runtime/harness source fingerprints stayed unchanged during the final
 run. The public trace normalizes machine-specific paths after counting;
-an independent recount of its MCP objects and same-content comparison also
+an independent recount of its MCP objects and single-representation comparison
 matched exactly in this run. Normalized CLI paths are outside the token
 totals. Python was 3.13.15, MCP 1.30.0, DuckDB 1.5.6, and tiktoken 0.14.0.
 
@@ -92,9 +115,9 @@ a five-minute overall limit and bounded CLI/worker timeouts. This is one
 scripted integration run, not a concurrency, large-data, security-boundary,
 or autonomous-agent reliability evaluation.
 
-Earlier local harness diagnostics are retained under `.local-benchmarks`:
-one used a subquery that correctly bypassed conservative SQL caching and
-therefore needed a fresh exact-input gate; another requested `verify` above
-its 50-item limit. The final fixture uses two cache-eligible scalar SQL steps
-and valid pagination limits. A subsequent successful run was repeated after
-the editable package metadata was synchronized to v0.9.0.
+The final fixture uses two cache-eligible scalar SQL steps and valid pagination
+limits. Earlier local diagnostics and the first corrected run are retained under
+`.local-benchmarks`. The final corrected run followed the instruction-allowlist
+fix: tool advice now names only enabled operations after role filtering. Its
+recorded source hashes match the independently audited source. The earlier
+corrected run and report are preserved in the local evidence directory.

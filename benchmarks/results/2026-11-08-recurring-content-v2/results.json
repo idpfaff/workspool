@@ -1,0 +1,856 @@
+{
+  "format": 2,
+  "measurement_version": 2,
+  "scope": "Synthetic local integration; no model or paid API calls",
+  "tokenizer": "o200k_base",
+  "fixtures": [
+    "category,amount_cents\nhosting,70000\nanalytics,30000\nstorage,20000\n",
+    "category,amount_cents\nhosting,90000\nanalytics,40000\nstorage,20000\n",
+    "category,amount_cents\nhosting,30000\nanalytics,20000\nstorage,10000\n",
+    "category,amount_cents\nhosting,100000\nanalytics,50000\nstorage,30000\n"
+  ],
+  "expected_rows": [
+    [
+      [
+        120000,
+        100000,
+        true,
+        20000
+      ]
+    ],
+    [
+      [
+        150000,
+        100000,
+        true,
+        50000
+      ]
+    ],
+    [
+      [
+        60000,
+        100000,
+        false,
+        0
+      ]
+    ],
+    [
+      [
+        180000,
+        100000,
+        true,
+        80000
+      ]
+    ]
+  ],
+  "source_sha256": {
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "c6b25a7f59bbebb3f5de9ff2f555430602f10f1fa1cf1a59a60ae3280d006e65",
+    "src/agent_workbook/cli.py": "fe98a89a4fe8b447edc69ac1cfb27274868702df32e5c5090788bdf838037e6b",
+    "src/agent_workbook/context_index.py": "72e33e9a3acf903a120d834015b26e35a4b6783fe0180682b1e754563e6bd951",
+    "src/agent_workbook/continuity.py": "6a93d159a81c9aaf50432e5a4221d059cfeb25d43d6f1d20e07151a30fc5abbe",
+    "src/agent_workbook/coordination.py": "a0c209b3c0e310b40881d5506924afabd8e5e6e70cffc1bdaf25d664f5146b57",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/host_setup.py": "debbf2d65436f20b8ae9055f8b380439e3a9aec1778d5c584c89ac338fa1742f",
+    "src/agent_workbook/materialize.py": "7b11d4174d4b7bfd81eb36a5134c2d42d5e961f6482ad8a02ef89927d1617f8c",
+    "src/agent_workbook/memory_projection.py": "7674a7360ebede25ae454672df8dc505c698c9290f7b34494c718f2f2eaf5d30",
+    "src/agent_workbook/observability.py": "dab3f5aeb5013a1741ef1b1b264808f04eddca4289653da1c98fd6fcf529f2dc",
+    "src/agent_workbook/query.py": "c2f3778419cc2369421e0bd9a0fcc28882179879c39a9d2d74f0b8e227185ce2",
+    "src/agent_workbook/query_cache.py": "14466b8ab77f4097a0efbead7d305805728e106898406f000597fb58d7a455e3",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/review.py": "61f1f873ce6e560e3237d8ff51a0151c33776750a49283b478e60ace6b53e0b2",
+    "src/agent_workbook/scheduler.py": "822bba305e98f6a2ff4b36ab8fcb046ab919e3a56a006152f825701235ece6fb",
+    "src/agent_workbook/semantic.py": "e83b2604a06f008fe752c9c0b5d4d01c502d374a649aaf79103baf2197bb0049",
+    "src/agent_workbook/server.py": "d8a2f8037cc6948b7425d4a3249f76f7ea834e12d1c6d86d6faa8c6de400f698",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/skills.py": "66410b6fb9fc5d834208a6fb57d117d9ac68bd92d6b96d619ac1644dac82210e",
+    "src/agent_workbook/store.py": "69465260412dcf307762a2b3c4ee06c8c055f6078e74109722fd926cf04d7a73",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0",
+    "src/agent_workbook/task_flow.py": "d5ddc6d4fec39f014b2932c978388841d9bf15e30f687e59743c723959f8a55d",
+    "src/agent_workbook/task_workers.py": "68efa38e40328eebee0fffc09d8049cea68f742bab3465cc56a67e1d047a9f54",
+    "src/agent_workbook/tasks.py": "531a2e2b4701b04cac27286be861f49bd81e55e35177b68ec8c715ff1ed58859",
+    "src/agent_workbook/verification.py": "a6a7f907b92e815f6a6e8d1320635f1c625e7c2ef4bf07065fd4752b72e0faee",
+    "src/agent_workbook/workbook_bundle.py": "4b30c735349a3b9b36856b7557c432bac898697e16d8b7a935d77931ae368acb",
+    "benchmarks/recurring_workflow.py": "da6075cf9d78aa6014c04dd9db337dc3fa8b29cdfa8664b9f90888d0b27c7f7f"
+  },
+  "dependencies": {
+    "python": "3.13.15",
+    "mcp": "1.30.0",
+    "duckdb": "1.5.6",
+    "tiktoken": "0.14.0",
+    "agent-workbook": "0.9.2"
+  },
+  "worker_sha256": {
+    "script": "08fcd1f30a20862c4a0241c142f8d4e658e10c6b70b210fc9b2376aa8f631c5f",
+    "interpreter": "1988a0dd685f91bbaf20b5267046e13cb78859dbb3b5f030e89b448c1fbfe8d4"
+  },
+  "metrics": {
+    "measurement_version": 2,
+    "period": {
+      "from_utc": "2026-10-10",
+      "through_utc": "2026-11-08",
+      "retention_days": 90
+    },
+    "instrumented": true,
+    "groups": [
+      {
+        "tool": "claim",
+        "tokenizer": "o200k_base",
+        "calls": 1,
+        "errors": 0,
+        "content_samples": 1,
+        "content_missing_calls": 0,
+        "content_tokens": 30,
+        "json_content_tokens": 30,
+        "content_tokens_reduced": 0,
+        "wire_samples": 1,
+        "wire_missing_calls": 0,
+        "wire_tokens": 47,
+        "legacy_token_calls_excluded": 0,
+        "legacy_formatting_samples_excluded": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "cache_bypassed": 0,
+        "cache_samples": 0,
+        "calls_without_cache_measurement": 1,
+        "task_steps": 0,
+        "timed_steps": 0,
+        "steps_without_timing": 0,
+        "result_artifact_references": 0,
+        "retained_base_receipts": 0,
+        "recall_calls": 0,
+        "dense_coverage_samples": 0,
+        "dense_complete_calls": 0,
+        "lexical_fallback_calls": 0,
+        "indexed_chunks": 0,
+        "scored_chunks": 0,
+        "pending_chunks": 0,
+        "recall_without_dense_coverage": 0,
+        "overflow_calls": 0,
+        "elapsed_seconds": 0.000490749953314662,
+        "max_elapsed_seconds": 0.000490749953314662,
+        "step_elapsed_seconds": 0.0,
+        "mean_elapsed_seconds": 0.000490749953314662
+      },
+      {
+        "tool": "save",
+        "tokenizer": "o200k_base",
+        "calls": 5,
+        "errors": 0,
+        "content_samples": 5,
+        "content_missing_calls": 0,
+        "content_tokens": 227,
+        "json_content_tokens": 227,
+        "content_tokens_reduced": 0,
+        "wire_samples": 5,
+        "wire_missing_calls": 0,
+        "wire_tokens": 312,
+        "legacy_token_calls_excluded": 0,
+        "legacy_formatting_samples_excluded": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "cache_bypassed": 0,
+        "cache_samples": 0,
+        "calls_without_cache_measurement": 5,
+        "task_steps": 0,
+        "timed_steps": 0,
+        "steps_without_timing": 0,
+        "result_artifact_references": 0,
+        "retained_base_receipts": 0,
+        "recall_calls": 0,
+        "dense_coverage_samples": 0,
+        "dense_complete_calls": 0,
+        "lexical_fallback_calls": 0,
+        "indexed_chunks": 0,
+        "scored_chunks": 0,
+        "pending_chunks": 0,
+        "recall_without_dense_coverage": 0,
+        "overflow_calls": 0,
+        "elapsed_seconds": 0.0070805399445816875,
+        "max_elapsed_seconds": 0.0024455829989165068,
+        "step_elapsed_seconds": 0.0,
+        "mean_elapsed_seconds": 0.0014161079889163375
+      },
+      {
+        "tool": "task_define",
+        "tokenizer": "o200k_base",
+        "calls": 1,
+        "errors": 0,
+        "content_samples": 1,
+        "content_missing_calls": 0,
+        "content_tokens": 85,
+        "json_content_tokens": 85,
+        "content_tokens_reduced": 0,
+        "wire_samples": 1,
+        "wire_missing_calls": 0,
+        "wire_tokens": 107,
+        "legacy_token_calls_excluded": 0,
+        "legacy_formatting_samples_excluded": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "cache_bypassed": 0,
+        "cache_samples": 0,
+        "calls_without_cache_measurement": 1,
+        "task_steps": 0,
+        "timed_steps": 0,
+        "steps_without_timing": 0,
+        "result_artifact_references": 0,
+        "retained_base_receipts": 0,
+        "recall_calls": 0,
+        "dense_coverage_samples": 0,
+        "dense_complete_calls": 0,
+        "lexical_fallback_calls": 0,
+        "indexed_chunks": 0,
+        "scored_chunks": 0,
+        "pending_chunks": 0,
+        "recall_without_dense_coverage": 0,
+        "overflow_calls": 0,
+        "elapsed_seconds": 0.00395525002386421,
+        "max_elapsed_seconds": 0.00395525002386421,
+        "step_elapsed_seconds": 0.0,
+        "mean_elapsed_seconds": 0.00395525002386421
+      },
+      {
+        "tool": "task_run",
+        "tokenizer": "o200k_base",
+        "calls": 8,
+        "errors": 0,
+        "content_samples": 8,
+        "content_missing_calls": 0,
+        "content_tokens": 8084,
+        "json_content_tokens": 8084,
+        "content_tokens_reduced": 0,
+        "wire_samples": 8,
+        "wire_missing_calls": 0,
+        "wire_tokens": 8495,
+        "legacy_token_calls_excluded": 0,
+        "legacy_formatting_samples_excluded": 0,
+        "cache_hits": 12,
+        "cache_misses": 5,
+        "cache_bypassed": 4,
+        "cache_samples": 21,
+        "calls_without_cache_measurement": 0,
+        "task_steps": 32,
+        "timed_steps": 32,
+        "steps_without_timing": 0,
+        "result_artifact_references": 21,
+        "retained_base_receipts": 0,
+        "recall_calls": 0,
+        "dense_coverage_samples": 0,
+        "dense_complete_calls": 0,
+        "lexical_fallback_calls": 0,
+        "indexed_chunks": 0,
+        "scored_chunks": 0,
+        "pending_chunks": 0,
+        "recall_without_dense_coverage": 0,
+        "overflow_calls": 0,
+        "elapsed_seconds": 1.6354634151794016,
+        "max_elapsed_seconds": 0.2709335000254214,
+        "step_elapsed_seconds": 1.5905223774025217,
+        "mean_elapsed_seconds": 0.2044329268974252
+      },
+      {
+        "tool": "task_schedule",
+        "tokenizer": "o200k_base",
+        "calls": 1,
+        "errors": 0,
+        "content_samples": 1,
+        "content_missing_calls": 0,
+        "content_tokens": 29,
+        "json_content_tokens": 29,
+        "content_tokens_reduced": 0,
+        "wire_samples": 1,
+        "wire_missing_calls": 0,
+        "wire_tokens": 46,
+        "legacy_token_calls_excluded": 0,
+        "legacy_formatting_samples_excluded": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "cache_bypassed": 0,
+        "cache_samples": 0,
+        "calls_without_cache_measurement": 1,
+        "task_steps": 0,
+        "timed_steps": 0,
+        "steps_without_timing": 0,
+        "result_artifact_references": 0,
+        "retained_base_receipts": 0,
+        "recall_calls": 0,
+        "dense_coverage_samples": 0,
+        "dense_complete_calls": 0,
+        "lexical_fallback_calls": 0,
+        "indexed_chunks": 0,
+        "scored_chunks": 0,
+        "pending_chunks": 0,
+        "recall_without_dense_coverage": 0,
+        "overflow_calls": 0,
+        "elapsed_seconds": 0.0011906659929081798,
+        "max_elapsed_seconds": 0.0011906659929081798,
+        "step_elapsed_seconds": 0.0,
+        "mean_elapsed_seconds": 0.0011906659929081798
+      },
+      {
+        "tool": "task_status",
+        "tokenizer": "o200k_base",
+        "calls": 2,
+        "errors": 0,
+        "content_samples": 2,
+        "content_missing_calls": 0,
+        "content_tokens": 2058,
+        "json_content_tokens": 2058,
+        "content_tokens_reduced": 0,
+        "wire_samples": 2,
+        "wire_missing_calls": 0,
+        "wire_tokens": 2159,
+        "legacy_token_calls_excluded": 0,
+        "legacy_formatting_samples_excluded": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "cache_bypassed": 0,
+        "cache_samples": 0,
+        "calls_without_cache_measurement": 2,
+        "task_steps": 0,
+        "timed_steps": 0,
+        "steps_without_timing": 0,
+        "result_artifact_references": 0,
+        "retained_base_receipts": 0,
+        "recall_calls": 0,
+        "dense_coverage_samples": 0,
+        "dense_complete_calls": 0,
+        "lexical_fallback_calls": 0,
+        "indexed_chunks": 0,
+        "scored_chunks": 0,
+        "pending_chunks": 0,
+        "recall_without_dense_coverage": 0,
+        "overflow_calls": 0,
+        "elapsed_seconds": 0.0024999569868668914,
+        "max_elapsed_seconds": 0.0013505410170182586,
+        "step_elapsed_seconds": 0.0,
+        "mean_elapsed_seconds": 0.0012499784934334457
+      }
+    ],
+    "groups_total": 6,
+    "complete": true,
+    "next_offset": null,
+    "coverage": "Observed opt-in calls only; zero samples do not establish zero work or cost",
+    "history_scope": "Retained task/session samples are separate observations; do not add them to instrumented call counters",
+    "cache_scope": "Execution reply step-result reuse (SQL cache or pinned resume); reopening stored reports does not count as execution",
+    "content_scope": "One compact JSON encoding of the delivered data versus the sum of delivered text-block tokens; structured-only replies use the same JSON. Excludes MCP envelopes, escaping and duplicate representations; not provider savings",
+    "wire_scope": "Actual serialized MCP result tokens, including any structuredContent duplicate; observed separately and never counted as content reduction",
+    "legacy_scope": "Unversioned/v1 token comparisons used a double-representation control and are excluded from corrected token sums. Their call/latency/cache counts remain; excluded calls and samples are explicit",
+    "embedding_scope": "Per-call scored/indexed chunk observations; repeated calls may count the same chunks",
+    "retained_tasks": {
+      "scope": "latest 256 retained run ledgers, independent of metric date filter",
+      "runs_sampled": 11,
+      "complete": true,
+      "missing_timings": 0,
+      "elapsed_seconds": 2.262737989425659,
+      "cache_hits": 17,
+      "cache_misses": 6,
+      "cache_bypassed": 6,
+      "timed_steps": 44,
+      "steps_without_timing": 0,
+      "step_elapsed_seconds": 2.2304046684876084,
+      "result_artifacts_retained": 29,
+      "missing_result_artifacts": 0,
+      "unique_result_artifacts_retained": 9,
+      "result_count_scope": "Per-step references; repeated reuse counts again except in unique_result_artifacts_retained",
+      "available": true
+    },
+    "session_usage": {
+      "scope": "retained-session lifetime counters; no metric date filter",
+      "sessions_sampled": 1,
+      "complete": true,
+      "host_usage_totals": {
+        "cache_write_tokens": 0,
+        "cached_input_tokens": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "host_usage_reporting_events": {
+        "cache_write_tokens": 0,
+        "cached_input_tokens": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "estimated_rendered_tokens": 11120,
+      "estimate_events": 17,
+      "provider_usage_known": false,
+      "monetary_cost": null,
+      "cost_status": "No configured prices; usage is host-reported when present",
+      "usage_coverage": "Only supplied usage fields are known; no automatic provider billing observation",
+      "available": true,
+      "expired_lifetime_usage": {
+        "episode_count": 0,
+        "estimate_events": 0,
+        "estimated_rendered_tokens": 0,
+        "host_usage_reporting_events": {
+          "cache_write_tokens": 0,
+          "cached_input_tokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "host_usage_totals": {
+          "cache_write_tokens": 0,
+          "cached_input_tokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      }
+    },
+    "recording_enabled": true,
+    "recording_errors": 0
+  },
+  "metric_totals": {
+    "calls": 18,
+    "errors": 0,
+    "elapsed_seconds": 1.6506805780809373,
+    "content_samples": 18,
+    "content_tokens": 10513,
+    "json_content_tokens": 10513,
+    "content_tokens_reduced": 0,
+    "wire_samples": 18,
+    "wire_tokens": 11166,
+    "legacy_token_calls_excluded": 0,
+    "cache_hits": 12,
+    "cache_misses": 5,
+    "cache_bypassed": 4
+  },
+  "bundle": {
+    "artifacts": 61,
+    "blobs": 61,
+    "bytes": 701633,
+    "sha256": "34ce0a492b225bbbedccbac696805549d53342d8dd3a100bd52353a5b0c5160e"
+  },
+  "elapsed_seconds": 4.064526790985838,
+  "trace_audit": {
+    "requests_recount_match": true,
+    "responses_recount_match": true,
+    "measured_calls": 18,
+    "content_tokens": 10513,
+    "json_content_tokens": 10513,
+    "wire_tokens": 11166,
+    "plain_json_replies": 18,
+    "plain_json_nonzero_deltas": 0,
+    "content_tokens_reduced": 0,
+    "metrics_recount_match": true,
+    "plain_json_zero_content_reduction": true
+  },
+  "passed": true,
+  "checks": [
+    {
+      "name": "initial exact-input approval wait",
+      "passed": true
+    },
+    {
+      "name": "approved worker result",
+      "passed": true,
+      "state": "complete",
+      "rows": [
+        [
+          120000,
+          100000,
+          true,
+          20000
+        ]
+      ],
+      "expected": [
+        [
+          120000,
+          100000,
+          true,
+          20000
+        ]
+      ],
+      "skipped": "skipped"
+    },
+    {
+      "name": "resume retains exact upstream materialization",
+      "passed": true
+    },
+    {
+      "name": "warm result",
+      "passed": true,
+      "state": "complete",
+      "rows": [
+        [
+          120000,
+          100000,
+          true,
+          20000
+        ]
+      ],
+      "expected": [
+        [
+          120000,
+          100000,
+          true,
+          20000
+        ]
+      ],
+      "skipped": "skipped"
+    },
+    {
+      "name": "warm SQL reuse and fresh worker execution",
+      "passed": true,
+      "cache": {
+        "summary": {
+          "hit": true,
+          "key": "d6709d53b5138aa4928513e79515a0ad980f73784b78678ff83814cc7d8f8e7c",
+          "reason": "hit"
+        },
+        "policy_limit": {
+          "hit": true,
+          "key": "be14828a9cbd62917fc465aefd3ef88e8dbc116f93ee31f0cb47570173f34ea1",
+          "reason": "hit"
+        },
+        "review": {
+          "hit": false,
+          "key": "defaf36189a802394e9aca8a1106b0a46d14b33c15c31a260dee75b48c73748c",
+          "reason": "configured_worker"
+        },
+        "no_alert": null
+      }
+    },
+    {
+      "name": "fresh published report approval",
+      "passed": true
+    },
+    {
+      "name": "initial explicit schedule tick",
+      "passed": true
+    },
+    {
+      "name": "unchanged schedule is idle",
+      "passed": true
+    },
+    {
+      "name": "verification identifies exact changed source and affected task",
+      "passed": true,
+      "verification": {
+        "sources": [
+          {
+            "ref": "wb_0cd030676d2a47e79da47eef2735164c",
+            "exists": true,
+            "artifact_id": "wb_0cd030676d2a47e79da47eef2735164c",
+            "name": "spend",
+            "version": 1,
+            "sha256": "ed60913d707dd4571875736ca3fcae76cfdb6dcd88ee4371b76ec80bcd4a3118",
+            "current": false,
+            "changed_sources": [
+              {
+                "artifact_id": "wb_0cd030676d2a47e79da47eef2735164c",
+                "name": "spend",
+                "version": 1,
+                "current_artifact_id": "wb_4a58f6e32e72486096bafd1d5920fce8",
+                "current_version": 2,
+                "reason": "artifact_superseded"
+              }
+            ],
+            "changed_sources_truncated": false,
+            "lineage_complete": true,
+            "current_approved": false,
+            "exact_version_approval": null,
+            "approval_requires_reconfirmation": false,
+            "action": "Update or rerun the producer using current sources, then review the new result"
+          }
+        ],
+        "published_tasks": [
+          {
+            "task": "recurring_spend",
+            "run_id": "run_8538f2d6d820411b81b17d14a1a7e93c",
+            "definition_id": "wb_704aa691926f459384cd7543c556fdd2",
+            "result_artifact_id": "wb_e685670bc07b42bd854c34ae4139d369",
+            "result_available": true,
+            "result_current": false,
+            "current": false,
+            "affected_since_checkpoint": true,
+            "changed_sources": [
+              {
+                "artifact_id": "wb_0cd030676d2a47e79da47eef2735164c",
+                "name": "spend",
+                "version": 1,
+                "current_artifact_id": "wb_4a58f6e32e72486096bafd1d5920fce8",
+                "current_version": 2,
+                "reason": "artifact_superseded",
+                "source_alias": "spend"
+              }
+            ],
+            "changes_complete": true,
+            "current_approved": false,
+            "exact_version_approval": null,
+            "approval_requires_reconfirmation": false,
+            "suggestion": {
+              "tool": "task_run",
+              "arguments": {
+                "name": "recurring_spend"
+              },
+              "note": "Rerun with current sources; update deliberately pinned source bindings first and acquire a claim if required"
+            }
+          }
+        ],
+        "changed_artifacts": [
+          {
+            "event_id": 39,
+            "resource": "wb_aa2b66ad22814f4b821396b8530b91d4",
+            "name": "_task_inputs/run_8538f2d6d820411b81b17d14a1a7e93c",
+            "version": 1
+          },
+          {
+            "event_id": 40,
+            "resource": "wb_e685670bc07b42bd854c34ae4139d369",
+            "name": "_task_runs/run_8538f2d6d820411b81b17d14a1a7e93c",
+            "version": 1
+          },
+          {
+            "event_id": 45,
+            "resource": "wb_4a58f6e32e72486096bafd1d5920fce8",
+            "name": "spend",
+            "version": 2
+          },
+          {
+            "event_id": 46,
+            "resource": "wb_daaefaff9b914d2a8e3422ecac76b3e1",
+            "name": "_episodes/fbff2f58511346b1bffc64b8527b05db/aa9ecfe2b73a6bb47b05a731ba8b4ab4f86da1b322ddaeb615797b8be562abb7",
+            "version": 1
+          }
+        ],
+        "after": 36,
+        "through": 47,
+        "complete": true,
+        "next_after": 47,
+        "cursor": null,
+        "history_pruned": false,
+        "pruned_through": 0,
+        "scope": "Current catalog metadata, latest published task heads, and artifact.created events; no source reread or factual verification",
+        "coverage": "Exact listed differences; bounded lineage and paginated task/event scans are explicit"
+      }
+    },
+    {
+      "name": "source-change schedule waits for new approval",
+      "passed": true
+    },
+    {
+      "name": "old approval does not authorize new source snapshot",
+      "passed": true
+    },
+    {
+      "name": "approval triggers scheduled resume",
+      "passed": true
+    },
+    {
+      "name": "changed-source exact worker result",
+      "passed": true,
+      "state": "complete",
+      "rows": [
+        [
+          150000,
+          100000,
+          true,
+          50000
+        ]
+      ],
+      "expected": [
+        [
+          150000,
+          100000,
+          true,
+          50000
+        ]
+      ],
+      "skipped": "skipped"
+    },
+    {
+      "name": "revocation stops worker execution",
+      "passed": true
+    },
+    {
+      "name": "explicit reapproval resumes result",
+      "passed": true,
+      "state": "complete",
+      "rows": [
+        [
+          150000,
+          100000,
+          true,
+          50000
+        ]
+      ],
+      "expected": [
+        [
+          150000,
+          100000,
+          true,
+          50000
+        ]
+      ],
+      "skipped": "skipped"
+    },
+    {
+      "name": "low-spend conditional branch",
+      "passed": true,
+      "state": "complete",
+      "rows": [
+        [
+          60000,
+          100000,
+          false,
+          0
+        ]
+      ],
+      "expected": [
+        [
+          60000,
+          100000,
+          false,
+          0
+        ]
+      ],
+      "skipped": "skipped"
+    },
+    {
+      "name": "final high-spend worker result",
+      "passed": true,
+      "state": "complete",
+      "rows": [
+        [
+          180000,
+          100000,
+          true,
+          80000
+        ]
+      ],
+      "expected": [
+        [
+          180000,
+          100000,
+          true,
+          80000
+        ]
+      ],
+      "skipped": "skipped"
+    },
+    {
+      "name": "actual MCP metrics are measured",
+      "passed": true,
+      "totals": {
+        "calls": 18,
+        "errors": 0,
+        "elapsed_seconds": 1.6506805780809373,
+        "content_samples": 18,
+        "content_tokens": 10513,
+        "json_content_tokens": 10513,
+        "content_tokens_reduced": 0,
+        "wire_samples": 18,
+        "wire_tokens": 11166,
+        "legacy_token_calls_excluded": 0,
+        "cache_hits": 12,
+        "cache_misses": 5,
+        "cache_bypassed": 4
+      }
+    },
+    {
+      "name": "bundle preserves exact artifact IDs versions and digests",
+      "passed": true,
+      "artifacts": 61,
+      "archive_sha256": "34ce0a492b225bbbedccbac696805549d53342d8dd3a100bd52353a5b0c5160e"
+    },
+    {
+      "name": "restore disarms schedules and closes sessions",
+      "passed": true
+    },
+    {
+      "name": "restore preserves measured aggregates",
+      "passed": true
+    },
+    {
+      "name": "import retains historical approval but requires reconfirmation",
+      "passed": true,
+      "approval": {
+        "ref": "wb_6e5af7af2ce847ccaec64f3bdd9367b6",
+        "exists": true,
+        "artifact_id": "wb_6e5af7af2ce847ccaec64f3bdd9367b6",
+        "name": "_task_approvals/a3e8b0568cb43a47af096b199a4f7db1bd0e0178c1f1c54cce957c0cae1ea9a1",
+        "version": 1,
+        "sha256": "a3e8b0568cb43a47af096b199a4f7db1bd0e0178c1f1c54cce957c0cae1ea9a1",
+        "current": true,
+        "changed_sources": [],
+        "changed_sources_truncated": false,
+        "lineage_complete": true,
+        "current_approved": false,
+        "exact_version_approval": {
+          "event_id": 108,
+          "actor": "recurring-reviewer",
+          "occurred_at": 1794145983.411542,
+          "kind": "approval.accepted",
+          "sha256": "a3e8b0568cb43a47af096b199a4f7db1bd0e0178c1f1c54cce957c0cae1ea9a1"
+        },
+        "approval_requires_reconfirmation": true,
+        "action": "Review and approve again in this restored workspace; historical approval is not current authority"
+      }
+    },
+    {
+      "name": "import expires live ownership",
+      "passed": true
+    },
+    {
+      "name": "imported schedule remains disabled",
+      "passed": true
+    },
+    {
+      "name": "imported approval cannot execute worker",
+      "passed": true
+    }
+  ],
+  "source_unchanged": true,
+  "source_sha256_after": {
+    "src/agent_workbook/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/agent_workbook/batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "src/agent_workbook/bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "src/agent_workbook/budget.py": "c6b25a7f59bbebb3f5de9ff2f555430602f10f1fa1cf1a59a60ae3280d006e65",
+    "src/agent_workbook/cli.py": "fe98a89a4fe8b447edc69ac1cfb27274868702df32e5c5090788bdf838037e6b",
+    "src/agent_workbook/context_index.py": "72e33e9a3acf903a120d834015b26e35a4b6783fe0180682b1e754563e6bd951",
+    "src/agent_workbook/continuity.py": "6a93d159a81c9aaf50432e5a4221d059cfeb25d43d6f1d20e07151a30fc5abbe",
+    "src/agent_workbook/coordination.py": "a0c209b3c0e310b40881d5506924afabd8e5e6e70cffc1bdaf25d664f5146b57",
+    "src/agent_workbook/delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "src/agent_workbook/discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "src/agent_workbook/host_setup.py": "debbf2d65436f20b8ae9055f8b380439e3a9aec1778d5c584c89ac338fa1742f",
+    "src/agent_workbook/materialize.py": "7b11d4174d4b7bfd81eb36a5134c2d42d5e961f6482ad8a02ef89927d1617f8c",
+    "src/agent_workbook/memory_projection.py": "7674a7360ebede25ae454672df8dc505c698c9290f7b34494c718f2f2eaf5d30",
+    "src/agent_workbook/observability.py": "dab3f5aeb5013a1741ef1b1b264808f04eddca4289653da1c98fd6fcf529f2dc",
+    "src/agent_workbook/query.py": "c2f3778419cc2369421e0bd9a0fcc28882179879c39a9d2d74f0b8e227185ce2",
+    "src/agent_workbook/query_cache.py": "14466b8ab77f4097a0efbead7d305805728e106898406f000597fb58d7a455e3",
+    "src/agent_workbook/render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "src/agent_workbook/retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "src/agent_workbook/review.py": "61f1f873ce6e560e3237d8ff51a0151c33776750a49283b478e60ace6b53e0b2",
+    "src/agent_workbook/scheduler.py": "822bba305e98f6a2ff4b36ab8fcb046ab919e3a56a006152f825701235ece6fb",
+    "src/agent_workbook/semantic.py": "e83b2604a06f008fe752c9c0b5d4d01c502d374a649aaf79103baf2197bb0049",
+    "src/agent_workbook/server.py": "d8a2f8037cc6948b7425d4a3249f76f7ea834e12d1c6d86d6faa8c6de400f698",
+    "src/agent_workbook/settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "src/agent_workbook/skills.py": "66410b6fb9fc5d834208a6fb57d117d9ac68bd92d6b96d619ac1644dac82210e",
+    "src/agent_workbook/store.py": "69465260412dcf307762a2b3c4ee06c8c055f6078e74109722fd926cf04d7a73",
+    "src/agent_workbook/sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0",
+    "src/agent_workbook/task_flow.py": "d5ddc6d4fec39f014b2932c978388841d9bf15e30f687e59743c723959f8a55d",
+    "src/agent_workbook/task_workers.py": "68efa38e40328eebee0fffc09d8049cea68f742bab3465cc56a67e1d047a9f54",
+    "src/agent_workbook/tasks.py": "531a2e2b4701b04cac27286be861f49bd81e55e35177b68ec8c715ff1ed58859",
+    "src/agent_workbook/verification.py": "a6a7f907b92e815f6a6e8d1320635f1c625e7c2ef4bf07065fd4752b72e0faee",
+    "src/agent_workbook/workbook_bundle.py": "4b30c735349a3b9b36856b7557c432bac898697e16d8b7a935d77931ae368acb",
+    "benchmarks/recurring_workflow.py": "da6075cf9d78aa6014c04dd9db337dc3fa8b29cdfa8664b9f90888d0b27c7f7f"
+  },
+  "error": null,
+  "protocol": {
+    "mcp_calls": 30,
+    "cli_commands": 7,
+    "request_tokens": 1468,
+    "response_tokens": 22089,
+    "setup_response_tokens": 1826,
+    "scope": "Actual serialized MCP payloads; initialization/list-tools separate; no model framing or billed usage"
+  }
+}

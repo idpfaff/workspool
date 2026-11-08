@@ -1,7 +1,7 @@
 """Bounded runtime aggregates, with measurement gaps kept explicit.
 
-No source-size counterfactual or provider price is inferred. Formatting deltas
-require a caller-verified, same-content serialized response comparison. Daily
+No source-size counterfactual or provider price is inferred. Content deltas
+require a caller-verified, same-data single-representation comparison. Daily
 rows expire after 90 UTC dates, with at most 128 labeled groups plus overflow
 per date. This module never stores tool arguments or result bodies.
 """
@@ -17,6 +17,7 @@ from .coordination import authorize, authorize_capability, current_principal
 RETENTION_DAYS = 90
 MAX_GROUPS = 128
 SAMPLE_LIMIT = 256
+MEASUREMENT_VERSION = 2
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS observation_daily (
     day TEXT NOT NULL,
@@ -29,11 +30,16 @@ CREATE TABLE IF NOT EXISTS observation_daily (
 INTEGER_FIELDS = (
     "calls",
     "errors",
-    "formatting_samples",
-    "formatting_missing_calls",
-    "actual_tokens",
-    "full_tokens",
-    "formatting_tokens_reduced",
+    "content_samples",
+    "content_missing_calls",
+    "content_tokens",
+    "json_content_tokens",
+    "content_tokens_reduced",
+    "wire_samples",
+    "wire_missing_calls",
+    "wire_tokens",
+    "legacy_token_calls_excluded",
+    "legacy_formatting_samples_excluded",
     "cache_hits",
     "cache_misses",
     "cache_bypassed",
@@ -75,6 +81,38 @@ def _empty():
         "max_elapsed_seconds": 0.0,
         "step_elapsed_seconds": 0.0,
     }
+
+
+TOKEN_FIELDS = {
+    "content_samples",
+    "content_missing_calls",
+    "content_tokens",
+    "json_content_tokens",
+    "content_tokens_reduced",
+    "wire_samples",
+    "wire_missing_calls",
+    "wire_tokens",
+}
+
+
+def _read_counters(encoded):
+    """Keep historical work counts, excluding incompatible legacy token totals."""
+    previous = json.loads(encoded)
+    result = _empty()
+    for key in result.keys() - TOKEN_FIELDS:
+        if key in previous:
+            result[key] = previous[key]
+    if previous.get("measurement_version") == MEASUREMENT_VERSION:
+        for key in TOKEN_FIELDS:
+            result[key] = previous.get(key, 0)
+    else:
+        result["legacy_token_calls_excluded"] += previous.get("calls", 0)
+        result["legacy_formatting_samples_excluded"] += previous.get(
+            "formatting_samples", 0
+        )
+        result["content_missing_calls"] = previous.get("calls", 0)
+        result["wire_missing_calls"] = previous.get("calls", 0)
+    return result
 
 
 def _number(value):
@@ -161,14 +199,15 @@ def record_tool(
     *,
     failed=False,
     tokenizer=None,
-    actual_tokens=None,
-    full_tokens=None,
+    content_tokens=None,
+    json_content_tokens=None,
+    wire_tokens=None,
     same_content=False,
 ):
     """Record one observed invocation; result is the decoded delivered dict.
 
     `same_content` is a trusted instrumentation assertion, not a tool argument.
-    Signed formatting deltas can be negative. They never measure provider bills
+    Signed content deltas can be negative. They never measure provider bills
     or the tokens that omitted source material might hypothetically have used.
     """
     authorize(current_principal(), "write")
@@ -186,7 +225,7 @@ def record_tool(
         raise ValueError(
             "Observation requires finite nonnegative duration and boolean flags"
         )
-    for value in (actual_tokens, full_tokens):
+    for value in (content_tokens, json_content_tokens, wire_tokens):
         if value is not None and not _count(value):
             raise ValueError("Token measurements must be nonnegative integers")
     label = _label(tokenizer)
@@ -216,18 +255,24 @@ def record_tool(
     comparison = (
         same_content
         and tokenizer is not None
-        and actual_tokens is not None
-        and full_tokens is not None
+        and content_tokens is not None
+        and json_content_tokens is not None
+        and not failed
     )
     if comparison:
         sample |= {
-            "formatting_samples": 1,
-            "actual_tokens": actual_tokens,
-            "full_tokens": full_tokens,
-            "formatting_tokens_reduced": full_tokens - actual_tokens,
+            "content_samples": 1,
+            "content_tokens": content_tokens,
+            "json_content_tokens": json_content_tokens,
+            "content_tokens_reduced": json_content_tokens - content_tokens,
         }
     else:
-        sample["formatting_missing_calls"] = 1
+        sample["content_missing_calls"] = 1
+    if tokenizer is not None and wire_tokens is not None:
+        sample["wire_samples"] = 1
+        sample["wire_tokens"] = wire_tokens
+    else:
+        sample["wire_missing_calls"] = 1
     day = _today()
     with workbook.connect() as db:
         db.executescript(SCHEMA)
@@ -251,23 +296,27 @@ def record_tool(
             tool, label = "__overflow__", "untracked"
             sample["overflow_calls"] = 1
             # Different tokenizers cannot be combined into a meaningful token sum.
-            for key in (
-                "formatting_samples",
-                "actual_tokens",
-                "full_tokens",
-                "formatting_tokens_reduced",
-            ):
+            for key in TOKEN_FIELDS:
                 sample[key] = 0
-            sample["formatting_missing_calls"] = 1
+            sample["content_missing_calls"] = 1
+            sample["wire_missing_calls"] = 1
             row = db.execute(
                 "SELECT counters FROM observation_daily WHERE day=? AND tool=? AND tokenizer=?",
                 (day.isoformat(), tool, label),
             ).fetchone()
-        total = json.loads(row[0]) if row else _empty()
+        total = _read_counters(row[0]) if row else _empty()
         _add(total, sample)
         db.execute(
             "INSERT INTO observation_daily VALUES(?,?,?,?) ON CONFLICT(day,tool,tokenizer) DO UPDATE SET counters=excluded.counters",
-            (day.isoformat(), tool, label, json.dumps(total, separators=(",", ":"))),
+            (
+                day.isoformat(),
+                tool,
+                label,
+                json.dumps(
+                    total | {"measurement_version": MEASUREMENT_VERSION},
+                    separators=(",", ":"),
+                ),
+            ),
         )
     return True
 
@@ -426,7 +475,7 @@ def metrics(workbook, days=30, tool=None, *, limit=20, offset=0):
             for row in rows:
                 key = row["tool"], row["tokenizer"]
                 total = groups.setdefault(key, _empty())
-                _add(total, json.loads(row["counters"]))
+                _add(total, _read_counters(row["counters"]))
         retained = _retained_tasks(db)
         usage = _usage(db)
     items = [
@@ -442,6 +491,7 @@ def metrics(workbook, days=30, tool=None, *, limit=20, offset=0):
     ]
     complete = offset + limit >= len(items)
     return {
+        "measurement_version": MEASUREMENT_VERSION,
         "period": {
             "from_utc": start,
             "through_utc": _today().isoformat(),
@@ -455,7 +505,9 @@ def metrics(workbook, days=30, tool=None, *, limit=20, offset=0):
         "coverage": "Observed opt-in calls only; zero samples do not establish zero work or cost",
         "history_scope": "Retained task/session samples are separate observations; do not add them to instrumented call counters",
         "cache_scope": "Execution reply step-result reuse (SQL cache or pinned resume); reopening stored reports does not count as execution",
-        "formatting_scope": "Signed same-content full-response versus delivered-response token difference; not provider savings",
+        "content_scope": "One compact JSON encoding of the delivered data versus the sum of delivered text-block tokens; structured-only replies use the same JSON. Excludes MCP envelopes, escaping and duplicate representations; not provider savings",
+        "wire_scope": "Actual serialized MCP result tokens, including any structuredContent duplicate; observed separately and never counted as content reduction",
+        "legacy_scope": "Unversioned/v1 token comparisons used a double-representation control and are excluded from corrected token sums. Their call/latency/cache counts remain; excluded calls and samples are explicit",
         "embedding_scope": "Per-call scored/indexed chunk observations; repeated calls may count the same chunks",
         "retained_tasks": retained,
         "session_usage": usage,

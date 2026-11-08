@@ -1,0 +1,1527 @@
+{
+  "kind": "Explicitly post hoc supplementary exact-numeric audit; original report unchanged",
+  "input_report_sha256": "74fea13f3376058d8274c82db1ae73d46b1e481e73da497e389b2643776b53cd",
+  "audit_script_sha256": "19271c43c3d84c50c9bcbf86eebf1917e2b7e04971666f92db3f935d43695731",
+  "rule": "Only correct model answers and complete/current/published gated runs with intact current sources qualify. Canonical integer-string previews must match the original integer oracle AND an immutable hash-verified integral numeric Parquet result. Floats, bools, text columns, rounding, unrelated failures and missing evidence are never accepted.",
+  "arms_examined": 40,
+  "phases_examined": 80,
+  "materialized_results_verified": 10,
+  "changed_phase_scores": 9,
+  "outcomes": [
+    {
+      "case": {
+        "id": "approved-8201",
+        "scenario": "approved",
+        "seed": 8201
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_77ea119e6a904e26a43079e8bbe27a0f",
+            "sha256": "1c09198bf2d2cef8d174e40fee863bd806fdb3bdb6b48b5774024ff1020286ec",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              302623,
+              183336,
+              -119287
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "approved-8201",
+        "scenario": "approved",
+        "seed": 8201
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-8201",
+        "scenario": "refused",
+        "seed": 8201
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-8201",
+        "scenario": "refused",
+        "seed": 8201
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-8201",
+        "scenario": "revoked",
+        "seed": 8201
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-8201",
+        "scenario": "revoked",
+        "seed": 8201
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-8201",
+        "scenario": "source_changed",
+        "seed": 8201
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-8201",
+        "scenario": "source_changed",
+        "seed": 8201
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-8201",
+        "scenario": "handoff",
+        "seed": 8201
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_290d0783e912422b9dad0b33568cc72d",
+            "sha256": "956162dcf463ff1fe4d39ddc799a7e9f06949bbffb63df57c4c52cc5c0b685d3",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              319768,
+              195697,
+              -124071
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-8201",
+        "scenario": "handoff",
+        "seed": 8201
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "approved-9127",
+        "scenario": "approved",
+        "seed": 9127
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "approved-9127",
+        "scenario": "approved",
+        "seed": 9127
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_7cc90b7d5dee442ea056d001e86573a9",
+            "sha256": "5847f749c13f776a1b67c3363cc6361b0fe49ee512399a4cf095767d8d02d532",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              252523,
+              206272,
+              -46251
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-9127",
+        "scenario": "refused",
+        "seed": 9127
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-9127",
+        "scenario": "refused",
+        "seed": 9127
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "incorrect_answer",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-9127",
+        "scenario": "revoked",
+        "seed": 9127
+      },
+      "arm": "candidate",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-9127",
+        "scenario": "revoked",
+        "seed": 9127
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-9127",
+        "scenario": "source_changed",
+        "seed": 9127
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-9127",
+        "scenario": "source_changed",
+        "seed": 9127
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-9127",
+        "scenario": "handoff",
+        "seed": 9127
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-9127",
+        "scenario": "handoff",
+        "seed": 9127
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_aadde6451fff4547a0d9d93dc89a077f",
+            "sha256": "0275d6477772218c606f9ab0436b24bdc207c152686aec31c7375d506430e141",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              110252,
+              214408,
+              104156
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "approved-10459",
+        "scenario": "approved",
+        "seed": 10459
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_94d44ddb4430413582049d4e6d40b33c",
+            "sha256": "8784f24a1e5fc74624af9cb6665f667e6a8dacffee260b8bc074b64602045311",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              268137,
+              120266,
+              -147871
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "approved-10459",
+        "scenario": "approved",
+        "seed": 10459
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_5a424f9f649a44c58d5c662353ccd256",
+            "sha256": "8784f24a1e5fc74624af9cb6665f667e6a8dacffee260b8bc074b64602045311",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              268137,
+              120266,
+              -147871
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-10459",
+        "scenario": "refused",
+        "seed": 10459
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-10459",
+        "scenario": "refused",
+        "seed": 10459
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-10459",
+        "scenario": "revoked",
+        "seed": 10459
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-10459",
+        "scenario": "revoked",
+        "seed": 10459
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-10459",
+        "scenario": "source_changed",
+        "seed": 10459
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-10459",
+        "scenario": "source_changed",
+        "seed": 10459
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-10459",
+        "scenario": "handoff",
+        "seed": 10459
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": true,
+          "changed": false,
+          "materialized_proof": {
+            "artifact_id": "wb_ecf2b84607c54dc08dedfea15c340a3e",
+            "sha256": "ce21e83f2930a2a7b237ca8b66534f786e3d95aac744aeb53bb17f5dbf9c9143",
+            "bytes": 517,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "BIGINT",
+              "BIGINT",
+              "BIGINT"
+            ],
+            "exact_integer_values": [
+              326172,
+              242846,
+              -83326
+            ],
+            "preview_encodings": [
+              "int",
+              "int",
+              "int"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-10459",
+        "scenario": "handoff",
+        "seed": 10459
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "approved-11813",
+        "scenario": "approved",
+        "seed": 11813
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_b5b15a51587f4d86853d07d7c6f73cea",
+            "sha256": "1933668355875ef963d0422aa728366ca0a00cde863a98dcb43f73f878103898",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              308401,
+              177736,
+              -130665
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "approved-11813",
+        "scenario": "approved",
+        "seed": 11813
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_81efceb79c9644ca86e25fdba316422d",
+            "sha256": "1933668355875ef963d0422aa728366ca0a00cde863a98dcb43f73f878103898",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              308401,
+              177736,
+              -130665
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-11813",
+        "scenario": "refused",
+        "seed": 11813
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "refused-11813",
+        "scenario": "refused",
+        "seed": 11813
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-11813",
+        "scenario": "revoked",
+        "seed": 11813
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "revoked-11813",
+        "scenario": "revoked",
+        "seed": 11813
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-11813",
+        "scenario": "source_changed",
+        "seed": 11813
+      },
+      "arm": "control",
+      "original_pass": true,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "source_changed-11813",
+        "scenario": "source_changed",
+        "seed": 11813
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-11813",
+        "scenario": "handoff",
+        "seed": 11813
+      },
+      "arm": "candidate",
+      "original_pass": false,
+      "supplementary_pass": false,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "step_limit",
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": false
+        }
+      ]
+    },
+    {
+      "case": {
+        "id": "handoff-11813",
+        "scenario": "handoff",
+        "seed": 11813
+      },
+      "arm": "control",
+      "original_pass": false,
+      "supplementary_pass": true,
+      "phases": [
+        {
+          "phase": "prepare",
+          "original_pass": true,
+          "original_failure": null,
+          "numeric_audit_applicable": false,
+          "changed": false,
+          "supplementary_pass": true
+        },
+        {
+          "phase": "followup",
+          "original_pass": false,
+          "original_failure": "task_audit_failed",
+          "numeric_audit_applicable": true,
+          "changed": true,
+          "materialized_proof": {
+            "artifact_id": "wb_89c9449a74784d72b7e2c02aed19db1c",
+            "sha256": "7b60a843d60805e4a0494af894039ff28a18c8b2973190b67c4f88c73a16320b",
+            "bytes": 679,
+            "columns": [
+              "total_cents",
+              "budget_cents",
+              "remaining_cents"
+            ],
+            "numeric_types": [
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)",
+              "DECIMAL(38,0)"
+            ],
+            "exact_integer_values": [
+              280129,
+              251251,
+              -28878
+            ],
+            "preview_encodings": [
+              "str",
+              "str",
+              "str"
+            ]
+          },
+          "supplementary_pass": true
+        }
+      ]
+    }
+  ],
+  "original_summary": {
+    "arms": {
+      "control": {
+        "cases": 20,
+        "correct": 12,
+        "wilson_95": [
+          0.3865815007622531,
+          0.781193467627183
+        ],
+        "enforcement_pass": 12,
+        "usage": {
+          "input_tokens": 500763,
+          "output_tokens": 9419,
+          "cached_input_tokens": 405092,
+          "cache_write_tokens": 95176,
+          "reasoning_tokens": 630
+        }
+      },
+      "candidate": {
+        "cases": 20,
+        "correct": 1,
+        "wilson_95": [
+          0.008881448800795402,
+          0.23613119344674205
+        ],
+        "enforcement_pass": 4,
+        "usage": {
+          "input_tokens": 396992,
+          "output_tokens": 15568,
+          "cached_input_tokens": 261622,
+          "cache_write_tokens": 90123,
+          "reasoning_tokens": 1192
+        }
+      }
+    },
+    "paired": {
+      "n": 20,
+      "unmeasurable_pairs": 0,
+      "input_plus_output_differences_candidate_minus_control": [
+        -10078,
+        -13245,
+        9093,
+        -9703,
+        -13889,
+        -5126,
+        11631,
+        1735,
+        4032,
+        -15574,
+        187,
+        -6597,
+        -7212,
+        -19056,
+        -6936,
+        -2098,
+        -3472,
+        -4625,
+        6944,
+        -13633
+      ],
+      "mean_difference": -4881.1,
+      "bootstrap_95_mean_difference": [
+        -8438.45,
+        -1129.1
+      ],
+      "scope": "All measurable predeclared pairs including failures; unknown usage excluded explicitly. Interpret cost alongside correctness. Case-level paired bootstrap, not independent phase samples."
+    },
+    "both_correct_pairs": {
+      "n": 0
+    }
+  },
+  "supplementary_summary": {
+    "arms": {
+      "control": {
+        "cases": 20,
+        "correct": 19,
+        "wilson_95": [
+          0.763868806553258,
+          0.9911185511992047
+        ],
+        "enforcement_pass": 19,
+        "usage": {
+          "input_tokens": 500763,
+          "output_tokens": 9419,
+          "cached_input_tokens": 405092,
+          "cache_write_tokens": 95176,
+          "reasoning_tokens": 630
+        }
+      },
+      "candidate": {
+        "cases": 20,
+        "correct": 2,
+        "wilson_95": [
+          0.027866481213768224,
+          0.3010336452284873
+        ],
+        "enforcement_pass": 6,
+        "usage": {
+          "input_tokens": 396992,
+          "output_tokens": 15568,
+          "cached_input_tokens": 261622,
+          "cache_write_tokens": 90123,
+          "reasoning_tokens": 1192
+        }
+      }
+    },
+    "paired": {
+      "n": 20,
+      "unmeasurable_pairs": 0,
+      "input_plus_output_differences_candidate_minus_control": [
+        -10078,
+        -13245,
+        9093,
+        -9703,
+        -13889,
+        -5126,
+        11631,
+        1735,
+        4032,
+        -15574,
+        187,
+        -6597,
+        -7212,
+        -19056,
+        -6936,
+        -2098,
+        -3472,
+        -4625,
+        6944,
+        -13633
+      ],
+      "mean_difference": -4881.1,
+      "bootstrap_95_mean_difference": [
+        -8438.45,
+        -1129.1
+      ],
+      "scope": "All measurable predeclared pairs including failures; unknown usage excluded explicitly. Interpret cost alongside correctness. Case-level paired bootstrap, not independent phase samples."
+    },
+    "both_correct_pairs": {
+      "n": 1,
+      "mean_difference": 187.0,
+      "uncertainty": "Insufficient both-correct pairs for an informative interval"
+    }
+  },
+  "no_new_model_calls": true
+}

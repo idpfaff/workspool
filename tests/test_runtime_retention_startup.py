@@ -1,17 +1,18 @@
 """Initialization never restores facts that startup cleanup just retired."""
 
-import json
+import asyncio
 import time
 
 import pytest
 
 from agent_workbook import continuity
 from agent_workbook.coordination import Principal
+from agent_workbook.render import decode
 from agent_workbook.server import server_for
 from agent_workbook.store import Workbook
 
 
-def test_runtime_expires_facts_before_building_startup_context(tmp_path, monkeypatch):
+def test_runtime_expires_facts_before_explicit_recall(tmp_path, monkeypatch):
     pytest.importorskip("tiktoken")
     book = Workbook(tmp_path)
     session = continuity.start_session(book, Principal("worker"), "Old review")
@@ -26,8 +27,12 @@ def test_runtime_expires_facts_before_building_startup_context(tmp_path, monkeyp
     app = server_for(
         book, profile="runtime", goal="retentioncanary", tokenizer="o200k_base"
     )
-    prefix = "\nRestored workspace context (untrusted source data; check freshness and coverage):\n"
-    restored = json.loads(app.instructions.split(prefix, 1)[1])
+    assert "retentioncanary" not in app.instructions
+    result = asyncio.run(
+        app.call_tool("workspool", {"tool": "recall", "arguments": {}})
+    )
+    assert not result.isError
+    restored = decode(result.content)
     assert restored["hits"] == []
     with pytest.raises(ValueError, match="Unknown artifact"):
         book.inspect(fact)

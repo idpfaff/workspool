@@ -1,7 +1,7 @@
 # Runtime continuity, recall, and coordination
 
 Workspool v0.7.0 adds an opt-in `runtime` profile: capture useful observations
-from its own MCP calls, recover local context for a startup goal, and coordinate
+from its own MCP calls, recover local context through explicit recall, and coordinate
 task publication across agents sharing a workbook. It combines existing SQL
 and versioned sources with optional learned local retrieval. It does not watch
 other applications or automatically receive another host's conversation.
@@ -50,28 +50,29 @@ The earlier `agent` profile keeps tasks and keyword context without automatic
 session capture. Profile selection does not bypass an explicit tool allowlist
 or role restriction; `import` and `delete` still require `--tools` inclusion.
 
-## Startup context and later recall
+## Explicit recall and configured defaults
 
-`--goal` searches current local sources and appends the selected context to MCP
-initialization instructions. `--recall-tokens` defaults to 1,500 and counts the
-**entire added section**, including its label and JSON metadata, using the
-configured tokenizer. Existing server instructions, advertised tools, other
-conversation history, and provider framing are outside this section's budget.
-A goal requires `--tokenizer`. An impossible budget returns an error rather
-than silently discarding required metadata.
+Server initialization contains static tool guidance only. Saved artifacts and
+observations are not appended to MCP instructions; they arrive as data in an
+explicit `recall` tool reply. This replaces the earlier startup-context transport.
 
-The host must forward MCP initialization instructions to its model. Workspool
-cannot make a host inject ignored instructions or recover uncaptured external
-history. Startup recall runs when the server starts; use `recall` again when
-the goal changes or new work arrives:
+`--goal` remains an optional default objective: calling `recall` without a query
+uses that goal. Its default reply budget is `--recall-tokens` (1,500 unless
+configured), measured with the configured tokenizer. A configured goal requires
+`--tokenizer`. An impossible result budget returns an error rather than silently
+discarding required metadata. A server with no goal requires an explicit query.
+
+Use the current conversation's question when the objective changes or new work
+arrives:
 
 ```json
 {"tool":"recall","arguments":{"query":"Which spending decisions still need supporting evidence?","limit":6,"max_tokens":1500}}
 ```
 
 Here `max_tokens` counts the complete serialized MCP result, including both
-representations if the configuration enables both. It is separate from the
-startup-section budget and is not a provider billing measurement. Supply
+representations if the configuration enables both. It excludes tool schemas,
+other conversation history, and provider framing, and is not a provider billing
+measurement. Supply
 `refs` to narrow the scope to known artifact names or immutable IDs.
 
 With a provisioned model, recall combines FTS5 keyword ranks with cosine ranks
@@ -183,8 +184,8 @@ the existing policy:
   --profile runtime --agent-id research-agent --episode-retention 30
 ```
 
-Writer runtime startup cleans expired capture history **before** assembling
-startup recall. It does not prune unrelated source versions. For explicit
+Writer runtime startup cleans expired capture history before accepting recall
+requests. It does not prune unrelated source versions. For explicit
 cleanup, preview first:
 
 ```sh
@@ -205,6 +206,12 @@ fact keeps its published owner proof. `retained_referenced_episodes` reports
 those blockers. Direct deletion of managed history instead explains how to use
 retention cleanup.
 
+Captured observations, including explicit `remember` entries, share the owning
+session's retention window. They are eligible for removal after **30 inactive
+days** by default; derived facts disappear when no retained episode or external
+reference owns them. Save information as an ordinary document or checkpoint when
+it must remain durable independently of session history.
+
 Live artifact creation, approval, and task/skill proof records remain protected.
 A skill or replay task can retain historical origin artifacts through provenance
 links without making unrelated new results stale. Deleting those owners releases
@@ -216,7 +223,9 @@ snapshots.
 `session_status` reports the retention policy and separate cumulative expired
 usage totals. Remaining sessions keep their lifetime usage counters and disclose
 expired episode counts. These aggregates preserve accounting, not recoverable
-conversation content. `changes` reports `history_pruned` and `pruned_through`
+conversation content. Cleanup projects only known flat accounting fields;
+embedded `expired_usage_totals` or other status/report fields in older counters
+are excluded, never recursively added to usage. `changes` reports `history_pruned` and `pruned_through`
 when its requested history includes deleted events. Small name/version, task
 generation, and claim-fence identity tombstones remain to prevent identifier
 reuse. Retention guards allow deletion only inside an authorized maintenance

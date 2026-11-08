@@ -448,14 +448,14 @@ class Workbook:
             rows = db.execute(
                 """
                 SELECT a.* FROM artifact_search JOIN latest a USING (artifact_id)
-                WHERE artifact_search MATCH ?
+                WHERE artifact_search MATCH ? AND a.kind!='memory_episode'
                 ORDER BY bm25(artifact_search, 0, 5, 3, 1), a.created_at DESC LIMIT ?
                 """,
                 (match, limit),
             ).fetchall()
         else:
             rows = db.execute(
-                "SELECT * FROM latest ORDER BY created_at DESC LIMIT ?",
+                "SELECT * FROM latest WHERE kind!='memory_episode' ORDER BY created_at DESC LIMIT ?",
                 (limit,),
             ).fetchall()
         return [self._summary(db, row) for row in rows]

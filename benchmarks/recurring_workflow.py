@@ -22,7 +22,7 @@ from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from mcp.types import CallToolResult, TextContent
+from mcp.types import CallToolResult
 
 from agent_workbook.budget import serialized_result, token_counter
 from agent_workbook.render import decode
@@ -112,7 +112,8 @@ class Probe:
         self.workspace = output / "original"
         self.registry = output / "workers.json"
         self.result = {
-            "format": 1,
+            "format": 2,
+            "measurement_version": 2,
             "scope": "Synthetic local integration; no model or paid API calls",
             "tokenizer": tokenizer,
             "fixtures": FIXTURES,
@@ -537,10 +538,13 @@ class Probe:
                     "calls",
                     "errors",
                     "elapsed_seconds",
-                    "formatting_samples",
-                    "actual_tokens",
-                    "full_tokens",
-                    "formatting_tokens_reduced",
+                    "content_samples",
+                    "content_tokens",
+                    "json_content_tokens",
+                    "content_tokens_reduced",
+                    "wire_samples",
+                    "wire_tokens",
+                    "legacy_token_calls_excluded",
                     "cache_hits",
                     "cache_misses",
                     "cache_bypassed",
@@ -552,7 +556,7 @@ class Probe:
                 and measured["recording_errors"] == 0
                 and measured["complete"]
                 and totals["calls"] > 0
-                and totals["formatting_samples"] > 0,
+                and totals["content_samples"] > 0,
                 totals=totals,
             )
             self.result["metrics"] = measured
@@ -648,8 +652,11 @@ class Probe:
             "requests_recount_match": True,
             "responses_recount_match": True,
             "measured_calls": len(measured),
-            "actual_tokens": 0,
-            "full_tokens": 0,
+            "content_tokens": 0,
+            "json_content_tokens": 0,
+            "wire_tokens": 0,
+            "plain_json_replies": 0,
+            "plain_json_nonzero_deltas": 0,
         }
         for item in calls:
             audit["requests_recount_match"] &= (
@@ -663,21 +670,35 @@ class Probe:
             if response.isError:
                 continue
             data = response.structuredContent or decode(response.content)
-            full = CallToolResult(
-                content=[TextContent(type="text", text=compact(data))],
-                structuredContent=data,
+            content_tokens = (
+                sum(self.count(block.text) for block in response.content)
+                if response.content
+                else self.count(compact(data))
             )
-            audit["actual_tokens"] += self.count(serialized_result(response))
-            audit["full_tokens"] += self.count(serialized_result(full))
-        audit["formatting_tokens_reduced"] = (
-            audit["full_tokens"] - audit["actual_tokens"]
+            json_tokens = self.count(compact(data))
+            audit["content_tokens"] += content_tokens
+            audit["json_content_tokens"] += json_tokens
+            audit["wire_tokens"] += self.count(serialized_result(response))
+            if len(response.content) == 1 and response.content[0].text == compact(data):
+                audit["plain_json_replies"] += 1
+                audit["plain_json_nonzero_deltas"] += int(content_tokens != json_tokens)
+        audit["content_tokens_reduced"] = (
+            audit["json_content_tokens"] - audit["content_tokens"]
         )
         totals = self.result.get("metric_totals", {})
         audit["metrics_recount_match"] = audit["measured_calls"] == totals.get(
             "calls"
         ) and all(
             audit[field] == totals.get(field)
-            for field in ("actual_tokens", "full_tokens", "formatting_tokens_reduced")
+            for field in (
+                "content_tokens",
+                "json_content_tokens",
+                "content_tokens_reduced",
+                "wire_tokens",
+            )
+        )
+        audit["plain_json_zero_content_reduction"] = (
+            audit["plain_json_replies"] > 0 and audit["plain_json_nonzero_deltas"] == 0
         )
         self.result["trace_audit"] = audit
         self.result.update(
@@ -710,6 +731,7 @@ class Probe:
                 "requests_recount_match",
                 "responses_recount_match",
                 "metrics_recount_match",
+                "plain_json_zero_content_reduction",
             )
         )
         # Only synthetic content is published; normalize machine-specific paths.

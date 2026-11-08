@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "measurement_version": 2,
+  "checks_passed": 25,
+  "recount_scope": "Plain JSON text blocks versus compact JSON of the same parsed data; one representation only. MCP wire counted separately.",
+  "independent_of_runtime_measurement_helpers": true,
+  "groups": {
+    "all_calls": {
+      "calls": 30,
+      "content_tokens": 21080,
+      "json_content_tokens": 21080,
+      "wire_tokens": 22089,
+      "plain_json_replies": 30,
+      "content_tokens_reduced": 0
+    },
+    "measured_writer": {
+      "calls": 18,
+      "content_tokens": 10513,
+      "json_content_tokens": 10513,
+      "wire_tokens": 11166,
+      "plain_json_replies": 18,
+      "content_tokens_reduced": 0
+    }
+  },
+  "public_trace_token_recount_matches": true,
+  "source_hashes_match": true,
+  "absolute_personal_paths_found": false,
+  "common_credential_patterns_found": false,
+  "files_sha256": {
+    "results.json": "d7b4e74cc0ff83670ad744b6153bd499765bd0380e6296414291315c8865bd7e",
+    "traces.json.gz": "4f3ea333b6535f1ab223b1aeb463021c00ddcd9d5375f9825f4a88fea269a505"
+  }
+}

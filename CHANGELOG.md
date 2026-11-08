@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.2 — 2026-11-08
+
+- Withdraw the 48.6% reply-formatting claim: the old control duplicated JSON across two MCP fields. Recounting the published 30 replies against one JSON copy gives 20,768 tokens on both sides, or zero formatting savings. Preserve the original workflow's 25 integration checks and export/restore evidence.
+- Measure one delivered content representation against one serialization of the same decoded data. Report transport counts separately, version the measurements, and exclude legacy token counters from corrected totals while retaining non-token history.
+- Exclude internal episode ledgers from ordinary artifact discovery. Stop placing retrieved content in MCP initialization instructions; explicit recall returns it as tool data, and optional `--goal` supplies its default query. Update host checks and documentation for this transport change.
+- Restrict tool-specific guidance to the operations actually permitted by the configured allowlist, role, and capabilities. A live evaluation exposed instructions recommending an unavailable `recall` operation; preserve that initial run and repeat its unchanged protocol after the correction.
+- Explain that captured observations expire with their episodes after 30 inactive days by default. Keep prune accounting flat across repeated cleanup and exclude nested legacy metadata without double-counting it; the reported recursive nesting did not reproduce on the current source.
+- Publish two model-driven runs of the same 20 paired task/approval cases, preserving all attempts, provider usage, exact source snapshots, original scores, and a separately disclosed exact-numeric audit. The final audit finds 17/20 complete eager cases versus 1/20 lazy cases under six rounds per phase; this does not establish an efficiency win. Keep feature expansion paused.
+
 ## 0.9.1 — 2026-11-08
 
 - Fix macOS process-group cleanup raising a permission error after a configured worker or materializer has already exited. Preserve the original operation result or error; inability to stop a live child still fails. Add focused regressions and retain complete worker failure details in CI.

@@ -73,7 +73,7 @@ def generate(
 ):
     """Render a complete configuration fragment without writing any files.
 
-    The optional goal applies to server startup. Conversations use recall with
+    The optional goal is a default for explicit recall. Conversations use recall with
     their own query; preview does not write files or download a model.
     """
     _host(host)
@@ -420,11 +420,20 @@ async def _smoke(entry, workspace, agent_id, timeout, errlog, *, expect_startup=
                 "workspool", {"tool": "session_status", "arguments": {}}
             )
             status = {} if result.isError else decode(result.content)
+            recall_ok = True
+            if expect_startup:
+                recalled = await client.call_tool(
+                    "workspool", {"tool": "recall", "arguments": {}}
+                )
+                recall_ok = not recalled.isError and bool(
+                    decode(recalled.content).get("hits")
+                )
             checks = {
                 "initialize": True,
                 "runtime_tools": {"recall", "remember", "session_status"} <= operations,
-                "startup_context": (STARTUP_PREFIX in (initialized.instructions or ""))
-                == expect_startup,
+                "startup_context": STARTUP_PREFIX
+                not in (initialized.instructions or ""),
+                "explicit_recall": recall_ok,
                 "capture_session": status.get("capture_enabled") is True,
                 "configured_identity": status.get("actor") == agent_id,
             }
@@ -432,14 +441,15 @@ async def _smoke(entry, workspace, agent_id, timeout, errlog, *, expect_startup=
                 "ok": all(checks.values()),
                 "checks": checks,
                 "protocol_version": initialized.protocolVersion,
-                "startup_context_configured": expect_startup,
+                "startup_context_configured": False,
+                "default_recall_goal_configured": expect_startup,
             }
 
 
 def doctor(
     host,
     *,
-    goal="Verify Workspool startup context",
+    goal="Verify Workspool explicit recall",
     tokenizer="o200k_base",
     recall_tokens=1500,
     model_dir=None,
@@ -494,7 +504,7 @@ def doctor(
             except Exception:  # noqa: BLE001 -- redact child diagnostics, including SDK exception groups
                 raise ValueError(
                     "MCP smoke failed. Check that this Python environment has agent-workbook[tokens], "
-                    "tokenizer dependencies are installed (or the local file is readable), the recall budget fits startup metadata, "
+                    "tokenizer dependencies are installed (or the local file is readable), the recall budget fits its result metadata, "
                     "and any model directory was provisioned. Increase --timeout for cold startup."
                 ) from None
     if not result["ok"]:

@@ -1,6 +1,6 @@
 # Connect Claude Desktop, Cursor, or Codex
 
-Workspool can generate and install a local MCP configuration for these hosts on macOS and Linux. The configuration starts the `runtime` profile with automatic capture of Workspool tool activity and a distinct host identity. Each conversation can call `recall` with its current objective. An optional `--goal` also selects context at server startup. You can use a standard Python virtual environment; `uv` is optional.
+Workspool can generate and install a local MCP configuration for these hosts on macOS and Linux. The configuration starts the `runtime` profile with automatic capture of Workspool tool activity and a distinct host identity. Each conversation calls `recall` with its current objective. An optional `--goal` provides a default query for that explicit tool call. Initialization instructions contain static guidance, never retrieved artifact or observation text. You can use a standard Python virtual environment; `uv` is optional.
 
 ## Install Workspool once
 
@@ -9,7 +9,7 @@ Use Python 3.11 or later. Install the versioned release wheel into an environmen
 ```bash
 python3 -m venv "$HOME/.local/share/workspool/venv"
 "$HOME/.local/share/workspool/venv/bin/python" -m pip install \
-  'agent-workbook[tokens] @ https://github.com/idpfaff/workspool/releases/download/v0.9.1/agent_workbook-0.9.1-py3-none-any.whl'
+  'agent-workbook[tokens] @ https://github.com/idpfaff/workspool/releases/download/v0.9.2/agent_workbook-0.9.2-py3-none-any.whl'
 
 workspool_python="$HOME/.local/share/workspool/venv/bin/python"
 workspool_workspace="$HOME/.local/share/workspool/workspace"
@@ -26,7 +26,7 @@ Preview prints configuration to stdout and does not create the workspace or chan
   host-config claude-desktop
 ```
 
-Use `cursor` or `codex` in place of `claude-desktop`. The default tokenizer is `o200k_base`. Both named vocabularies ship in the package and load offline, including on first use after dependencies are installed. Choose `--tokenizer cl100k_base` or an absolute local `tokenizer.json` path when appropriate. If you supply a `--goal`, the entire added startup-context section has a 1,500-token budget in that encoding; this is not a provider billing measurement.
+Use `cursor` or `codex` in place of `claude-desktop`. The default tokenizer is `o200k_base`. Both named vocabularies ship in the package and load offline, including on first use after dependencies are installed. Choose `--tokenizer cl100k_base` or an absolute local `tokenizer.json` path when appropriate. If you supply a `--goal`, an explicit `recall` call that omits its query uses that goal and a default 1,500-token reply budget in that encoding; this is not a provider billing measurement.
 
 To install, run the command for your host:
 
@@ -43,7 +43,7 @@ To install, run the command for your host:
 
 `--install` first runs a disposable MCP protocol check, then merges the configuration. A failed check leaves host settings untouched. The check starts local Workspool and does not call a model API or download tokenizer data. Restart the host after installation and check its MCP server list for `workspool`.
 
-For a dedicated research workspace, you can add `--goal 'Continue my customer research and recover relevant evidence'` to preview and install. This is a server-startup objective, not a setting that changes with each chat. For general-purpose installations, leave it out and ask the agent to call `recall` with the current conversation's question. Different conversations can supply different queries without changing shared server state.
+For a dedicated research workspace, you can add `--goal 'Continue my customer research and recover relevant evidence'` to preview and install. This sets a default for explicit recall, not a setting that changes with each chat or a request to inject source text at startup. For general-purpose installations, leave it out and ask the agent to call `recall` with the current conversation's question. Different conversations can supply different queries without changing shared server state.
 
 The installed identities are `host-claude-desktop`, `host-cursor`, and `host-codex`, with the `writer` role. Override the identity with `--agent-id NAME` when separate instances need distinct audit attribution. Host approval settings are left unchanged. Sharing a workspace shares its stored artifacts; use separate workspace directories across trust boundaries.
 
@@ -59,9 +59,9 @@ Try this two-session check:
 
 1. Ask the agent: “Use Workspool to remember this customer research decision: the fictional onboarding pilot starts with 50 accounts. Show me the saved reference.” Confirm that it actually calls `remember`, rather than only acknowledging the request.
 2. Open a fresh conversation using the same workspace. Ask: “Use Workspool recall to find the customer onboarding pilot decision. Include its source reference.” This uses the current question rather than a fixed installation goal.
-3. To check optional startup delivery separately, configure the customer-research `--goal`, restart the Workspool server, and ask: “Discover Workspool's metadata, then answer from its restored context: what was the onboarding pilot decision? Include its source reference.” A host may defer server instructions until discovery.
+3. To check a configured default, set the customer-research `--goal`, restart the Workspool server, and ask: “Call Workspool recall without a query, then answer from its returned evidence: what was the onboarding pilot decision? Include its source reference.” Source text is returned through the tool response, not server instructions.
 
-Startup recall runs when the MCP server starts. Opening another chat does not necessarily restart that server. The saved observation remains available through `recall` either way. This exercise checks your host's actual behavior; it does not turn the fictional decision into a verified fact.
+Opening another chat does not necessarily restart the MCP server. Retrieve the saved observation with an explicit `recall` call in each conversation. This exercise checks your host's actual behavior; it does not turn the fictional decision into a verified fact.
 
 ## Configuration locations and preservation
 
@@ -88,27 +88,29 @@ Before changing an existing file, the installer creates an exact backup beside i
   --tokenizer o200k_base --recall-tokens 1500 --timeout 60
 ```
 
-The doctor parses the generated host fragment and launches its command in a disposable workspace. It performs real MCP initialization, lists runtime tools, calls `session_status`, and checks the capture session and configured identity. With `--goal`, it also checks the startup-context prefix; without a goal it verifies no fixed context was added. Success returns JSON; failure exits nonzero with troubleshooting guidance. It does not read or write personal host configurations, use your real workspace, or forward API keys to its child process.
+The doctor parses the generated host fragment and launches its command in a disposable workspace. It performs real MCP initialization, lists runtime tools, calls `session_status`, and checks the capture session and configured identity. It checks that the old injected-context section is absent. With `--goal`, it also calls `recall` without a query and verifies that the disposable fixture is returned. Success returns JSON; failure exits nonzero with troubleshooting guidance. It does not read or write personal host configurations, use your real workspace, or forward API keys to its child process.
 
-These are **protocol smoke tests**, including transport round trips for all three generated formats. They do not prove a particular Claude Desktop, Cursor, or Codex application session connected, forwarded initialization instructions to its model, or selected Workspool tools correctly. Confirm those behaviors in your actual host. If a host does not forward MCP initialization instructions, ask its agent to use `recall` explicitly.
+These are **protocol smoke tests**, including transport round trips for all three generated formats. They do not prove a particular Claude Desktop, Cursor, or Codex application session connected or selected Workspool tools correctly. Confirm those behaviors in your actual host by asking its agent to call `recall` explicitly.
 
 Both named tokenizers also passed actual MCP doctor checks in fresh processes with an empty cache and network connections blocked. The real-host conversation check below is separate from those protocol checks.
 
-If startup fails, check that the recorded interpreter still exists and that its environment includes the `tokens` extra. Verify a custom local tokenizer path if supplied; bundled named encodings need no online provisioning. A very small recall budget can fail to fit the required metadata; increase `--recall-tokens`. Use a larger doctor timeout for cold startup. On Codex, the generated startup allowance is 60 seconds; adjust it manually if your machine needs longer.
+If startup fails, check that the recorded interpreter still exists and that its environment includes the `tokens` extra. Verify a custom local tokenizer path if supplied; bundled named encodings need no online provisioning. A very small recall budget can fail the doctor's explicit recall check; increase `--recall-tokens`. Use a larger doctor timeout for cold startup. On Codex, the generated startup allowance is 60 seconds; adjust it manually if your machine needs longer.
 
 ## Verified model delivery: Codex CLI
 
-On 2026-11-07, using **Workspool v0.8.1**, **Codex CLI 0.167.0 returned a fresh random phrase and its exact immutable artifact ID from Workspool's MCP initialization instructions**. The phrase and ID were absent from the prompt. The disconnected fresh-conversation control returned `NOT RECEIVED`. Both traces contain zero non-message items, and the connected Workspool writer recorded zero tool-execution episodes. This is retained evidence for that version, not a new host-model evaluation of v0.9.0.
+**Historical experiment; this transport has been removed.** Current Workspool returns recalled source material only through explicit tool calls, never through server instructions. The evidence below describes v0.8.1 behavior and does not validate the current recall path.
+
+On 2026-11-07, using **Workspool v0.8.1**, **Codex CLI 0.167.0 returned a fresh random phrase and its exact immutable artifact ID from Workspool's MCP initialization instructions**. The phrase and ID were absent from the prompt. The disconnected fresh-conversation control returned `NOT RECEIVED`. Both traces contain zero non-message items, and the connected Workspool writer recorded zero tool-execution episodes.
 
 The test used `host-config`'s generated runtime configuration, default lazy tool discovery, bundled `o200k_base`, and the CLI's existing authenticated account with no model override. It supplied the configuration for that invocation only; saved settings were unchanged. The prompt explicitly permitted metadata discovery while forbidding Workspool tool execution and file reads:
 
 > Discover Workspool's tool schema if needed, then return the confirmation phrase and source artifact ID from its MCP startup instructions. Do not execute Workspool tools, read files, or use other services. If the instructions do not contain it output NOT RECEIVED.
 
-**Delivery is deferred.** Earlier probes that prohibited all tool discovery returned `NOT RECEIVED`, even though Workspool initialized successfully. Allowing Codex to discover the server metadata exposed the full context. This proves instruction delivery in the tested CLI path; it does not prove every new chat automatically receives the full startup section. The [official Codex MCP guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) describes initialization instructions as server guidance and emphasizes the first 512 characters for server selection.
+**Delivery was deferred in this historical test.** Earlier probes that prohibited all tool discovery returned `NOT RECEIVED`, even though Workspool initialized successfully. Allowing Codex to discover the server metadata exposed the full context. This proved instruction delivery for that version and CLI path. The [official Codex MCP guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) describes initialization instructions as server guidance.
 
 Inspect the [exact connected trace](evidence/codex-startup-connected.jsonl), [disconnected trace](evidence/codex-startup-disconnected.jsonl), and [result with runtime fingerprints](evidence/codex-startup-result.json). A [readable transcript](evidence/codex-startup-transcript.html) renders those results. Screenshot capture was blocked by the computer-use policy for Terminal and local files; no screenshot or simulated application UI is presented as proof.
 
-To reproduce using your authenticated Codex CLI (this uses the host's model allowance):
+To reproduce the historical experiment, use a separate checkout of **v0.8.1** and its dependencies. The following harness uses your authenticated Codex CLI's model allowance; it is not a current-version readiness check:
 
 ```sh
 .venv/bin/python benchmarks/host_delivery.py --output /absolute/new/proof-directory
@@ -122,11 +124,11 @@ Without a configured embedding model, recall uses lexical search and reports den
 
 ```bash
 "$workspool_python" -m pip install \
-  'agent-workbook[tokens,semantic] @ https://github.com/idpfaff/workspool/releases/download/v0.9.1/agent_workbook-0.9.1-py3-none-any.whl'
+  'agent-workbook[tokens,semantic] @ https://github.com/idpfaff/workspool/releases/download/v0.9.2/agent_workbook-0.9.2-py3-none-any.whl'
 "$workspool_python" -m agent_workbook.cli model-download \
   "$HOME/.local/share/workspool/model"
 ```
 
 Add `--model-dir "$HOME/.local/share/workspool/model"` to both preview/install and doctor commands. Provisioning downloads a local model; startup uses that directory. Generated configs contain no API keys. Review the [runtime guide](../benchmarks/RUNTIME.md) for coverage limits, budgets, roles, and claims.
 
-Automatic capture covers Workspool's own MCP calls. It does not observe the host's other tools or entire conversation. External activity needs explicit [host hooks](../benchmarks/RUNTIME.md); startup recall needs relevant material already stored in the selected workspace. Restored source content remains untrusted evidence, and freshness or missing coverage must still be checked.
+Automatic capture covers Workspool's own MCP calls. It does not observe the host's other tools or entire conversation. External activity needs explicit [host hooks](../benchmarks/RUNTIME.md); recall needs relevant material already stored in the selected workspace. Retrieved source content remains untrusted evidence, and freshness or missing coverage must still be checked. Captured observations and their episodes are eligible for cleanup after 30 inactive days by default; save durable knowledge as an ordinary document or checkpoint.

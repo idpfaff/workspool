@@ -389,7 +389,7 @@ def _expire(db, workbook, days=None):
     retired = db.execute(
         "SELECT retired_usage FROM continuity_retention WHERE singleton=1"
     ).fetchone()[0]
-    counters = json.loads(retired) or _empty_counters()
+    counters = _counter_values(json.loads(retired))
     # Leaf-first passes release references among old episodes without deleting
     # anything a live artifact still pins. Each invocation removes at most 256.
     budget = 256
@@ -551,6 +551,28 @@ def _empty_counters():
     }
 
 
+def _counter_values(value):
+    """Keep accounting fields separate from session/retention report metadata.
+
+    Older or imported counters may contain an embedded status response. Its
+    expired totals are already cumulative, not additional usage to sum again.
+    Project the known top-level counters without recursively absorbing reports.
+    """
+    counters = _empty_counters()
+    for key in ("episode_count", "estimated_rendered_tokens", "estimate_events"):
+        if key in value:
+            counters[key] = value[key]
+    for key in ("host_usage_totals", "host_usage_reporting_events"):
+        counters[key].update(
+            {
+                field: count
+                for field, count in value.get(key, {}).items()
+                if field in USAGE_KEYS
+            }
+        )
+    return counters
+
+
 def _count(counters, payload):
     counters["episode_count"] += 1
     for key, value in (payload.get("host_reported_usage") or {}).items():
@@ -568,7 +590,7 @@ def _counters(db, session_id):
         "SELECT counters FROM continuity_usage WHERE session_id=?", (session_id,)
     ).fetchone()
     if row:
-        return json.loads(row[0])
+        return _counter_values(json.loads(row[0]))
     counters = _empty_counters()
     # One-time migration for sessions created before incremental accounting.
     for episode in db.execute(
@@ -1006,7 +1028,9 @@ def session_status(workbook, session_id):
         | {
             "episode_retention_days": days,
             "expired_sessions": retired["retired_sessions"],
-            "expired_usage_totals": json.loads(retired["retired_usage"]),
+            "expired_usage_totals": _counter_values(
+                json.loads(retired["retired_usage"])
+            ),
             "accounting_note": "Host-reported usage and rendered estimates are separate; neither is a savings claim.",
         }
     )

@@ -26,6 +26,16 @@ def save(book, name, body, kind="document"):
     return book.save_text(body, name=name, kind=kind, media_type="text/plain")
 
 
+@pytest.mark.parametrize("query", ["demo", "", "___"])
+def test_find_excludes_episode_ledgers_before_limiting_results(tmp_path, query):
+    book = Workbook(tmp_path)
+    document = save(book, "demo-source", "demo useful evidence")
+    for index in range(12):
+        save(book, f"_episodes/demo-{index}", "demo " * 20, "memory_episode")
+    result = book.find(query, limit=1)
+    assert [row["artifact_id"] for row in result] == [document["artifact_id"]]
+
+
 def seed_legacy_index(book, ids):
     """Simulate v0.8's accepted episodes without restoring its retrieval policy."""
     with book.connect() as catalog, context_index._cache(book) as cache:
