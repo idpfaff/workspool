@@ -90,7 +90,10 @@ def main() -> None:
     )
     for host in (host_config, host_doctor):
         host.add_argument("host", choices=["claude-desktop", "cursor", "codex"])
-        host.add_argument("--goal", required=True)
+        host.add_argument(
+            "--goal",
+            help="Optional server-startup objective; use recall for each conversation's current objective",
+        )
         host.add_argument("--tokenizer", default="o200k_base")
         host.add_argument("--recall-tokens", type=int, default=1500)
         host.add_argument("--model-dir", type=Path)
@@ -173,6 +176,11 @@ def main() -> None:
         "--require-claims",
         action="store_true",
         help="persistently require fenced task claims in this workspace",
+    )
+    serve.add_argument(
+        "--episode-retention",
+        type=int,
+        help="Runtime session-history retention in days (default policy: 30; 0 disables expiry)",
     )
 
     model = commands.add_parser(
@@ -371,6 +379,11 @@ def main() -> None:
         "--keep", type=int, default=1, help="versions to keep per name (default: 1)"
     )
     prune.add_argument("--dry-run", action="store_true")
+    prune.add_argument(
+        "--episode-retention",
+        type=int,
+        help="Retain session history for this many days; 0 disables expiry. Dry-run does not change policy",
+    )
 
     bench = commands.add_parser("bench", help="Compare raw and referenced handoffs")
     bench.add_argument("--tokenizer", type=Path)
@@ -508,6 +521,7 @@ def main() -> None:
                         recall_tokens=args.recall_tokens,
                         model_dir=args.model_dir,
                         require_claims=args.require_claims,
+                        episode_retention=args.episode_retention,
                     )
                     try:
                         app.run(transport=args.transport)
@@ -709,7 +723,11 @@ def main() -> None:
                 case "delete":
                     result = workbook.delete(args.ref, args.expected_version)
                 case "prune":
-                    result = workbook.prune(args.keep, args.dry_run)
+                    result = workbook.prune(
+                        args.keep,
+                        args.dry_run,
+                        episode_retention=args.episode_retention,
+                    )
         print(json.dumps(result, ensure_ascii=False, indent=2))
     except (ValueError, TypeError, OSError, ImportError) as exc:
         print(f"{parser.prog}: {exc}", file=sys.stderr)

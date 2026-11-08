@@ -25,14 +25,9 @@ uv sync --locked --python 3.12 --extra tokens --extra semantic
 Provisioning uses `BAAI/bge-small-en-v1.5` through FastEmbed and writes a manifest
 of the downloaded assets' SHA-256 hashes. The destination must not already
 exist. Retrieval uses that local copy and a network-disabled embedding worker;
-it does not fetch weights or call a paid model API. Named tiktoken encodings
-may download their ranks on first use. To prepare that tokenizer before an
-offline session:
-
-```sh
-.venv/bin/python -c 'import tiktoken; tiktoken.get_encoding("o200k_base")'
-```
-
+it does not fetch weights or call a paid model API. Workspool bundles pinned,
+hash-checked ranks for `cl100k_base` and `o200k_base`: after installing the
+`tokens` extra, both work offline without a tokenizer cache or first-use download.
 Alternatively, `--tokenizer /absolute/path/tokenizer.json` uses an existing
 local tokenizer file. Start the stdio MCP server with a specific goal:
 
@@ -113,6 +108,16 @@ previews are bounded and marked; existing immutable references become
 dependencies, up to the supported limit. Names alone are not rebound to a
 possibly newer source and presented as execution provenance.
 
+The episode ledger is audit history, **not recall material**. `context` and
+`recall` exclude episode artifacts even in explicit scopes. Only substantive
+supported query/task result previews and deliberate decisions become compact
+`memory_fact` artifacts, visible to recall after their owning episode publishes.
+Read/status receipts, failures, and schema-only metadata do not become facts.
+Equivalent facts with the same source versions are shared across sessions;
+their source dependencies expose staleness when inputs change. Session goals and
+accounting notes are absent from episode bodies and summaries, and the recalled
+fact projection excludes usage, timing, and request bookkeeping.
+
 Repeated successful reads with the same compact facts are deduplicated when
 they carry no supplied token accounting. Failures remain unverified. Successful
 internal observations mean the hook observed a tool execution, **not** that
@@ -155,11 +160,67 @@ facts or accounting under that ID are rejected. Tool retries may differ in
 elapsed time while retaining the original recorded duration.
 
 Episode artifacts are saved before their immutable session ledger and audit
-entry commit together. A crash in between can leave an unlisted artifact;
-retrying the same event repairs publication without creating a second version.
+entry commit together. Fact ownership is published in that same transaction.
+A crash in between can leave unpublished artifacts; these are excluded from
+recall and become eligible for cleanup. A retained event ID makes retries
+idempotent; if concurrent cleanup removes a reused fact, capture revalidates
+under the publication lock and retries within a fixed limit.
 Capture errors are counted and logged without misreporting an already completed
 tool operation. No automatic consolidation or claim of lossless conversation
 storage is made.
+
+### History retention
+
+Session history has a persisted **30-day default**. A session becomes eligible
+after no start, capture, or end activity for that window; ending it does not
+erase history immediately. Open but inactive sessions can expire. Set
+`--episode-retention DAYS` on a writer runtime server to change the policy;
+`0` disables expiry, and negative values are rejected. Omitting the option keeps
+the existing policy:
+
+```sh
+.venv/bin/workspool --workspace "$HOME/MyWorkbook" serve \
+  --profile runtime --agent-id research-agent --episode-retention 30
+```
+
+Writer runtime startup cleans expired capture history **before** assembling
+startup recall. It does not prune unrelated source versions. For explicit
+cleanup, preview first:
+
+```sh
+.venv/bin/workspool --workspace "$HOME/MyWorkbook" prune --episode-retention 30 --dry-run
+.venv/bin/workspool --workspace "$HOME/MyWorkbook" prune --episode-retention 30
+```
+
+`prune` also removes unpinned superseded artifact versions. An explicit retention
+override persists only on the real run; dry-run neither changes policy nor
+deletes records. Each capture-cleanup pass is bounded. Follow `retention.more_pending`
+with another prune when needed; reference-retained records can remain indefinitely.
+
+Cleanup removes eligible episode payloads, ownership rows, unowned facts, empty
+sessions and their usage rows, and disposable audit events. Lexical/dense cache
+cleanup follows catalog commit and is incremental; stale cache entries cannot
+restore deleted artifacts. External references retain episodes, and a retained
+fact keeps its published owner proof. `retained_referenced_episodes` reports
+those blockers. Direct deletion of managed history instead explains how to use
+retention cleanup.
+
+Live artifact creation, approval, and task/skill proof records remain protected.
+A skill or replay task can retain historical origin artifacts through provenance
+links without making unrelated new results stale. Deleting those owners releases
+their pins; ordinary pruning can then remove unreferenced superseded versions.
+Explicit prune removes finalized task ledger rows only when their definition,
+anchor, report, and skill references are all gone. It does not expire live task
+snapshots.
+
+`session_status` reports the retention policy and separate cumulative expired
+usage totals. Remaining sessions keep their lifetime usage counters and disclose
+expired episode counts. These aggregates preserve accounting, not recoverable
+conversation content. `changes` reports `history_pruned` and `pruned_through`
+when its requested history includes deleted events. Small name/version, task
+generation, and claim-fence identity tombstones remain to prevent identifier
+reuse. Retention guards allow deletion only inside an authorized maintenance
+transaction; ordinary audit updates and deletes remain blocked.
 
 ## Wire another host's lifecycle
 

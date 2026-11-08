@@ -50,6 +50,14 @@ def test_interpreter_symlink_is_not_resolved(tmp_path, monkeypatch):
     assert entry("cursor", fragment("cursor", tmp_path))["command"] == str(interpreter)
 
 
+@pytest.mark.parametrize("host", setup.HOSTS)
+def test_general_host_config_does_not_pin_a_conversation_goal(tmp_path, host):
+    config = entry(host, setup.generate(host, tmp_path / "workspace"))
+    assert "--goal" not in config["args"]
+    with pytest.raises(ValueError, match="goal"):
+        setup.generate(host, tmp_path / "workspace", goal="")
+
+
 def test_codex_unicode_and_spaces_round_trip(tmp_path, monkeypatch):
     interpreter = tmp_path / "Python 🐍 with spaces"
     interpreter.symlink_to(sys.executable)
@@ -283,11 +291,18 @@ def test_generated_command_real_mcp_smoke(host, local_tokenizer):
     assert "host application behavior is not tested" in result["scope"]
 
 
+def test_general_host_real_mcp_smoke_without_startup_goal():
+    result = setup.doctor("codex", goal=None, recall_tokens=4096, timeout=30)
+    assert result["ok"] is True
+    assert all(result["checks"].values())
+    assert result["startup_context_configured"] is False
+
+
 def test_doctor_invalid_tokenizer_and_failure_are_actionable(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="Tokenizer file does not exist"):
         setup.doctor("cursor", tokenizer=str(tmp_path / "missing.json"))
 
-    async def fail(*args):
+    async def fail(*args, **kwargs):
         raise RuntimeError("secret credential must not appear")
 
     monkeypatch.setattr(setup, "_smoke", fail)
@@ -300,7 +315,7 @@ def test_doctor_explicit_timeout_and_bad_checks_fail(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="timeout"):
         setup.doctor("cursor", timeout=0)
 
-    async def bad_checks(*args):
+    async def bad_checks(*args, **kwargs):
         return {"ok": False, "checks": {"startup_context": False}}
 
     monkeypatch.setattr(setup, "_smoke", bad_checks)

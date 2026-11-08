@@ -47,13 +47,21 @@ CREATE INDEX IF NOT EXISTS coordination_events_resource
 CREATE TRIGGER IF NOT EXISTS coordination_events_no_update
 BEFORE UPDATE ON coordination_events
 BEGIN SELECT RAISE(ABORT, 'Coordination events are immutable'); END;
-CREATE TRIGGER IF NOT EXISTS coordination_events_no_delete
+CREATE TRIGGER IF NOT EXISTS coordination_events_retention_guard
 BEFORE DELETE ON coordination_events
+WHEN workspool_retention() != 1
 BEGIN SELECT RAISE(ABORT, 'Coordination events are immutable'); END;
+DROP TRIGGER IF EXISTS coordination_events_no_delete;
 CREATE TRIGGER IF NOT EXISTS coordination_events_no_replace
 BEFORE INSERT ON coordination_events
 WHEN EXISTS(SELECT 1 FROM coordination_events WHERE event_id=NEW.event_id)
 BEGIN SELECT RAISE(ABORT, 'Coordination events are immutable'); END;
+CREATE TABLE IF NOT EXISTS coordination_retention (
+    singleton INTEGER PRIMARY KEY CHECK(singleton=1),
+    deleted_events INTEGER NOT NULL DEFAULT 0,
+    through_event_id INTEGER NOT NULL DEFAULT 0
+);
+INSERT OR IGNORE INTO coordination_retention(singleton) VALUES(1);
 """
 PERMISSIONS = {
     "reader": frozenset({"read"}),
@@ -123,7 +131,85 @@ def authorize(principal, action):
 def initialize(workbook):
     """Create tables outside an existing publication transaction."""
     with workbook.connect() as db:
-        db.executescript(SCHEMA)
+        # Install the replacement guard before removing its legacy name, in one
+        # write transaction. Cleanup never drops or disables these triggers.
+        db.executescript("BEGIN IMMEDIATE;\n" + SCHEMA + "\nCOMMIT;")
+
+
+@contextmanager
+def _retention_write(db, principal):
+    """Connection-local delete permission, scoped to an authorized transaction."""
+    authorize(principal, "write")
+    if not db.in_transaction:
+        raise ValueError("Retention requires an explicit write transaction")
+    db.create_function("workspool_retention", 0, lambda: 1)
+    try:
+        yield
+    finally:
+        db.create_function("workspool_retention", 0, lambda: 0)
+
+
+def _expire_events(db, cutoff):
+    """Expire known disposable audit records; live artifact/proof refs win."""
+    rows = db.execute(
+        """
+        SELECT e.event_id FROM coordination_events e
+        WHERE occurred_at < ?
+          AND (kind IN ('artifact.created','artifact.publication','task.defined',
+                        'task.finished','task.published','skill.distilled','approval',
+                        'session.started','session.episode','claim.acquired',
+                        'claim.renewed','claim.released') OR kind LIKE 'approval.%')
+          AND NOT EXISTS (SELECT 1 FROM artifacts a WHERE a.artifact_id=e.resource)
+          AND NOT EXISTS (
+              SELECT 1 FROM json_tree(e.details) j JOIN artifacts a ON a.artifact_id=j.value
+              WHERE j.type='text')
+          AND (kind!='session.started' OR NOT EXISTS (
+              SELECT 1 FROM continuity_sessions s WHERE 'session:' || s.session_id=e.resource))
+        ORDER BY e.event_id LIMIT 512
+        """,
+        (cutoff,),
+    ).fetchall()
+    if not rows:
+        return 0
+    db.executemany("DELETE FROM coordination_events WHERE event_id=?", rows)
+    db.execute(
+        "UPDATE coordination_retention SET deleted_events=deleted_events+?, "
+        "through_event_id=MAX(through_event_id,?) WHERE singleton=1",
+        (len(rows), max(row[0] for row in rows)),
+    )
+    return len(rows)
+
+
+def _expire_orphan_runs(db, cutoff):
+    """Explicit prune only: finalized runs whose entire retained proof is gone."""
+    tables = {
+        row[0]
+        for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    }
+    if "task_runs" not in tables:
+        return 0
+    skill_guard = (
+        "AND NOT EXISTS(SELECT 1 FROM skill_records s WHERE s.run_id=r.run_id)"
+        if "skill_records" in tables
+        else ""
+    )
+    rows = db.execute(
+        """SELECT r.run_id FROM task_runs r WHERE r.finished<? AND r.state!='running'
+        AND NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.artifact_id=r.definition_id)
+        AND NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.artifact_id=r.anchor_id)
+        AND NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.artifact_id=json_extract(r.payload,'$.artifact_id'))
+        """
+        + skill_guard
+        + " LIMIT 256",
+        (cutoff,),
+    ).fetchall()
+    for row in rows:
+        db.execute(
+            "UPDATE task_heads SET latest_success=NULL,success_generation=0 WHERE latest_success=?",
+            (row[0],),
+        )
+        db.execute("DELETE FROM task_runs WHERE run_id=?", (row[0],))
+    return len(rows)
 
 
 def configure(workbook, *, require_claims):
@@ -361,7 +447,10 @@ def changes_since(workbook, after=0, *, limit=50, through=None, resource=None):
     with workbook.connect() as db:
         db.execute("BEGIN")
         head = db.execute(
-            "SELECT COALESCE(MAX(event_id),0) FROM coordination_events"
+            "SELECT COALESCE((SELECT seq FROM sqlite_sequence WHERE name='coordination_events'),0)"
+        ).fetchone()[0]
+        retired = db.execute(
+            "SELECT through_event_id FROM coordination_retention WHERE singleton=1"
         ).fetchone()[0]
         if after > head:
             raise ValueError("after is beyond the latest event in this workbook")
@@ -378,12 +467,15 @@ def changes_since(workbook, after=0, *, limit=50, through=None, resource=None):
     events = [
         dict(row) | {"details": json.loads(row["details"])} for row in rows[:limit]
     ]
-    return {
+    result = {
         "events": events,
         "through": through,
         "complete": complete,
         "next_after": max(after, through) if complete else events[-1]["event_id"],
     }
+    if retired:
+        result |= {"history_pruned": after < retired, "pruned_through": retired}
+    return result
 
 
 def why_stale(workbook, ref, *, limit=100):

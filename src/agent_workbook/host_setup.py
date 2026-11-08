@@ -65,7 +65,7 @@ def generate(
     host,
     workspace,
     *,
-    goal,
+    goal=None,
     tokenizer="o200k_base",
     recall_tokens=1500,
     model_dir=None,
@@ -73,11 +73,13 @@ def generate(
 ):
     """Render a complete configuration fragment without writing any files.
 
-    Named tokenizer data may need provisioning on first startup. Preview does
-    not download tokenizer data or an embedding model.
+    The optional goal applies to server startup. Conversations use recall with
+    their own query; preview does not write files or download a model.
     """
     _host(host)
-    if not isinstance(goal, str) or not goal.strip() or len(goal) > 500:
+    if goal is not None and (
+        not isinstance(goal, str) or not goal.strip() or len(goal) > 500
+    ):
         raise ValueError("Startup goal must contain 1–500 characters")
     if type(recall_tokens) is not int or not 1 <= recall_tokens <= 131072:
         raise ValueError("recall_tokens must be between 1 and 131072")
@@ -104,13 +106,13 @@ def generate(
         principal.identity,
         "--role",
         "writer",
-        "--goal",
-        goal,
         "--tokenizer",
         tokenizer,
         "--recall-tokens",
         str(recall_tokens),
     ]
+    if goal is not None:
+        args.extend(["--goal", goal])
     if model_dir is not None:
         directory = _absolute(model_dir)
         if not directory.is_dir():
@@ -371,7 +373,7 @@ def install(host, config_text, *, path=None, replace=False):
         os.close(fd)
 
 
-async def _smoke(entry, workspace, agent_id, timeout, errlog):
+async def _smoke(entry, workspace, agent_id, timeout, errlog, *, expect_startup=True):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
 
@@ -421,7 +423,8 @@ async def _smoke(entry, workspace, agent_id, timeout, errlog):
             checks = {
                 "initialize": True,
                 "runtime_tools": {"recall", "remember", "session_status"} <= operations,
-                "startup_context": STARTUP_PREFIX in (initialized.instructions or ""),
+                "startup_context": (STARTUP_PREFIX in (initialized.instructions or ""))
+                == expect_startup,
                 "capture_session": status.get("capture_enabled") is True,
                 "configured_identity": status.get("actor") == agent_id,
             }
@@ -429,6 +432,7 @@ async def _smoke(entry, workspace, agent_id, timeout, errlog):
                 "ok": all(checks.values()),
                 "checks": checks,
                 "protocol_version": initialized.protocolVersion,
+                "startup_context_configured": expect_startup,
             }
 
 
@@ -445,7 +449,7 @@ def doctor(
     """Run the generated command over MCP in disposable storage, not a host GUI.
 
     API keys and arbitrary environment variables are not forwarded. No model API
-    is called. Named tokenizer ranks may download on their first use.
+    is called. Named tokenizer ranks are bundled and load without network access.
     """
     from .store import Workbook
 
@@ -469,23 +473,28 @@ def doctor(
         )
         parsed, key = _parse(host, fragment)
         Workbook(workspace).save_text(
-            "Workspool protocol smoke fixture. " + goal,
+            "Workspool protocol smoke fixture. " + (goal or "Readiness check"),
             name="doctor-fixture",
             kind="document",
             media_type="text/plain",
-            summary=goal,
+            summary=goal or "Readiness check",
         )
         with tempfile.TemporaryFile(mode="w+", encoding="utf-8") as errlog:
             try:
                 result = asyncio.run(
                     _smoke(
-                        parsed[key]["workspool"], workspace, identity, timeout, errlog
+                        parsed[key]["workspool"],
+                        workspace,
+                        identity,
+                        timeout,
+                        errlog,
+                        expect_startup=goal is not None,
                     )
                 )
             except Exception:  # noqa: BLE001 -- redact child diagnostics, including SDK exception groups
                 raise ValueError(
                     "MCP smoke failed. Check that this Python environment has agent-workbook[tokens], "
-                    "the tokenizer is readable/provisioned, the recall budget fits startup metadata, "
+                    "tokenizer dependencies are installed (or the local file is readable), the recall budget fits startup metadata, "
                     "and any model directory was provisioned. Increase --timeout for cold startup."
                 ) from None
     if not result["ok"]:

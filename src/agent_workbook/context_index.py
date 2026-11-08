@@ -33,6 +33,7 @@ MAX_CLEANUP_VERSIONS = 256
 INDEX_SECONDS = 30
 QUERY_SECONDS = 5
 CACHE_VERSION = 1
+EXCLUDED_KINDS = frozenset({"memory_episode"})
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS maintenance (
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS chunks (
     body TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS chunks_artifact ON chunks(artifact_id);
+CREATE INDEX IF NOT EXISTS chunks_digest ON chunks(digest);
 CREATE VIRTUAL TABLE IF NOT EXISTS chunk_search USING fts5(
     body, content='chunks', content_rowid='id', tokenize='unicode61 remove_diacritics 2'
 );
@@ -137,11 +139,20 @@ def _scope(workbook, catalog, refs):
         or len(set(refs)) != len(refs)
     ):
         raise ValueError("Provide 1-16 distinct artifact references, or omit refs")
+    fact_ledger = _has_fact_ledger(catalog)
+    eligible = (
+        "kind != 'memory_episode' AND (kind != 'memory_fact' OR EXISTS "
+        "(SELECT 1 FROM continuity_facts f JOIN continuity_episodes e "
+        "ON e.artifact_id=f.episode_artifact_id WHERE f.fact_artifact_id=latest.artifact_id))"
+        if fact_ledger
+        else "kind NOT IN ('memory_episode','memory_fact')"
+    )
     rows = (
         [workbook._get(catalog, ref) for ref in refs]
         if refs is not None
         else catalog.execute(
-            "SELECT * FROM latest ORDER BY name LIMIT ?", (MAX_SCOPE_VERSIONS + 1,)
+            "SELECT * FROM latest WHERE " + eligible + " ORDER BY name LIMIT ?",
+            (MAX_SCOPE_VERSIONS + 1,),
         ).fetchall()
     )
     if len(rows) > MAX_SCOPE_VERSIONS:
@@ -150,6 +161,10 @@ def _scope(workbook, catalog, refs):
         )
     selected = {}
     for row in rows:
+        if not _searchable(catalog, row["artifact_id"], row["kind"], fact_ledger):
+            # Ledger inspection is explicit; repeating goals/accounting is not
+            # evidence. Explicit refs cannot reintroduce this excluded kind.
+            continue
         if not is_text(row["media_type"]):
             if refs is not None:
                 raise ValueError(f"{row['name']} is not searchable text")
@@ -163,6 +178,33 @@ def _scope(workbook, catalog, refs):
             | workbook._status(catalog, artifact_id),
         )
     return selected
+
+
+def _has_fact_ledger(catalog):
+    return (
+        catalog.execute(
+            "SELECT count(*) FROM sqlite_master WHERE type='table' "
+            "AND name IN ('continuity_facts','continuity_episodes')"
+        ).fetchone()[0]
+        == 2
+    )
+
+
+def _searchable(catalog, artifact_id, kind, fact_ledger):
+    if kind in EXCLUDED_KINDS:
+        return False
+    if kind != "memory_fact":
+        return True
+    # Artifact creation precedes publication. Only an atomically published
+    # episode owner makes the projection recallable; orphan retries stay hidden.
+    return bool(
+        fact_ledger
+        and catalog.execute(
+            "SELECT 1 FROM continuity_facts f JOIN continuity_episodes e "
+            "ON e.artifact_id=f.episode_artifact_id WHERE f.fact_artifact_id=? LIMIT 1",
+            (artifact_id,),
+        ).fetchone()
+    )
 
 
 def _boundary(data, end):
@@ -251,12 +293,13 @@ def _prune(cache, catalog):
         "SELECT artifact_id FROM versions WHERE artifact_id > ? ORDER BY artifact_id LIMIT ?",
         (cursor[0] if cursor else "", MAX_CLEANUP_VERSIONS),
     ).fetchall()
+    fact_ledger = _has_fact_ledger(catalog)
     for saved in saved_versions:
-        if (
-            catalog.execute(
-                "SELECT 1 FROM artifacts WHERE artifact_id = ?", (saved[0],)
-            ).fetchone()
-            is None
+        source = catalog.execute(
+            "SELECT kind FROM artifacts WHERE artifact_id = ?", (saved[0],)
+        ).fetchone()
+        if source is None or not _searchable(
+            catalog, saved[0], source["kind"], fact_ledger
         ):
             cache.execute("DELETE FROM versions WHERE artifact_id = ?", (saved[0],))
     next_cursor = (
@@ -267,6 +310,35 @@ def _prune(cache, catalog):
         "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
         (next_cursor,),
     )
+
+
+def clean_recall_cache(workbook):
+    """Bounded cleanup after retention commits, including legacy episode chunks.
+
+    Selection excludes ledgers immediately. Cleanup visits at most 256 cached
+    versions per call, so large existing caches are reclaimed incrementally.
+    """
+    path = workbook.root / "context-index.sqlite3"
+    if not path.exists():
+        return {"versions_removed": 0, "chunks_removed": 0, "vectors_removed": 0}
+    with workbook.connect() as catalog, _cache(workbook) as cache:
+        catalog.execute("BEGIN")
+        before = cache.execute("SELECT count(*) FROM versions").fetchone()[0]
+        chunks = cache.execute("SELECT count(*) FROM chunks").fetchone()[0]
+        _prune(cache, catalog)
+        versions_removed = (
+            before - cache.execute("SELECT count(*) FROM versions").fetchone()[0]
+        )
+        chunks_removed = (
+            chunks - cache.execute("SELECT count(*) FROM chunks").fetchone()[0]
+        )
+    from .semantic import clean_vector_cache
+
+    return {
+        "versions_removed": versions_removed,
+        "chunks_removed": chunks_removed,
+        "vectors_removed": clean_vector_cache(workbook),
+    }
 
 
 def _prepare(cache, catalog, workbook, selected, max_index_bytes):
@@ -426,4 +498,9 @@ def ranked_search(
                 if not result["hits"]:
                     raise ValueError("Ranked output budget cannot fit one exact chunk")
                 break
-        return result
+    # The lexical cache transaction must finish before the separate vector
+    # cache is pruned, avoiding competing lock order with hybrid retrieval.
+    from .semantic import clean_vector_cache
+
+    clean_vector_cache(workbook)
+    return result

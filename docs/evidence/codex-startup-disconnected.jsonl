@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"01a1b87e-1a89-76d1-a180-bf0d29cb2ef0"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I’ll check the available tool metadata without executing Workspool tools or accessing files or other services."}}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"NOT RECEIVED"}}
+{"type":"turn.completed","usage":{"input_tokens":26582,"cached_input_tokens":24576,"cache_write_input_tokens":0,"output_tokens":91,"reasoning_output_tokens":13}}

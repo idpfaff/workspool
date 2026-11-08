@@ -52,12 +52,38 @@ CREATE TABLE IF NOT EXISTS continuity_usage (
     session_id TEXT PRIMARY KEY REFERENCES continuity_sessions(session_id),
     counters TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS continuity_activity (
+    session_id TEXT PRIMARY KEY REFERENCES continuity_sessions(session_id) ON DELETE CASCADE,
+    touched_at REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS continuity_activity_age ON continuity_activity(touched_at);
+CREATE INDEX IF NOT EXISTS continuity_episode_artifact ON continuity_episodes(artifact_id);
+INSERT OR IGNORE INTO continuity_activity
+    SELECT s.session_id, MAX(s.created_at, COALESCE(s.ended_at,0),
+        COALESCE((SELECT MAX(e.captured_at) FROM continuity_episodes e WHERE e.session_id=s.session_id),0))
+    FROM continuity_sessions s WHERE NOT EXISTS (
+        SELECT 1 FROM continuity_activity a WHERE a.session_id=s.session_id);
+CREATE TABLE IF NOT EXISTS continuity_facts (
+    episode_artifact_id TEXT NOT NULL REFERENCES artifacts(artifact_id) ON DELETE CASCADE,
+    fact_artifact_id TEXT NOT NULL REFERENCES artifacts(artifact_id),
+    PRIMARY KEY(episode_artifact_id,fact_artifact_id)
+);
+CREATE INDEX IF NOT EXISTS continuity_fact_owners ON continuity_facts(fact_artifact_id);
+CREATE TABLE IF NOT EXISTS continuity_retention (
+    singleton INTEGER PRIMARY KEY CHECK(singleton=1),
+    days INTEGER NOT NULL DEFAULT 30 CHECK(days>=0),
+    retired_sessions INTEGER NOT NULL DEFAULT 0,
+    retired_usage TEXT NOT NULL DEFAULT '{}'
+);
+INSERT OR IGNORE INTO continuity_retention(singleton) VALUES(1);
 CREATE TRIGGER IF NOT EXISTS continuity_episodes_no_update
 BEFORE UPDATE ON continuity_episodes
 BEGIN SELECT RAISE(ABORT,'Continuity episodes are immutable'); END;
-CREATE TRIGGER IF NOT EXISTS continuity_episodes_no_delete
+CREATE TRIGGER IF NOT EXISTS continuity_episodes_retention_guard
 BEFORE DELETE ON continuity_episodes
+WHEN workspool_retention() != 1
 BEGIN SELECT RAISE(ABORT,'Continuity episodes are immutable'); END;
+DROP TRIGGER IF EXISTS continuity_episodes_no_delete;
 CREATE TRIGGER IF NOT EXISTS continuity_episodes_no_replace
 BEFORE INSERT ON continuity_episodes
 WHEN EXISTS(SELECT 1 FROM continuity_episodes
@@ -302,14 +328,195 @@ def _accounting(usage, estimated_tokens):
     return {
         "host_reported_usage": usage,
         "estimated_rendered_tokens": estimated_tokens,
-        "accounting_note": "Host-reported usage and rendered estimates are separate; neither is a savings claim.",
     }
 
 
 def initialize(workbook):
     initialize_coordination(workbook)
     with workbook.connect() as db:
-        db.executescript(SCHEMA)
+        db.executescript("BEGIN IMMEDIATE;\n" + SCHEMA + "\nCOMMIT;")
+
+
+def _retention_days(days):
+    if type(days) is not int or not 0 <= days <= 36500:
+        raise ValueError("episode_retention must be 0–36500 days; 0 disables expiry")
+    return days
+
+
+def configure_retention(workbook, days=30):
+    """Trusted persisted policy; 0 disables expiry, negatives are invalid."""
+    from .coordination import current_principal
+
+    authorize(current_principal(), "write")
+    _retention_days(days)
+    initialize(workbook)
+    with workbook.connect() as db:
+        db.execute("BEGIN IMMEDIATE")
+        db.execute("UPDATE continuity_retention SET days=? WHERE singleton=1", (days,))
+
+
+def retention_policy(db):
+    return db.execute(
+        "SELECT days FROM continuity_retention WHERE singleton=1"
+    ).fetchone()[0]
+
+
+def _touch(db, session_id):
+    db.execute(
+        "INSERT INTO continuity_activity VALUES(?,?) ON CONFLICT(session_id) "
+        "DO UPDATE SET touched_at=excluded.touched_at",
+        (session_id, time.time()),
+    )
+
+
+def _expire(db, workbook, days=None):
+    """Bounded transactional expiry. Caller holds the write/retention guard."""
+    days = retention_policy(db) if days is None else _retention_days(days)
+    report = {
+        "days": days,
+        "episodes_removed": 0,
+        "facts_removed": 0,
+        "sessions_removed": 0,
+        "events_removed": 0,
+        "retained_referenced_episodes": 0,
+        "retained_referenced_facts": 0,
+        "more_pending": False,
+    }
+    removed = []
+    if days == 0:
+        return report, removed
+    cutoff = time.time() - days * 86400
+    retired = db.execute(
+        "SELECT retired_usage FROM continuity_retention WHERE singleton=1"
+    ).fetchone()[0]
+    counters = json.loads(retired) or _empty_counters()
+    # Leaf-first passes release references among old episodes without deleting
+    # anything a live artifact still pins. Each invocation removes at most 256.
+    budget = 256
+    while budget:
+        rows = db.execute(
+            """SELECT e.* FROM continuity_episodes e
+            JOIN continuity_activity s ON s.session_id=e.session_id
+            WHERE s.touched_at<? AND e.captured_at<?
+              AND NOT EXISTS(SELECT 1 FROM dependencies d WHERE d.dependency_id=e.artifact_id)
+              AND NOT EXISTS(SELECT 1 FROM provenance_links p WHERE p.provenance_id=e.artifact_id)
+              AND NOT EXISTS(SELECT 1 FROM continuity_facts f WHERE f.episode_artifact_id=e.artifact_id
+                AND (EXISTS(SELECT 1 FROM dependencies d WHERE d.dependency_id=f.fact_artifact_id)
+                  OR EXISTS(SELECT 1 FROM provenance_links p WHERE p.provenance_id=f.fact_artifact_id)))
+            ORDER BY e.sequence DESC LIMIT ?""",
+            (cutoff, cutoff, budget),
+        ).fetchall()
+        if not rows:
+            break
+        artifacts = [workbook._get(db, row["artifact_id"]) for row in rows]
+        for row in rows:
+            _count(counters, json.loads(row["payload"]))
+            db.execute(
+                "DELETE FROM continuity_facts WHERE episode_artifact_id=?",
+                (row["artifact_id"],),
+            )
+            db.execute(
+                "DELETE FROM continuity_episodes WHERE sequence=?", (row["sequence"],)
+            )
+        removed += workbook._remove(db, artifacts, splice=True)
+        report["episodes_removed"] += len(rows)
+        budget -= len(rows)
+    # Include abandoned pre-ledger saves. A recently active session protects its
+    # in-flight capture; missing sessions are not silently recreated by cleanup.
+    orphaned = db.execute(
+        """SELECT a.* FROM artifacts a WHERE a.kind='memory_episode'
+        AND a.name GLOB '_episodes/*' AND julianday(a.created_at)<julianday(?,'unixepoch')
+        AND NOT EXISTS(SELECT 1 FROM continuity_episodes e WHERE e.artifact_id=a.artifact_id)
+        AND NOT EXISTS(SELECT 1 FROM continuity_activity s
+            WHERE s.session_id=substr(a.name,11,32) AND s.touched_at>=?)
+        AND NOT EXISTS(SELECT 1 FROM dependencies d WHERE d.dependency_id=a.artifact_id)
+        AND NOT EXISTS(SELECT 1 FROM provenance_links p WHERE p.provenance_id=a.artifact_id)
+        LIMIT ?""",
+        (cutoff, cutoff, budget),
+    ).fetchall()
+    if orphaned:
+        removed += workbook._remove(db, orphaned, splice=True)
+        report["episodes_removed"] += len(orphaned)
+        budget -= len(orphaned)
+    facts = db.execute(
+        """SELECT a.* FROM artifacts a WHERE a.kind='memory_fact'
+        AND a.name GLOB '_memory_facts/*' AND julianday(a.created_at)<julianday(?,'unixepoch')
+        AND NOT EXISTS(SELECT 1 FROM continuity_facts f WHERE f.fact_artifact_id=a.artifact_id)
+        AND NOT EXISTS(SELECT 1 FROM dependencies d WHERE d.dependency_id=a.artifact_id)
+        AND NOT EXISTS(SELECT 1 FROM provenance_links p WHERE p.provenance_id=a.artifact_id)
+        LIMIT 256""",
+        (cutoff,),
+    ).fetchall()
+    if facts:
+        removed += workbook._remove(db, facts, splice=True)
+        report["facts_removed"] = len(facts)
+    sessions = db.execute(
+        """SELECT s.session_id FROM continuity_activity s WHERE touched_at<?
+        AND NOT EXISTS(SELECT 1 FROM continuity_episodes e WHERE e.session_id=s.session_id)
+        AND NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.name GLOB '_episodes/' || s.session_id || '/*')
+        LIMIT 256""",
+        (cutoff,),
+    ).fetchall()
+    for row in sessions:
+        db.execute("DELETE FROM continuity_usage WHERE session_id=?", (row[0],))
+        db.execute("DELETE FROM continuity_sessions WHERE session_id=?", (row[0],))
+    report["sessions_removed"] = len(sessions)
+    db.execute(
+        "UPDATE continuity_retention SET retired_sessions=retired_sessions+?, retired_usage=? WHERE singleton=1",
+        (len(sessions), _json(counters)),
+    )
+    report["retained_referenced_episodes"] = db.execute(
+        """SELECT count(*) FROM continuity_episodes e JOIN continuity_activity s USING(session_id)
+        WHERE s.touched_at<? AND e.captured_at<? AND (
+          EXISTS(SELECT 1 FROM dependencies d WHERE d.dependency_id=e.artifact_id) OR
+          EXISTS(SELECT 1 FROM provenance_links p WHERE p.provenance_id=e.artifact_id) OR
+          EXISTS(SELECT 1 FROM continuity_facts f WHERE f.episode_artifact_id=e.artifact_id
+            AND (EXISTS(SELECT 1 FROM dependencies d WHERE d.dependency_id=f.fact_artifact_id)
+              OR EXISTS(SELECT 1 FROM provenance_links p WHERE p.provenance_id=f.fact_artifact_id))))""",
+        (cutoff, cutoff),
+    ).fetchone()[0]
+    report["retained_referenced_facts"] = db.execute(
+        """SELECT count(*) FROM artifacts a WHERE a.kind='memory_fact'
+        AND a.name GLOB '_memory_facts/*' AND julianday(a.created_at)<julianday(?,'unixepoch')
+        AND NOT EXISTS(SELECT 1 FROM continuity_facts f WHERE f.fact_artifact_id=a.artifact_id)
+        AND (EXISTS(SELECT 1 FROM dependencies d WHERE d.dependency_id=a.artifact_id)
+             OR EXISTS(SELECT 1 FROM provenance_links p WHERE p.provenance_id=a.artifact_id))""",
+        (cutoff,),
+    ).fetchone()[0]
+    from .coordination import _expire_events
+
+    report["events_removed"] = _expire_events(db, cutoff)
+    report["more_pending"] = (
+        budget == 0
+        or len(facts) == 256
+        or len(sessions) == 256
+        or report["events_removed"] == 512
+    )
+    report["expired_usage_totals"] = counters
+    return report, removed
+
+
+def prune_episodes(workbook, dry_run=False):
+    """Expire only managed capture history; no ordinary artifact version prune.
+
+    Bounded passes may require another call when more_pending is true. A session
+    is inactive once it has had no capture/start activity for the retention
+    window. Existing external references always take precedence over expiry.
+    """
+    from .coordination import _retention_write, current_principal
+
+    authorize(current_principal(), "write")
+    initialize(workbook)
+    with workbook.connect() as db:
+        db.execute("BEGIN IMMEDIATE")
+        with _retention_write(db, current_principal()):
+            report, removed = _expire(db, workbook)
+        if dry_run:
+            db.rollback()
+    result = {"retention": report, "removed": removed, "dry_run": dry_run}
+    if not dry_run:
+        result |= workbook._collect_garbage()
+    return result
 
 
 @dataclass(frozen=True)
@@ -405,6 +612,8 @@ def start_session(workbook, principal, goal, session_id=None):
                 {"goal": goal},
             )
         _counters(db, session_id)
+        if _session(db, session)["ended_at"] is None:
+            _touch(db, session_id)
     return session
 
 
@@ -450,7 +659,11 @@ def _identity_digest(payload):
     # A retry can measure a different duration without changing its evidence.
     return hashlib.sha256(
         _json(
-            {key: value for key, value in payload.items() if key != "elapsed_seconds"}
+            {
+                key: value
+                for key, value in payload.items()
+                if key not in {"elapsed_seconds", "goal", "accounting_note"}
+            }
         ).encode()
     ).hexdigest()
 
@@ -466,14 +679,16 @@ def _publish(session, kind, payload, *, verified, event_id):
         raise ValueError("event_id must be a bounded non-secret identifier")
     workbook = session.workbook
     with workbook.connect() as db:
+        db.execute("BEGIN IMMEDIATE")
         session_row = _session(db, session)
+        if session_row["ended_at"] is None:
+            _touch(db, session.session_id)
     payload = {
         "format": 1,
         "session_id": session.session_id,
         "event_id": event_id,
         "actor": session.principal.identity,
         "role": session.principal.role,
-        "goal": session_row["goal"],
         "kind": kind,
         "verified": verified,
         "verification_scope": "Executed tool observed by configured hook; result content is not independently validated."
@@ -511,9 +726,7 @@ def _publish(session, kind, payload, *, verified, event_id):
         + hashlib.sha256(event_id.encode()).hexdigest()
     )
     summary = _text(
-        session_row["goal"]
-        + " | "
-        + kind
+        kind
         + " | "
         + payload.get("tool", "")
         + " | "
@@ -553,51 +766,79 @@ def _publish(session, kind, payload, *, verified, event_id):
             artifact_id = row["artifact_id"]
             body = raw.decode("utf-8")
             payload = json.loads(body)
-    with workbook.connect() as db:
-        db.execute("BEGIN IMMEDIATE")
-        existing = _existing(db, session, event_id, payload_hash)
-        if existing:
-            return _receipt(existing, reused=True)
-        if _session(db, session)["ended_at"] is not None:
-            raise ValueError("Session ended during capture; episode was not published")
-        counters = _counters(db, session.session_id)
-        db.execute(
-            "INSERT INTO continuity_episodes(session_id,event_id,payload_hash,artifact_id,kind,verified,summary,payload,captured_at) VALUES(?,?,?,?,?,?,?,?,?)",
-            (
-                session.session_id,
-                event_id,
-                payload_hash,
-                artifact_id,
-                kind,
-                int(verified),
-                summary,
-                body,
-                time.time(),
-            ),
-        )
-        append_event(
-            db,
-            session.principal,
-            "session.episode",
-            "session:" + session.session_id,
-            {
-                "event_id": event_id,
-                "artifact_id": artifact_id,
-                "kind": kind,
-                "verified": verified,
-            },
-        )
-        _count(counters, payload)
-        db.execute(
-            "UPDATE continuity_usage SET counters=? WHERE session_id=?",
-            (_json(counters), session.session_id),
-        )
-        if kind == "session_end":
+    from .memory_projection import project_memory_fact
+
+    for _ in range(3):
+        fact = project_memory_fact(workbook, payload, principal=session.principal)
+        with workbook.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            existing = _existing(db, session, event_id, payload_hash)
+            if existing:
+                return _receipt(existing, reused=True)
+            if _session(db, session)["ended_at"] is not None:
+                raise ValueError(
+                    "Session ended during capture; episode was not published"
+                )
+            if (
+                fact is not None
+                and not db.execute(
+                    "SELECT 1 FROM artifacts WHERE artifact_id=?",
+                    (fact["artifact_id"],),
+                ).fetchone()
+            ):
+                # Projection can reuse an old fact whose last owner expired
+                # before this write lock. Re-project outside the transaction;
+                # existence and ownership publication must share this lock.
+                continue
+            counters = _counters(db, session.session_id)
             db.execute(
-                "UPDATE continuity_sessions SET ended_at=? WHERE session_id=?",
-                (time.time(), session.session_id),
+                "INSERT INTO continuity_episodes(session_id,event_id,payload_hash,artifact_id,kind,verified,summary,payload,captured_at) VALUES(?,?,?,?,?,?,?,?,?)",
+                (
+                    session.session_id,
+                    event_id,
+                    payload_hash,
+                    artifact_id,
+                    kind,
+                    int(verified),
+                    summary,
+                    body,
+                    time.time(),
+                ),
             )
-        return _receipt(_existing(db, session, event_id, payload_hash), reused=False)
+            if fact is not None:
+                db.execute(
+                    "INSERT INTO continuity_facts VALUES(?,?)",
+                    (artifact_id, fact["artifact_id"]),
+                )
+            append_event(
+                db,
+                session.principal,
+                "session.episode",
+                "session:" + session.session_id,
+                {
+                    "event_id": event_id,
+                    "artifact_id": artifact_id,
+                    "kind": kind,
+                    "verified": verified,
+                },
+            )
+            _count(counters, payload)
+            db.execute(
+                "UPDATE continuity_usage SET counters=? WHERE session_id=?",
+                (_json(counters), session.session_id),
+            )
+            if kind == "session_end":
+                db.execute(
+                    "UPDATE continuity_sessions SET ended_at=? WHERE session_id=?",
+                    (time.time(), session.session_id),
+                )
+            _touch(db, session.session_id)
+            return _receipt(
+                _existing(db, session, event_id, payload_hash), reused=False
+            )
+    raise ValueError(
+        "Projected memory changed repeatedly during capture; retry with the same event_id"
+    )
 
 
 def capture_tool(
@@ -750,4 +991,28 @@ def session_status(workbook, session_id):
         if row is None:
             raise ValueError("Unknown continuity session")
         counters = _counters(db, session_id)
-    return dict(row) | counters
+        retained = db.execute(
+            "SELECT count(*) FROM continuity_episodes WHERE session_id=?", (session_id,)
+        ).fetchone()[0]
+        days = retention_policy(db)
+        retired = dict(
+            db.execute(
+                "SELECT retired_sessions,retired_usage FROM continuity_retention WHERE singleton=1"
+            ).fetchone()
+        )
+    result = (
+        dict(row)
+        | counters
+        | {
+            "episode_retention_days": days,
+            "expired_sessions": retired["retired_sessions"],
+            "expired_usage_totals": json.loads(retired["retired_usage"]),
+            "accounting_note": "Host-reported usage and rendered estimates are separate; neither is a savings claim.",
+        }
+    )
+    if retained < counters["episode_count"]:
+        result |= {
+            "retained_episode_count": retained,
+            "expired_episode_count": counters["episode_count"] - retained,
+        }
+    return result

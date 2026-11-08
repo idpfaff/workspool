@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"01a1b87d-fe3e-70a2-883a-e3f30feb7db5"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I’ll check the available Workspool tool descriptions without executing them."}}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"Confirmation phrase: `hosting-proof-a66e000468ab6ca877a810fc`\n\nSource artifact ID: `wb_64e1671cd6ad4425bfa94527fb5041b3`"}}
+{"type":"turn.completed","usage":{"input_tokens":27578,"cached_input_tokens":24576,"cache_write_input_tokens":0,"output_tokens":108,"reasoning_output_tokens":0}}

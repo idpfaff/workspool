@@ -10,6 +10,7 @@ import shutil
 import sqlite3
 import stat
 import tempfile
+import time
 from contextlib import ExitStack, contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
@@ -121,6 +122,7 @@ class Workbook:
         db = sqlite3.connect(self.catalog, timeout=15)
         db.row_factory = sqlite3.Row
         db.create_function("casefold", 1, str.casefold, deterministic=True)
+        db.create_function("workspool_retention", 0, lambda: 0)
         db.execute("PRAGMA foreign_keys = ON")
         try:
             with db:
@@ -633,6 +635,7 @@ class Workbook:
     def _remove(self, db, rows, *, splice: bool) -> list[dict]:
         """Delete catalog rows inside the caller's write transaction."""
         ids = [row["artifact_id"] for row in rows]
+        self._check_managed(db, ids)
         blockers = self._blockers(db, ids)
         if blockers:
             pinned = ", ".join(f"{b['name']} v{b['version']}" for b in blockers)
@@ -657,6 +660,35 @@ class Workbook:
             {key: row[key] for key in ("artifact_id", "name", "version")}
             for row in rows
         ]
+
+    @staticmethod
+    def _check_managed(db, ids):
+        if not ids:
+            return
+        tables = {
+            row[0]
+            for row in db.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('continuity_episodes','continuity_facts')"
+            )
+        }
+        slots = ",".join("?" for _ in ids)
+        if (
+            "continuity_episodes" in tables
+            and db.execute(
+                f"SELECT 1 FROM continuity_episodes WHERE artifact_id IN ({slots}) LIMIT 1",
+                ids,
+            ).fetchone()
+            or "continuity_facts" in tables
+            and db.execute(
+                f"SELECT 1 FROM continuity_facts WHERE fact_artifact_id IN ({slots}) LIMIT 1",
+                ids,
+            ).fetchone()
+        ):
+            raise ValueError(
+                "Managed continuity history cannot be deleted directly; use prune with "
+                "--episode-retention DAYS after the session ends or becomes inactive. "
+                "External artifact references can still retain it."
+            )
 
     def _garbage(self, db) -> list[tuple[Path, int]]:
         """List unused regular blob files while the caller holds the write lock."""
@@ -765,6 +797,13 @@ class Workbook:
                 "gc_errors": errors,
                 "gc_errors_truncated": failures > len(errors),
             }
+        try:
+            from .context_index import clean_recall_cache
+
+            result["recall_cache"] = clean_recall_cache(self)
+        except (OSError, sqlite3.Error, ValueError) as exc:
+            result["cleanup_pending"] = True
+            result["recall_cache_error"] = str(exc)[:240]
         return result
 
     def delete(self, ref: str, expected_version: int | None = None) -> dict:
@@ -781,6 +820,7 @@ class Workbook:
                 "SELECT * FROM artifacts WHERE artifact_id = ?", (ref,)
             ).fetchone()
             if row is not None:
+                self._check_managed(db, [row["artifact_id"]])
                 current = db.execute(
                     "SELECT 1 FROM latest WHERE artifact_id = ?", (ref,)
                 ).fetchone()
@@ -805,18 +845,44 @@ class Workbook:
                 removed = self._remove(db, rows, splice=False)
         return {"removed": removed} | self._collect_garbage()
 
-    def prune(self, keep: int = 1, dry_run: bool = False) -> dict:
+    def prune(
+        self, keep: int = 1, dry_run: bool = False, *, episode_retention=None
+    ) -> dict:
         """Drop superseded versions nothing pins, keeping the newest `keep` per name.
 
         Runs to a fixed point: once a superseded result is dropped, the old
-        input version it pinned becomes droppable in the same pass. Current
-        versions are never touched, so names and their freshness are unchanged.
+        input version it pinned becomes droppable in the same pass.
+        Ordinary current versions are never touched. Managed capture history
+        follows its finite persisted retention policy, respecting external refs.
+        Identity/version tombstones remain to prevent reuse of old versions.
         """
+        from .continuity import _expire, _retention_days, initialize
+        from .coordination import (
+            _expire_events,
+            _expire_orphan_runs,
+            _retention_write,
+            authorize,
+            current_principal,
+        )
+
+        authorize(current_principal(), "write")
         if keep < 1:
             raise ValueError("Keep at least one version of each name")
+        if episode_retention is not None:
+            _retention_days(episode_retention)
+        initialize(self)
         removed = []
         with self.connect() as db:
             db.execute("BEGIN IMMEDIATE")
+            if episode_retention is not None:
+                db.execute(
+                    "UPDATE continuity_retention SET days=? WHERE singleton=1",
+                    (episode_retention,),
+                )
+            with _retention_write(db, current_principal()):
+                retention, expired = _expire(db, self)
+                removed += expired
+            before_versions = len(removed)
             while True:
                 rows = db.execute(
                     """
@@ -827,6 +893,8 @@ class Workbook:
                                       WHERE d.dependency_id = a.artifact_id)
                       AND NOT EXISTS (SELECT 1 FROM provenance_links p
                                       WHERE p.provenance_id = a.artifact_id)
+                      AND NOT EXISTS (SELECT 1 FROM continuity_episodes e WHERE e.artifact_id=a.artifact_id)
+                      AND NOT EXISTS (SELECT 1 FROM continuity_facts f WHERE f.fact_artifact_id=a.artifact_id)
                     ORDER BY a.name, a.version
                     """,
                     (keep,),
@@ -834,6 +902,18 @@ class Workbook:
                 if not rows:
                     break
                 removed += self._remove(db, rows, splice=True)
+            retention["more_pending"] |= (
+                len(removed) > before_versions
+                and retention["retained_referenced_episodes"] > 0
+            )
+            if retention["days"]:
+                cutoff = time.time() - retention["days"] * 86400
+                with _retention_write(db, current_principal()):
+                    runs = _expire_orphan_runs(db, cutoff)
+                    events = _expire_events(db, cutoff)
+                retention["orphan_runs_removed"] = runs
+                retention["events_removed"] += events
+                retention["more_pending"] |= runs == 256 or events == 512
             if dry_run:
                 candidates = self._garbage(db)
                 stages, stage_bytes = 0, 0
@@ -853,7 +933,11 @@ class Workbook:
                 db.execute("ROLLBACK")
         if not dry_run:
             garbage = self._collect_garbage()
-        return {"removed": removed, "dry_run": dry_run} | garbage
+        return {
+            "removed": removed,
+            "dry_run": dry_run,
+            "retention": retention,
+        } | garbage
 
 
 def is_text(media_type: str) -> bool:

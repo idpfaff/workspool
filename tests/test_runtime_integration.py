@@ -305,7 +305,26 @@ def test_automatic_capture_two_fresh_mcp_sessions_and_lexical_restore(
             restored = json.loads(suffix[len(PREFIX) :])
             assert restored["mode"] == "lexical" and restored["hits"]
             assert any("salmon_total" in hit["excerpt"] for hit in restored["hits"])
-            assert any(hit["name"].startswith("_episodes/") for hit in restored["hits"])
+            observations = [
+                json.loads(hit["excerpt"])
+                for hit in restored["hits"]
+                if hit["name"].startswith("_memory_facts/")
+            ]
+            assert observations
+            assert any(
+                observation.get("result", {}).get("rows", [[]])[0][0] == 5
+                for observation in observations
+                if observation.get("result", {}).get("rows")
+            )
+            assert all(
+                observation["verification"]
+                == "execution_observed_not_independently_validated"
+                for observation in observations
+            )
+            assert all(
+                not hit["name"].startswith("_episodes/") for hit in restored["hits"]
+            )
+            assert "accounting_note" not in suffix
             assert secret not in suffix
             assert (await invoke(client, "session_status"))["session_id"] != sid
 

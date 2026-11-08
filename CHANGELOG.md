@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1 — 2026-11-07
+
+- Fix recall indexing its own ledger. Exclude episode records before keyword and semantic ranking, remove cached legacy chunks/vectors, and retain compact, deduplicated observations with exact source references. Remove repeated session goals and accounting disclaimers from new episode payloads. Publish the capture-on before/after and in-place upgrade checks in `benchmarks/CAPTURE_ON_RECALL.md`.
+- Add finite retention for inactive session history and disposable audit events: 30 days by default, `--episode-retention 0` to disable. Writer startup cleans history before recall; `prune` honors the persisted policy and reports bounded cleanup and retained references. Preserve aggregate usage, live skill provenance, and version/claim identity records. Return actionable errors for direct episode deletion; serialize capture against cleanup and preserve similarly named user artifacts.
+- Bundle hash-verified `cl100k_base` and `o200k_base` vocabularies with their upstream MIT notice. Named tokenizer startup and host checks work without network access or a prewarmed cache.
+- Make host installation goals optional. Conversations can use `recall` with their own objectives. Verify actual Codex CLI instruction delivery with a generated runtime configuration, exact synthetic phrase/source, and disconnected control; document the metadata-discovery requirement and retain exact traces. Claude Desktop and Cursor model delivery remain unverified.
+- Complete the README's 31-tool reference. No new analytical, skill, or coordination features in this maintenance release.
+
 ## 0.8.0 — 2026-11-07
 
 - Generate runtime configurations for Claude Desktop, Cursor, and Codex on macOS and Linux. The explicit installer checks a disposable MCP session before merging settings, preserves unrelated servers, and creates a private backup. Preview requires no configuration edits; `host-doctor` reports protocol readiness without claiming host UI or model-context validation.

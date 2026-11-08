@@ -334,6 +334,43 @@ def _vectors(workbook, maximum_bytes):
         db.close()
 
 
+def clean_vector_cache(workbook):
+    """Discard vectors no longer backed by a searchable exact chunk.
+
+    This runs only after the lexical cache transaction commits. Content hashes
+    shared with legitimate documents stay reusable. A busy cache is retried on a
+    later recall; excluded ledger artifacts never enter retrieval scope meanwhile.
+    """
+    path = workbook.root / "semantic-vectors.sqlite3"
+    context = workbook.root / "context-index.sqlite3"
+    if not path.exists() or not context.exists():
+        return 0
+    if path.is_symlink() or context.is_symlink():
+        raise ValueError("Recall caches must not be symbolic links")
+    db = sqlite3.connect(path, timeout=0.1)
+    try:
+        if not db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='vectors'"
+        ).fetchone():
+            return 0
+        db.execute("ATTACH DATABASE ? AS context", (str(context),))
+        deadline = time.monotonic() + 1
+        db.set_progress_handler(lambda: time.monotonic() > deadline, 1000)
+        with db:
+            cursor = db.execute(
+                "DELETE FROM vectors WHERE (model_key,content_sha) IN ("
+                "SELECT model_key,content_sha FROM vectors WHERE NOT EXISTS "
+                "(SELECT 1 FROM context.chunks c WHERE c.digest=vectors.content_sha) LIMIT 4096)"
+            )
+            return cursor.rowcount
+    except sqlite3.OperationalError as error:
+        if "lock" in str(error).lower() or "interrupt" in str(error).lower():
+            return 0
+        raise
+    finally:
+        db.close()
+
+
 def _pack(values, dimension):
     normalized = _normalized(values, dimension)
     packed = struct.pack("<" + "f" * dimension, *normalized)
@@ -571,6 +608,7 @@ def hybrid_search(
                         )
                 finally:
                     cache.set_progress_handler(None, 0)
+            clean_vector_cache(workbook)
             fallback_reason, embeddings = None, None
             try:
                 embeddings = embed(

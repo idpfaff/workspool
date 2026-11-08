@@ -1,0 +1,75 @@
+{
+  "recorded_at": "2026-11-08T00:10:27.208851+00:00",
+  "host": "codex-cli 0.167.0",
+  "prompt": "Discover Workspool's tool schema if needed, then return the confirmation phrase and source artifact ID from its MCP startup instructions. Do not execute Workspool tools, read files, or use other services. If the instructions do not contain it output NOT RECEIVED.",
+  "expected_phrase": "hosting-proof-a66e000468ab6ca877a810fc",
+  "expected_artifact_id": "wb_64e1671cd6ad4425bfa94527fb5041b3",
+  "configuration": {
+    "source": "host_setup.generate('codex', workspace, goal=...)",
+    "profile": "runtime",
+    "role": "writer",
+    "tool_discovery": "lazy",
+    "tokenizer": "o200k_base",
+    "recall_tokens": 1500,
+    "saved_host_settings_changed": false,
+    "model_override": null
+  },
+  "cases": {
+    "connected": {
+      "response": "Confirmation phrase: `hosting-proof-a66e000468ab6ca877a810fc`\n\nSource artifact ID: `wb_64e1671cd6ad4425bfa94527fb5041b3`",
+      "non_message_items": [],
+      "event_trace_sha256": "9f3d1fd5e2f9f7b3533e7de5e9d18af598469fe7e0feb2bd24f932f25f625334",
+      "usage": [
+        {
+          "input_tokens": 27578,
+          "cached_input_tokens": 24576,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 108,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    "disconnected": {
+      "response": "NOT RECEIVED",
+      "non_message_items": [],
+      "event_trace_sha256": "70ccc96c8d1a6e26e2db3476ba6508d7a61ac7eac54eeaf303d5f0df3795e457",
+      "usage": [
+        {
+          "input_tokens": 26582,
+          "cached_input_tokens": 24576,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 91,
+          "reasoning_output_tokens": 13
+        }
+      ]
+    }
+  },
+  "workspool_tool_execution_episodes": 0,
+  "passed": true,
+  "runtime_sha256": {
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "batch_retrieval.py": "5ebb661baf78b74348a21a2e014aa8f95884eff4b7ac47af75f5bafc0f953ca2",
+    "bench.py": "747d789477c75915295748e5f392e442fd5b8149c2230605b9517493febfd902",
+    "budget.py": "c6b25a7f59bbebb3f5de9ff2f555430602f10f1fa1cf1a59a60ae3280d006e65",
+    "cli.py": "b3b142a6d0fafc99dce7eb457a8e052a7ad1a37ae445c44da48a7b505580a0fa",
+    "context_index.py": "72e33e9a3acf903a120d834015b26e35a4b6783fe0180682b1e754563e6bd951",
+    "continuity.py": "9de07f1dfcb0d0987da27eac88027ba3ec08ffc3c502430f03973f742a6c65fc",
+    "coordination.py": "b19c6abf1b437cb0b2157cef437d310fd319910e322ead332baa92ddd269ab25",
+    "delta.py": "9b5bcd7a476c886d0563b4324aa6b1e2bbd22f888e8914fcf9690712c2a7d546",
+    "discovery.py": "1e6a6bbf6598af9f5777cabc730fe8aac3cfda37b223726bb17a9a70fa8704e2",
+    "host_setup.py": "d5c8ca815b5cd2857a2b5b0866d580f5efceb4c670804033535da89b81764bf0",
+    "materialize.py": "7b11d4174d4b7bfd81eb36a5134c2d42d5e961f6482ad8a02ef89927d1617f8c",
+    "memory_projection.py": "7674a7360ebede25ae454672df8dc505c698c9290f7b34494c718f2f2eaf5d30",
+    "query.py": "c2f3778419cc2369421e0bd9a0fcc28882179879c39a9d2d74f0b8e227185ce2",
+    "query_cache.py": "14466b8ab77f4097a0efbead7d305805728e106898406f000597fb58d7a455e3",
+    "render.py": "e906c9c6b98303b72bddc65692ee099d7168d7c51681f6821328ccd7cabed7d0",
+    "retrieval.py": "0884e194de2715c714b62433bf18568691512cfd8c75671d5ca0f30aed3eed8c",
+    "semantic.py": "e83b2604a06f008fe752c9c0b5d4d01c502d374a649aaf79103baf2197bb0049",
+    "server.py": "e5ac8ec94d4c023427856799944b7c77886f9d81756f36aacee447597c2e913d",
+    "settings.py": "ee9a902ab33a88684722fc031c8a5426e17022759f13e332d910dc6d986b7eb5",
+    "skills.py": "69bc256613cd4aac395ff03d9c2e2c092911778ab3b93988f1d0581dd34167d4",
+    "store.py": "11ec9e0d479dad8ae35422f050a262f4d8b69c39e78047c5d50a61cad63e3a27",
+    "sync.py": "2d1e6d04acea5a0595fd1bda5574c580198ff87d5482f4f3a354b6473efa55e0",
+    "tasks.py": "350e6033ce38a84628061389f1867094faefb2d786c243a14aaeb9735d1bb61f"
+  }
+}

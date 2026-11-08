@@ -31,7 +31,7 @@ Workspool reduces the material your agent needs to read again. Use it for everyd
 
 Saved items have stable references and versions. Results track their input versions, so your agent can see when they need refreshing. Saving an item does not replay it into the conversation; configured startup recall or an explicit retrieval selects what the host receives.
 
-In the local recall probe, keyword and hybrid retrieval both found **5/5 target Wikipedia articles first**. A separate four-question synthetic paraphrase diagnostic found **4/4 targets with the real local model versus no keyword hits**; it demonstrates a narrow capability, not a general accuracy gain. Fresh-session startup also delivered an exact source citation within its 1,200-token context budget without an agent tool call. [Semantic recall results and limits](benchmarks/SEMANTIC.md).
+In the local recall probe, keyword and hybrid retrieval both found **5/5 target Wikipedia articles first**. A separate four-question synthetic paraphrase diagnostic found **4/4 targets with the real local model versus no keyword hits**; it demonstrates a narrow capability, not a general accuracy gain. The MCP initialization response also included an exact source citation within its 1,200-token context budget. A separate [real Codex host test](docs/HOSTS.md#verified-model-delivery-codex-cli) confirms model delivery after metadata discovery. [Semantic recall results and limits](benchmarks/SEMANTIC.md).
 
 ### Earlier task measurements: v0.6.0
 
@@ -55,7 +55,7 @@ As a source-exclusion example, the recorded 1,000-row stock-data summary used **
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and check out the release:
 
 ```sh
-git clone --branch v0.8.0 --depth 1 https://github.com/idpfaff/workspool.git
+git clone --branch v0.8.1 --depth 1 https://github.com/idpfaff/workspool.git
 cd workspool
 ```
 
@@ -75,18 +75,19 @@ uv sync --locked --python 3.12 --extra tokens --extra semantic
 .venv/bin/workspool model-download "$HOME/.cache/workspool/bge-small-en-v1.5"
 ```
 
-This downloads and hashes the supported local model; the destination must be new. Retrieval never downloads a model. Omit `--model-dir` below to use the disclosed lexical fallback. Named tokenizer encodings may download their ranks on first use; a local `tokenizer.json` also works.
+This downloads and hashes the supported local model; the destination must be new. Retrieval never downloads a model. Omit `--model-dir` below to use the disclosed lexical fallback. Both named tokenizer vocabularies are bundled and hash-verified, so tokenizer startup works offline after installing the `tokens` dependencies. A local `tokenizer.json` also works.
 
 ## Connect your agent
 
 Generate and install the configuration for your host without editing JSON:
 
 ```sh
-.venv/bin/workspool --workspace "$HOME/Workspool" host-config claude-desktop \
-  --goal "Continue the spending review and recover prior decisions" --install
+.venv/bin/workspool --workspace "$HOME/Workspool" host-config claude-desktop --install
 ```
 
 Use `cursor` or `codex` in place of `claude-desktop` for those hosts. Omit `--install` to preview the configuration. Installation preserves other server entries and makes a backup before changing an existing file. Conflicting Workspool entries require an explicit decision; Codex TOML conflicts are left for manual editing.
+
+Each conversation can use `recall` with its current objective. Optionally add `--goal "Continue the spending review"` for context selected when the server starts; a shared host configuration does not need a fixed conversation goal.
 
 Check the generated launch command through a disposable MCP session:
 
@@ -369,7 +370,7 @@ uv run --locked --extra tokens workspool --workspace ~/MyWorkbook serve \
   --profile agent --tokenizer cl100k_base
 ```
 
-Then include `"max_tokens": 800` in a `task_run`, `task_status`, `context`, `sync`, or `retrieve` call. Supported encodings are `cl100k_base`, `o200k_base`, or a path to a local `tokenizer.json`; Workspool does not guess an encoding from a model name. Named encodings may download their rank files on first use. A local tokenizer file works offline.
+Then include `"max_tokens": 800` in a `task_run`, `task_status`, `context`, `sync`, or `retrieve` call. Supported encodings are `cl100k_base`, `o200k_base`, or a path to a local `tokenizer.json`; Workspool does not guess an encoding from a model name. Both named vocabularies ship with Workspool and work offline, including on first use. Their [upstream provenance and MIT notice](src/agent_workbook/_tokenizers/README.md) are included in the package.
 
 The limit counts the exact compact JSON serialization of the **complete successful MCP result**, including both text and structured content when enabled. It excludes JSON-RPC framing, provider message formatting, and error replies, so it is not a billing cap. Limits are 1–131,072 tokens. Requests without a configured tokenizer, or budgets too small for required metadata, fail explicitly. Task briefs may omit whole result previews or citations and report those omissions; `context` may return fewer complete chunks. The matching CLI commands also support `--tokenizer` and `--max-tokens`, counting their actual printed JSON and final newline instead.
 
@@ -509,6 +510,8 @@ Saved artifacts are not removed on their own. The query reuse cache can evict en
 - `delete <wb_id>` removes one superseded version. `delete <name> --expected-version N` removes every version of a name, with the same version check an update makes.
 - `prune` drops superseded versions nothing pins, keeping the newest `--keep` versions of each name (default 1). It runs to a fixed point, so an old result and the old input it pinned go together. `prune --dry-run` reports what would go.
 
+Runtime capture history has a separate **30-day retention policy**. Writer startup and `prune` collect expired inactive-session episodes, unreferenced observations, and disposable events in bounded passes. `--episode-retention DAYS` on `serve` or `prune` changes the persisted policy; `0` disables expiry. A dry run reports the proposed effect without changing policy. Active references preserve their evidence, including a skill's origin proof while that skill or a replay task still pins it. Aggregate usage and small version/claim identity records remain. Direct deletion of managed episodes gives an actionable error; use retention cleanup. See the [retention guide](benchmarks/RUNTIME.md#history-retention) for limits and reporting.
+
 ```sh
 uv run workspool --workspace ~/MyWorkbook prune --dry-run
 uv run workspool --workspace ~/MyWorkbook prune --keep 2
@@ -543,6 +546,20 @@ Over MCP, `delete` is available only to hosts whose `--tools` list includes it.
 | `task_run` | Agent profile or explicit allowlist. Pin a source snapshot, reuse eligible materialized results, and return results with exact evidence and status. |
 | `task_status` | Agent profile or explicit allowlist. Reopen a persisted attempt without recomputing; default replies are self-contained. |
 | `context` | Agent profile or explicit allowlist. Rank exact document chunks through a persistent full-source index, reporting coverage and omitted matches. |
+| `recall` | Runtime profile or explicit allowlist. Retrieve relevant source passages and published observations within a budget, using keyword and optional local semantic search. Episode ledgers are excluded. |
+| `remember` | Runtime writer. Record an unverified decision or observation with an idempotent event ID. |
+| `session_status` | Runtime profile. Inspect capture health, usage counters, and the session-retention policy. |
+| `claim` | Runtime writer. Acquire an atomic, expiring claim with a fencing ticket for coordinated publication. |
+| `claim_renew` | Runtime writer. Extend a claim while its owner and ticket remain valid. |
+| `claim_release` | Runtime writer. Release a claim using its current ticket. |
+| `claim_owner` | Runtime profile. Inspect current ownership and expiry. |
+| `provenance` | Runtime profile. Explain source dependencies, producer events, and why evidence is stale. |
+| `changes` | Runtime profile. Page through actor-attributed events with explicit history-expiry markers. |
+| `approve` | Runtime approver. Record approval for an exact artifact version. |
+| `skill_distill` | Runtime writer. Retain a reusable SQL plan and source contracts from a successful published task. |
+| `skill_find` | Runtime profile. Find reusable analytical plans by name or description. |
+| `skill_inspect` | Runtime profile. Inspect a skill's plan, contracts, and origin proof. |
+| `skill_use` | Runtime writer. Validate new source bindings and define a task from a skill; `task_run` executes it. |
 | `search` | Agent/efficient profile or explicit allowlist. Find exact source passages beyond the catalog index, with bounded scanning and continuations. |
 | `describe` | Agent/efficient profile or explicit allowlist. Page through exact table column names and SQL types without returning rows. |
 | `diff` | Agent/efficient profile or explicit allowlist. Return exact edits against a complete immutable base the caller retains, or request a full read. |

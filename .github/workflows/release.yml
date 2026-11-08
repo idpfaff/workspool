@@ -63,31 +63,35 @@ jobs:
           assert re.fullmatch(r'\d+\.\d+\.\d+', version), 'Use a stable release version'
           assert project['name'] == 'agent-workbook'
           assert project['license'] == 'LicenseRef-MIT-Commons-Clause'
-          license_bytes = Path('LICENSE').read_bytes()
-          assert b'Commons Clause' in license_bytes and b'MIT License' in license_bytes
+          license_paths = ['LICENSE', 'src/agent_workbook/_tokenizers/LICENSE.tiktoken']
+          assert project['license-files'] == license_paths, 'License file declarations changed'
+          license_bytes = {name: Path(name).read_bytes() for name in license_paths}
+          assert b'Commons Clause' in license_bytes['LICENSE'] and b'MIT License' in license_bytes['LICENSE']
+          assert b'Copyright (c) 2022 OpenAI, Shantanu Jain' in license_bytes[license_paths[1]]
           wheels = list(Path('dist').glob('*.whl'))
           sdists = list(Path('dist').glob('*.tar.gz'))
           assert len(wheels) == len(sdists) == 1, 'Expected exactly one wheel and sdist'
 
-          def verify(metadata_bytes, packaged_license):
+          def verify(metadata_bytes, packaged_licenses):
               metadata = email.message_from_bytes(metadata_bytes)
               assert metadata['Name'] == project['name'], 'Package name mismatch'
               assert metadata['Version'] == version, 'Package version mismatch'
               assert metadata['License-Expression'] == project['license'], 'License expression mismatch'
-              assert metadata.get_all('License-File') == ['LICENSE'], 'Missing license declaration'
-              assert packaged_license == license_bytes, 'Packaged license differs from repository'
+              assert metadata.get_all('License-File') == license_paths, 'Missing license declaration'
+              assert packaged_licenses == license_bytes, 'Packaged license differs from repository'
 
           with zipfile.ZipFile(wheels[0]) as archive:
               metadata_paths = [name for name in archive.namelist() if name.endswith('.dist-info/METADATA')]
               assert len(metadata_paths) == 1
               metadata_path = metadata_paths[0]
-              license_path = metadata_path.rsplit('/', 1)[0] + '/licenses/LICENSE'
-              verify(archive.read(metadata_path), archive.read(license_path))
+              license_root = metadata_path.rsplit('/', 1)[0] + '/licenses/'
+              verify(archive.read(metadata_path), {name: archive.read(license_root + name) for name in license_paths})
+              assert archive.read('agent_workbook/_tokenizers/LICENSE.tiktoken') == license_bytes[license_paths[1]], 'Package resource notice differs'
           with tarfile.open(sdists[0], 'r:gz') as archive:
               metadata_paths = [name for name in archive.getnames() if name.count('/') == 1 and name.endswith('/PKG-INFO')]
               assert len(metadata_paths) == 1
               prefix = metadata_paths[0].split('/')[0]
-              verify(archive.extractfile(metadata_paths[0]).read(), archive.extractfile(prefix + '/LICENSE').read())
+              verify(archive.extractfile(metadata_paths[0]).read(), {name: archive.extractfile(prefix + '/' + name).read() for name in license_paths})
 
           sums = ''.join(f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n' for path in sorted(wheels + sdists))
           Path('dist/SHA256SUMS').write_text(sums)
@@ -99,7 +103,7 @@ jobs:
           )
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'version={version}\n')
-          print(f'Verified wheel and sdist for v{version}, including complete license text.')
+          print(f'Verified wheel and sdist for v{version}, including both complete license notices.')
           PY
       - uses: actions/upload-artifact@v4
         with:

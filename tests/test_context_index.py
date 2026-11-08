@@ -291,10 +291,24 @@ def test_cache_cleanup_is_bounded_and_rotates_over_deleted_history(
     for position in range(7):
         note(workbook, f"source{position}", "evidence")
     index.ranked_search(workbook, "evidence")
-    for position in range(7):
-        workbook.delete(f"source{position}", expected_version=1)
+    # Simulate a legacy cache or a process interruption before the new
+    # post-delete cleanup hook. Normal deletes clean immediately below.
+    with monkeypatch.context() as legacy:
+        legacy.setattr(index, "clean_recall_cache", lambda _: {})
+        for position in range(7):
+            workbook.delete(f"source{position}", expected_version=1)
     monkeypatch.setattr(index, "MAX_CLEANUP_VERSIONS", 2)
     for expected in (5, 3, 1, 0):
         result = index.ranked_search(workbook, "evidence")
         assert result["complete"] and not result["hits"]
         assert len(cache_rows(workbook, "versions")) == expected
+
+
+def test_delete_immediately_reclaims_indexed_source(tmp_path):
+    workbook = Workbook(tmp_path)
+    note(workbook, "source", "evidence")
+    index.ranked_search(workbook, "evidence")
+    assert cache_rows(workbook, "versions")
+    deleted = workbook.delete("source", expected_version=1)
+    assert deleted["recall_cache"]["versions_removed"] == 1
+    assert not cache_rows(workbook, "versions")

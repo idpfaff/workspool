@@ -446,6 +446,7 @@ def server_for(
     recall_tokens: int = 1500,
     model_dir: Path | None = None,
     require_claims: bool = False,
+    episode_retention: int | None = None,
 ) -> FastMCP:
     from .coordination import PERMISSIONS, Principal, configure, initialize
 
@@ -455,6 +456,14 @@ def server_for(
         configure(workbook, require_claims=True)
     if profile not in {"compatible", "efficient", "agent", "runtime"}:
         raise ValueError("Unknown server profile")
+    if episode_retention is not None:
+        from .continuity import configure_retention
+
+        if profile != "runtime" or role != "writer":
+            raise ValueError(
+                "Episode retention configuration requires a writer runtime server"
+            )
+        configure_retention(workbook, days=episode_retention)
     optimized = profile in {"efficient", "agent", "runtime"}
     if response_content is None:
         response_content = "text" if profile in {"agent", "runtime"} else "both"
@@ -543,6 +552,7 @@ def server_for(
             " Claim task:NAME before task_run where required; renew before expiry and pass claim_ticket."
             " provenance explains stale ancestors; changes pages immutable actor events."
             " remember records an unverified observation, not proof. recall reports lexical/dense coverage."
+            " For each conversation, use recall with its current objective; a configured goal only preloads server-startup context."
         )
     if exposed & set(SKILL_TOOLS):
         instructions += (
@@ -552,6 +562,11 @@ def server_for(
             " Prior execution success is not independent factual verification."
         )
     counter = token_counter(tokenizer) if tokenizer is not None else None
+    if profile == "runtime" and role == "writer":
+        from .continuity import prune_episodes
+
+        # Expired facts must leave recall before initialization context is built.
+        prune_episodes(workbook)
     if goal:
         from .semantic import hybrid_search
 
