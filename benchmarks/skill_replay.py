@@ -231,8 +231,8 @@ async def measure_arm(
 
         async def invoke(operation, arguments, arm):
             request = {
-                "name": "workspool",
-                "arguments": {"tool": operation, "arguments": arguments},
+                "name": operation,
+                "arguments": arguments,
             }
             started = time.perf_counter()
             response = await client.call_tool(request["name"], request["arguments"])

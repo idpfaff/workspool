@@ -1,5 +1,10 @@
 # Real-data task stress: exact reuse, measured overhead
 
+The published MCP counts below are historical scripted measurements with known
+operation arguments. Their lazy interface was not model-validated. Current profiles
+use eager typed tools; rerunning the current harness changes setup/request counts.
+The original result files remain unchanged.
+
 On 2026-11-07, Workspool passed all six lifecycle scenarios and a controlled
 source-update case over **34,015,435 real minute bars across 131 symbols**. Full
 materialized results matched an independent Arrow oracle exactly. Warm and
@@ -83,7 +88,7 @@ there are no confidence intervals or whole-process RSS measurements here.
 
 ## Actual MCP traffic
 
-The harness made real MCP calls with known arguments through the current
+The harness made real MCP calls with known arguments through the then-current
 `agent` profile: lazy discovery, adaptive text responses and `o200k_base` token
 counting. Counts cover exact serialized requests and `CallToolResult` responses.
 They are local protocol counts, not provider usage, billing or model reasoning

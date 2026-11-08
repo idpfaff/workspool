@@ -223,8 +223,8 @@ class Probe:
 
     async def call(self, client, tool, arguments=None):
         request = {
-            "name": "workspool",
-            "arguments": {"tool": tool, "arguments": arguments or {}},
+            "name": tool,
+            "arguments": arguments or {},
         }
         started = time.perf_counter()
         response = await client.call_tool(request["name"], request["arguments"])
@@ -646,7 +646,7 @@ class Probe:
             for item in calls
             if item["workspace"] == "original"
             and item["role"] == "writer"
-            and item["request"]["arguments"]["tool"] not in {"metrics", "verify"}
+            and item["request"]["name"] not in {"metrics", "verify"}
         ]
         audit = {
             "requests_recount_match": True,

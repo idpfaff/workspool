@@ -1,4 +1,4 @@
-"""Expose a small, validated facade while loading individual tool schemas on demand."""
+"""Experimental facade; never enabled by a profile (see APPROVAL_MODEL.md)."""
 
 from typing import Any, Literal
 
@@ -40,6 +40,9 @@ def configure_discovery(app: FastMCP, exposed: set[str]) -> None:
             raise ValueError(f"Unknown or disabled tool: {tool}")
         if arguments is None:
             return app._format_result("workspool", {}, definitions[tool])
+        invalid = app._argument_result(selected[tool], arguments)
+        if invalid is not None:
+            return invalid
         result = await selected[tool].run(
             arguments, context=app.get_context(), convert_result=True
         )
@@ -53,8 +56,7 @@ def configure_discovery(app: FastMCP, exposed: set[str]) -> None:
     app.add_tool(
         workspool,
         description=(
-            "Call a workbook tool. Omit arguments to get its schema; "
-            "pass {} to call with defaults."
+            "Call an experimental tool, omitting arguments to discover its schema."
         ),
         structured_output=False,
     )

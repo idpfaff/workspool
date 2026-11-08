@@ -54,8 +54,84 @@ def test_preview_does_not_run_a_check_or_create_settings(
     command(monkeypatch, tmp_path, local_tokenizer)
     config = json.loads(capsys.readouterr().out)
     assert "workspool" in config["mcpServers"]
+    args = config["mcpServers"]["workspool"]["args"]
+    assert "--experimental-lazy" not in args
+    assert not any(arg.startswith("--tool-discovery") for arg in args)
     assert not (tmp_path / "host").exists()
     assert not (tmp_path / "actual-workspace").exists()
+
+
+@pytest.mark.parametrize(
+    "obsolete",
+    [
+        ["--tool-discovery", "eager"],
+        ["--tool-discovery", "lazy"],
+        ["--tool-discovery=eager"],
+        ["--tool-discovery=lazy"],
+        ["--tool-discovery"],
+    ],
+)
+def test_removed_discovery_flag_has_clear_migration_error(
+    tmp_path, monkeypatch, capsys, obsolete
+):
+    workspace = tmp_path / "unused-workspace"
+    monkeypatch.setattr(
+        sys, "argv", ["workspool", "--workspace", str(workspace), "serve", *obsolete]
+    )
+    with pytest.raises(SystemExit) as stopped:
+        main()
+    assert stopped.value.code == 2
+    captured = capsys.readouterr()
+    assert "--tool-discovery has been removed" in captured.err
+    assert "default for every profile" in captured.err
+    assert "--experimental-lazy" in captured.err
+    assert "Traceback" not in captured.err and not captured.out
+    assert not workspace.exists()
+
+
+def test_serve_help_only_advertises_explicit_experiment(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "argv", ["workspool", "serve", "--help"])
+    with pytest.raises(SystemExit) as stopped:
+        main()
+    assert stopped.value.code == 0
+    output = capsys.readouterr().out
+    assert "--tool-discovery" not in output
+    assert "--experimental-lazy" in output
+    assert "eager tool schemas by default" in output
+
+
+@pytest.mark.parametrize("profile", ["compatible", "efficient", "agent", "runtime"])
+@pytest.mark.parametrize("experimental", [False, True])
+def test_serve_passes_only_explicit_lazy_opt_in(
+    tmp_path, monkeypatch, profile, experimental
+):
+    from agent_workbook import server
+
+    called = {}
+
+    class App:
+        def run(self, *, transport):
+            called["transport"] = transport
+
+        def finish_session(self):
+            called["finished"] = True
+
+    def configured(workbook, port, **options):
+        called.update(options)
+        return App()
+
+    monkeypatch.setattr(server, "server_for", configured)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["workspool", "--workspace", str(tmp_path), "serve", "--profile", profile]
+        + (["--experimental-lazy"] if experimental else []),
+    )
+    main()
+    assert called["experimental_lazy"] is experimental
+    assert "tool_discovery" not in called
+    assert called["profile"] == profile
+    assert called["transport"] == "stdio" and called["finished"] is True
 
 
 def test_failed_protocol_check_leaves_existing_host_file_unchanged(

@@ -28,9 +28,7 @@ def test_runtime_expires_facts_before_explicit_recall(tmp_path, monkeypatch):
         book, profile="runtime", goal="retentioncanary", tokenizer="o200k_base"
     )
     assert "retentioncanary" not in app.instructions
-    result = asyncio.run(
-        app.call_tool("workspool", {"tool": "recall", "arguments": {}})
-    )
+    result = asyncio.run(app.call_tool("recall", {}))
     assert not result.isError
     restored = decode(result.content)
     assert restored["hits"] == []

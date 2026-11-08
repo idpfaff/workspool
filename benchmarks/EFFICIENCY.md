@@ -1,5 +1,13 @@
 # Workspool: smaller setup and lossless response formats
 
+**Historical scripted measurements, not model-validated lazy discovery.** These
+November 7 results predate the v0.9.2 model evaluation, which completed 17/20 eager
+cases versus 1/20 lazy cases. The large source-exclusion and deterministic payload
+reductions below answer different questions from model reliability. Current profiles
+all expose eager typed schemas. `--experimental-lazy` explicitly opts into the
+historical dispatcher experiment and emits a warning; no profile selects it.
+Published result files and their original source fingerprints are unchanged.
+
 The 2026-11-07 run measures three optional improvements: schemas loaded through a small dispatcher, exact excerpts outside JSON strings, and one-copy MCP responses. Defaults remain six eager tools, compact JSON, and both text and structured output. The source version remains 0.3.0; this report describes the measured working tree, identified by runtime source hashes in the [results](results/2026-11-07-efficiency/results.json).
 
 ## What was measured
@@ -27,7 +35,7 @@ Default setup costs 652 / 685 tokens; the lazy dispatcher costs 110 / 114. For t
 Lazy discovery does not guarantee a win on tiny inputs. One market bar costs 81 tokens directly versus 278 with known lazy arguments; five bars cost 238 versus 277. The 20-row synthetic case also loses with both tokenizers. Discovering all schemas or making many calls can erase the setup advantage. A fixed query-only host is another option: `--tools query` costs 308 / 316 tokens for the Massive case without a discovery round trip.
 
 ```sh
-uv run workspool --workspace ~/MyWorkbook serve --tool-discovery lazy
+uv run workspool --workspace ~/MyWorkbook serve --experimental-lazy
 ```
 
 Lazy mode advertises one tool named `workspool`. Retrieve a schema with:
@@ -115,7 +123,7 @@ uv run --locked --extra benchmark --with tiktoken==0.14.0 python benchmarks/audi
   .local-benchmarks/efficiency
 ```
 
-To include market cases, export your own Massive aggregate CSV with the required `ticker`, `t`, `o`, `c`, `h`, and `v` columns and pass `--csv /absolute/path/to/bars.csv` to `efficiency.py`. The measured file also contains the optional `vw`, `l`, and `n` columns. The script reads it locally and does not fetch or publish data. Add `--tokenizer /path/to/Qwen2.5/tokenizer.json` to both commands for a third tokenizer; this run measured only the two tiktoken encodings. Use `--skip-documents` for table cases only or `--profiles default lazy lazy-discover` for a smaller comparison.
+To include market cases, export your own Massive aggregate CSV with the required `ticker`, `t`, `o`, `c`, `h`, and `v` columns and pass `--csv /absolute/path/to/bars.csv` to `efficiency.py`. The measured file also contains the optional `vw`, `l`, and `n` columns. The script reads it locally and does not fetch or publish data. Add `--tokenizer /path/to/Qwen2.5/tokenizer.json` to both commands for a third tokenizer; this run measured only the two tiktoken encodings. Current-code reruns use new source fingerprints and do not reproduce the historical runtime byte for byte. Use `--skip-documents` for table cases only or `--profiles default lazy lazy-discover` for a smaller comparison.
 
 The script writes `results.json` and local `traces.json`; the independent audit writes `audit.json`. Published evidence includes [aggregate results](results/2026-11-07-efficiency/results.json) and the [audit](results/2026-11-07-efficiency/audit.json). Traces are regenerated locally. Fixture and runtime hashes allow exact source checks; random artifact IDs and temporary paths can slightly change counts. The recorded Git commit is the checkout base, while source hashes identify the exact implementation measured before publication.
 

@@ -1,5 +1,10 @@
 # Recurring workflow integration — corrected content metrics
 
+The recorded MCP payloads use the historical lazy interface with scripted, known
+arguments. They do not establish model reliability. Current profiles and the current
+harness use eager named tools, so a rerun has different setup/request counts; the
+published evidence below is unchanged.
+
 On November 8, 2026, the corrected local probe passed **25/25 integration
 assertions** in **4.06 seconds**. It used actual MCP subprocesses and explicit
 CLI schedule ticks, with synthetic CSVs and a configured local Python worker.

@@ -38,6 +38,10 @@ def test_config_has_absolute_runtime_command_without_creating_workspace(tmp_path
     assert args[args.index("--agent-id") + 1] == "host-" + host
     assert args[args.index("--goal") + 1] == "Review customer research"
     assert args[args.index("--tokenizer") + 1] == "o200k_base"
+    assert not any(
+        arg == "--experimental-lazy" or arg.startswith("--tool-discovery")
+        for arg in args
+    )
     assert not (tmp_path / "workspace").exists()
     if host == "codex":
         assert config["startup_timeout_sec"] == 60
@@ -54,6 +58,8 @@ def test_interpreter_symlink_is_not_resolved(tmp_path, monkeypatch):
 def test_general_host_config_does_not_pin_a_conversation_goal(tmp_path, host):
     config = entry(host, setup.generate(host, tmp_path / "workspace"))
     assert "--goal" not in config["args"]
+    assert "--experimental-lazy" not in config["args"]
+    assert not any(arg.startswith("--tool-discovery") for arg in config["args"])
     with pytest.raises(ValueError, match="goal"):
         setup.generate(host, tmp_path / "workspace", goal="")
 

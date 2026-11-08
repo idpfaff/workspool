@@ -20,7 +20,7 @@ def advertised(app, discovery):
 ADVICE = {
     "task_define": "task_define saves",
     "task_run": "task_run pins",
-    "task_status": "task_status reopens",
+    "task_status": "task_status defaults",
     "context": "context ranks",
     "provenance": "provenance explains",
     "changes": "changes pages",
@@ -42,7 +42,7 @@ def test_single_operation_does_not_inherit_disabled_group_advice(
         Workbook(tmp_path),
         profile="runtime",
         tools=[operation],
-        tool_discovery=discovery,
+        experimental_lazy=discovery == "lazy",
     )
     assert advertised(app, discovery) == {operation}
     for tool, phrase in ADVICE.items():
@@ -72,7 +72,7 @@ def test_model_workflow_allowlist_never_instructs_disabled_recall(tmp_path, disc
         Workbook(tmp_path),
         profile="runtime",
         tools=tools,
-        tool_discovery=discovery,
+        experimental_lazy=discovery == "lazy",
     )
     assert advertised(app, discovery) == set(tools)
     assert "recall" not in app.instructions
@@ -112,7 +112,7 @@ def test_reader_guidance_follows_post_role_filter(tmp_path, discovery, explicit)
         profile="runtime",
         role="reader",
         tools=tools,
-        tool_discovery=discovery,
+        experimental_lazy=discovery == "lazy",
     )
     enabled = advertised(app, discovery)
     for tool, phrase in ADVICE.items():

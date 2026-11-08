@@ -20,7 +20,6 @@ def application(tmp_path, probe, discovery):
         workbook,
         profile="runtime",
         tools=["inspect"],
-        tool_discovery="eager",
         agent_id="capture-owner",
     )
     app.add_tool(probe, name="capture_probe", structured_output=False)

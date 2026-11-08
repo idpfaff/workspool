@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agent-workbook"
-version = "0.9.2"
+version = "0.10.0"
 description = "Workspool: local continuity, hybrid recall, and coordinated tasks for AI agents"
 readme = "README.md"
 requires-python = ">=3.11"

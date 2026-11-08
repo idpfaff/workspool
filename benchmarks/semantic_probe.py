@@ -3,6 +3,9 @@
 No downloads, network requests or model API calls. Private output keeps exact
 traces; the optional public JSON contains aggregates and public source identities,
 never article excerpts, artifact IDs, model directories or private local paths.
+
+Historical-source probe: the initialization-context contract was removed in v0.9.2.
+Use the archived measured source; this script is not a current host readiness check.
 """
 
 import argparse

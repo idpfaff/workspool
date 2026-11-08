@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 — 2026-11-08
+
+- Make named, typed eager tools the default for every profile, preserving configured allowlists, roles, and capabilities. Remove `--tool-discovery` with an actionable CLI migration error. Keep the facade only behind `--experimental-lazy`, warning about its recorded 1/20 completion against 17/20 for eager schemas. Host configurations and protocol checks use eager tools directly.
+- Compact advertised input schemas by removing titles/default annotations, collapsing nullable optional fields, and inlining singly used nested models. Preserve properties, types, enums, and bounds; runtime defaults and nullable validation remain intact. Use one-sentence descriptions and shared server instructions; callers omit unused optional arguments.
+- Measure the same ten-tool interface offline with bundled `o200k_base`: compact MCP definitions decrease from 1,415 to 928 tokens; API function definitions including wrappers decrease from 1,485 to 998. Shared instructions grow from 155 to 239, giving a combined function-list/instructions subtotal of 1,640 to 1,237 (403 fewer, 24.6%). Add an offline schema-count snapshot and a strict under-1,000 function-token guard. These are serialization counts, not provider usage, model reliability, or billed savings. The historical six-default-tool counts in `benchmarks/OPTIMIZATION.md` no longer describe the current schemas.
+- Return compact JSON validation errors naming the incorrect or missing field and listing accepted argument types, including nested task steps. Reject unknown fields before execution, retain failure accounting, and authorize SDK-decoded experimental arguments so encoded query writes and identity fields cannot bypass configured permissions.
+- Prepare a three-arm follow-up on the same 20 approval cases using the exact published v0.9.2 eager interface, compact eager schemas, and experimental lazy dispatch with typed errors. Use identical full/text replies and the audited exact-numeric grader; default to offline preflight and require explicit paid execution. Document the default-profile completion rule of at least control minus one. No new live model evaluation was run; its acceptance gate remains unmeasured. This corrective release uses the existing full-CI release gate and does not claim to have passed the pending model gate. Preserve all recorded benchmark evidence and mark historical lazy payload measurements as scripted.
+
 ## 0.9.2 — 2026-11-08
 
 - Withdraw the 48.6% reply-formatting claim: the old control duplicated JSON across two MCP fields. Recounting the published 30 replies against one JSON copy gives 20,768 tokens on both sides, or zero formatting savings. Preserve the original workflow's 25 integration checks and export/restore evidence.

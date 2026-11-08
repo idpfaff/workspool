@@ -25,7 +25,7 @@ def test_restricted_writer_cannot_write_through_query_or_hidden_tool(tmp_path, m
     book = Workbook(tmp_path / "book")
     book.save_text("n\n2\n3\n", name="numbers", kind="table", media_type="text/csv")
     app = server_for(
-        book, profile="runtime", capabilities=["read"], tool_discovery=mode
+        book, profile="runtime", capabilities=["read"], experimental_lazy=mode == "lazy"
     )
 
     async def check():
@@ -76,7 +76,7 @@ def test_plain_json_has_zero_content_savings_in_every_response_mode(
         profile="runtime",
         tokenizer="o200k_base",
         collect_metrics=True,
-        tool_discovery=mode,
+        experimental_lazy=mode == "lazy",
         response_format=response_format,
         response_content=response_content,
     )
@@ -129,7 +129,7 @@ def test_raw_excerpt_counts_one_exact_content_representation(
         profile="runtime",
         tokenizer="o200k_base",
         collect_metrics=True,
-        tool_discovery=mode,
+        experimental_lazy=mode == "lazy",
         response_format="text",
         response_content=response_content,
     )

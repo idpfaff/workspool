@@ -1,4 +1,4 @@
-"""Lazy discovery preserves the same validated operations over the MCP wire."""
+"""Explicit experimental discovery preserves validation over the MCP wire."""
 
 import asyncio
 import json
@@ -22,8 +22,7 @@ async def session(
         "--workspace",
         str(workspace),
         "serve",
-        "--tool-discovery",
-        "lazy",
+        "--experimental-lazy",
         "--response-format",
         response_format,
         "--response-content",

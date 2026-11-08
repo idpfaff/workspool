@@ -44,7 +44,7 @@ Configure the same command and arguments in the MCP host, as shown in the
 speak MCP; it is not an interactive chat client. Use absolute paths in host
 configuration. Each distinct agent should have its own trusted `--agent-id`.
 
-`runtime` uses lazy discovery through the `workspool` tool, adaptive formatting,
+`runtime` exposes named eager tools with typed schemas, adaptive formatting,
 and text-only results. Without a profile, `compatible` remains the default.
 The earlier `agent` profile keeps tasks and keyword context without automatic
 session capture. Profile selection does not bypass an explicit tool allowlist
@@ -65,8 +65,10 @@ discarding required metadata. A server with no goal requires an explicit query.
 Use the current conversation's question when the objective changes or new work
 arrives:
 
+Call `recall` with:
+
 ```json
-{"tool":"recall","arguments":{"query":"Which spending decisions still need supporting evidence?","limit":6,"max_tokens":1500}}
+{"query": "Which spending decisions still need supporting evidence?", "limit": 6, "max_tokens": 1500}
 ```
 
 Here `max_tokens` counts the complete serialized MCP result, including both
@@ -132,8 +134,10 @@ facts through these hooks. Source content remains untrusted data when recalled.
 
 Inspect the active session and capture failures:
 
+Call `session_status` with:
+
 ```json
-{"tool":"session_status","arguments":{}}
+{}
 ```
 
 The status separates `host_usage_totals`, their reporting-event counts, and
@@ -150,8 +154,10 @@ those detail fields again. Accounting-bearing calls are not noise-deduplicated.
 
 Record a deliberate observation through the MCP dispatcher:
 
+Call `remember` with:
+
 ```json
-{"tool":"remember","arguments":{"kind":"decision","data":{"summary":"Inspect the renewal policy before approving hosting spend."},"event_id":"renewal-decision-1"}}
+{"kind": "decision", "data": {"summary": "Inspect the renewal policy before approving hosting spend."}, "event_id": "renewal-decision-1"}
 ```
 
 The configured identity supplies the actor and role. A caller's `verified`,
@@ -285,14 +291,16 @@ integration explicitly passes supported observations.
 | `writer` | Read and write, including task execution, capture, and claims; no approvals |
 | `approver` | Read and record approvals; no ordinary writes, task execution, or capture |
 
-Roles filter tool exposure and are enforced at dispatch, including the lazy
+Roles filter tool exposure and are enforced at dispatch, including the experimental lazy
 dispatcher. A query that saves a result needs write permission. An approval
 attests to a particular current artifact and digest; it is refused for stale
 inputs or a superseded artifact. It does not independently verify content or
 gate all other writes. An approver can call:
 
+Call `approve` with:
+
 ```json
-{"tool":"approve","arguments":{"ref":"review/final","note":"Reviewed the cited source versions."}}
+{"ref": "review/final", "note": "Reviewed the cited source versions."}
 ```
 
 To require leases for task execution and publication, start a trusted writer
@@ -302,8 +310,10 @@ direct Python task runs check it too. There is no MCP operation to disable it.
 
 Acquire a task-specific lease:
 
+Call `claim` with:
+
 ```json
-{"tool":"claim","arguments":{"resource":"task:spending-review","ttl":300}}
+{"resource": "task:spending-review", "ttl": 300}
 ```
 
 Pass the returned ticket object unchanged as `claim_ticket` in `task_run` with
@@ -332,14 +342,18 @@ coordination over one shared SQLite workbook, not distributed federation.
 returns an artifact, changed ancestor IDs/versions, and recorded creation and
 approval events:
 
+Call `provenance` with:
+
 ```json
-{"tool":"provenance","arguments":{"ref":"review/final"}}
+{"ref": "review/final"}
 ```
 
 `changes` pages the immutable actor-event ledger:
 
+Call `changes` with:
+
 ```json
-{"tool":"changes","arguments":{"after":0,"limit":50}}
+{"after": 0, "limit": 50}
 ```
 
 Keep the returned `through` fixed while following `next_after` until `complete`.

@@ -202,11 +202,16 @@ def regrade(root):
             }
         )
     summary = original.summarize(corrected)
-    if summary["both_correct_pairs"]["n"] < 2:
-        summary["both_correct_pairs"].pop("bootstrap_95_mean_difference", None)
-        summary["both_correct_pairs"]["uncertainty"] = (
-            "Insufficient both-correct pairs for an informative interval"
-        )
+    comparisons = (
+        summary["comparisons"].values() if "comparisons" in summary else (summary,)
+    )
+    for comparison in comparisons:
+        both_correct = comparison["both_correct_pairs"]
+        if both_correct["n"] < 2:
+            both_correct.pop("bootstrap_95_mean_difference", None)
+            both_correct["uncertainty"] = (
+                "Insufficient both-correct pairs for an informative interval"
+            )
     return {
         "kind": "Explicitly post hoc supplementary exact-numeric audit; original report unchanged",
         "input_report_sha256": hashlib.sha256(body).hexdigest(),
@@ -294,7 +299,11 @@ def publication_audit(root, report):
             assert record["usage"][metric] == reported_sum(
                 [phase["usage"][metric] for phase in record["phases"]]
             )
-    for arm in original.ARMS:
+    # Historical reports retain their measured arm names even when the current
+    # evaluator adds or renames arms. Never infer their protocol from live code.
+    arms = tuple(dict.fromkeys(row["arm"] for row in report["records"]))
+    assert arms and set(arms) == set(report["summary"]["arms"])
+    for arm in arms:
         records = [row for row in report["records"] if row["arm"] == arm]
         phases = [phase for row in records for phase in row["phases"]]
         calls = [call for phase in phases for call in phase["tool_calls"]]
@@ -417,7 +426,7 @@ def publish(root, destination):
             "REPRODUCTION.txt",
             (
                 "Workspool model evaluation source snapshot.\n"
-                "The 34 Python files are the exact bytes identified by this run's source_sha256;\n"
+                f"The {len(hashes)} Python files are the exact bytes identified by this run's source_sha256;\n"
                 "supporting license/dependency files are listed separately in SHA256-MANIFEST.json.\n"
                 "This is a partial source snapshot, not a complete distribution: obtain the\n"
                 "matching Workspool project/dependency environment, including tokenizer resources,\n"
@@ -426,7 +435,13 @@ def publish(root, destination):
                 "the exact model, dependency versions, cases and limits. The harness command is\n"
                 "python benchmarks/approval_model_eval.py --env-file PRIVATE_KEY_FILE\n"
                 "  --output NEW_PRIVATE_OUTPUT_DIRECTORY --concurrency 2\n"
-                "A rerun makes paid API calls and requires authorized credentials. No credentials,\n"
+                + (
+                    "For this three-arm protocol also supply --baseline-wheel PATH_TO_PUBLISHED_V0.9.2_WHEEL\n"
+                    "  --execute (omit --execute for offline preflight only).\n"
+                    if "comparisons" in report["summary"]
+                    else ""
+                )
+                + "A rerun makes paid API calls and requires authorized credentials. No credentials,\n"
                 "environment files, workbook catalogs, blobs or source datasets are included.\n"
             ),
         )

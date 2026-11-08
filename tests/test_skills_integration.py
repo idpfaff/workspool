@@ -31,8 +31,7 @@ async def client_for(root, discovery, role="writer"):
                         "serve",
                         "--profile",
                         "runtime",
-                        "--tool-discovery",
-                        discovery,
+                        *(["--experimental-lazy"] if discovery == "lazy" else []),
                         "--agent-id",
                         "integration-agent",
                         "--role",
@@ -211,18 +210,10 @@ def test_skill_wire_budget_is_enforced_before_returning_full_plan(
 
         with pytest.raises(ToolError, match="exceeds token budget"):
             await app.call_tool(
-                "workspool",
-                {
-                    "tool": "skill_inspect",
-                    "arguments": {
-                        "ref": saved["artifact_id"],
-                        "max_tokens": 1,
-                    },
-                },
+                "skill_inspect",
+                {"ref": saved["artifact_id"], "max_tokens": 1},
             )
-        result = await app.call_tool(
-            "workspool", {"tool": "skill_find", "arguments": {"max_tokens": 5000}}
-        )
+        result = await app.call_tool("skill_find", {"max_tokens": 5000})
         assert (
             decode(result.content)["skills"][0]["artifact_id"] == saved["artifact_id"]
         )

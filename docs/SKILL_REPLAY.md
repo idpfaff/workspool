@@ -1,5 +1,10 @@
 # Reusing a proven monthly analytical workflow
 
+The recorded MCP payloads use the historical lazy interface with scripted, known
+arguments. They do not establish model reliability. Current profiles and the current
+harness use eager named tools, so a rerun has different setup/request counts; the
+published evidence below is unchanged.
+
 Workspool skills retain a successful task's plan, exact input contracts and
 execution provenance. They can define a new task with different source
 bindings without resending the SQL. `skill_use` defines that task; `task_run`

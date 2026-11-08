@@ -38,7 +38,7 @@ Send that object to `skill_use`, then run the new task separately:
 {"name":"november-spending"}
 ```
 
-The final object is for `task_run`. Lazy discovery profiles wrap these in `{"tool":"skill_use","arguments":{...}}` or the corresponding operation name. Names, `_skills/` names, and immutable skill artifact IDs all work as skill references. Use the immutable ID when a particular skill version is required.
+The final object is for `task_run`. All profiles expose named tools directly. Only the opt-in `--experimental-lazy` experiment wraps these in `{"tool":"skill_use","arguments":{...}}` or the corresponding operation name. Names, `_skills/` names, and immutable skill artifact IDs all work as skill references. Use the immutable ID when a particular skill version is required.
 
 ## Eligibility and provenance
 

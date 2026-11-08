@@ -55,7 +55,7 @@ async def mcp(workspace, *options):
         yield client, initialized
 
 
-async def invoke(client, tool, arguments=None, *, discovery="lazy", error=False):
+async def invoke(client, tool, arguments=None, *, discovery="eager", error=False):
     args = arguments or {}
     result = await client.call_tool(
         "workspool" if discovery == "lazy" else tool,
@@ -111,8 +111,7 @@ def test_actual_mcp_roles_and_query_materialization(tmp_path, discovery, role):
     async def run():
         async with mcp(
             book.root,
-            "--tool-discovery",
-            discovery,
+            *(["--experimental-lazy"] if discovery == "lazy" else []),
             "--role",
             role,
             "--agent-id",
@@ -181,7 +180,10 @@ def test_actor_cannot_be_overridden_by_tool_arguments(tmp_path, discovery):
 
     async def run():
         async with mcp(
-            book.root, "--tool-discovery", discovery, "--agent-id", "configured-writer"
+            book.root,
+            *(["--experimental-lazy"] if discovery == "lazy" else []),
+            "--agent-id",
+            "configured-writer",
         ) as (client, _):
             # Reserved top-level identity overrides fail before any mutation.
             for field in ("actor", "principal", "role", "agent_id", "owner"):
@@ -302,9 +304,7 @@ def test_automatic_capture_two_fresh_mcp_sessions_and_lexical_restore(
         ) as (client, init):
             assert PREFIX not in init.instructions
             assert "salmon_total" not in init.instructions
-            wire = await client.call_tool(
-                "workspool", {"tool": "recall", "arguments": {}}
-            )
+            wire = await client.call_tool("recall", {})
             assert not wire.isError
             assert (
                 token_counter(str(local_tokenizer))(serialized_result(wire)) <= budget
@@ -339,7 +339,7 @@ def test_automatic_capture_two_fresh_mcp_sessions_and_lexical_restore(
 
 
 async def local_call(app, name, args=None):
-    result = await app.call_tool("workspool", {"tool": name, "arguments": args or {}})
+    result = await app.call_tool(name, args or {})
     assert not result.isError, result.content
     return decode(result.content)
 
@@ -368,7 +368,7 @@ def test_untrusted_artifacts_and_observations_only_arrive_in_explicit_recall(tmp
     assert malicious not in app.instructions
     assert source["artifact_id"] not in app.instructions
     assert app.capture_session is None
-    wire = asyncio.run(app.call_tool("workspool", {"tool": "recall", "arguments": {}}))
+    wire = asyncio.run(app.call_tool("recall", {}))
     assert not wire.isError
     assert token_counter("o200k_base")(serialized_result(wire)) <= 3000
     restored = decode(wire.content)
