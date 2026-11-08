@@ -250,7 +250,8 @@ print(json.dumps({"format":1,"parquet":"answer.parquet"}))
     workers, _ = registry(tmp_path, script)
     book, _ = setup(tmp_path)
     result = tasks.run_task(book, "job", workers=workers)
-    assert result["state"] == "complete", result
+    if result["state"] != "complete":
+        pytest.fail(json.dumps(result, indent=2))
     assert result["steps"][-1]["result"]["rows"] == [["9007199254740995"]]
     assert result["steps"][-1]["result"]["integer_string_columns"] == [
         {"index": 0, "sql_type": "BIGINT"}
