@@ -1,6 +1,6 @@
-"""Predeclared paired task/approval-loop evaluation; no API access on import.
+"""Predeclared three-arm task/approval evaluation; no API access on import.
 
-Both arms have the same capabilities and single-copy replies. This compares
+All arms have the same capabilities and single-copy replies. This compares
 delivery interfaces and model decisions, not Workspool against SQL or files.
 Only an explicit CLI launch reads the authorized private key or calls a provider.
 """
@@ -16,7 +16,9 @@ import os
 import random
 import shutil
 import sys
+import tempfile
 import time
+import zipfile
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -38,7 +40,11 @@ shared = previous.shared
 ROOT = Path(__file__).resolve().parents[1]
 MODEL = "gpt-6-luna"
 TASK = "review_job"
-ARMS = ("control", "candidate")
+ARMS = ("eager_baseline", "eager_compact", "lazy_typed_errors")
+BASELINE_WHEEL_SHA256 = (
+    "b4d124650c83d73712c63684892bddaafbfe9224dd18123ecedfc56e3a383c06"
+)
+BASELINE_COMMIT = "89528472182ee4f830d99c5cab590855df28d545"
 SCENARIOS = ("approved", "refused", "revoked", "source_changed", "handoff")
 TOOLS = (
     "query",
@@ -52,7 +58,7 @@ TOOLS = (
     "verify",
     "provenance",
 )
-MAX_REQUESTS, MAX_INPUT, MAX_OUTPUT = 480, 5_000_000, 768_000
+MAX_REQUESTS, MAX_INPUT, MAX_OUTPUT = 720, 7_500_000, 1_152_000
 MAX_REQUEST_TOKENS, MAX_REQUEST_BYTES, MAX_REPLY = 24000, 100000, 1600
 PRICE_URL = "https://developers.openai.com/api/docs/pricing"
 MODEL_URL = "https://developers.openai.com/api/docs/models/gpt-6-luna"
@@ -72,7 +78,7 @@ def declared_cases():
 
 def protocol():
     return {
-        "revision": 1,
+        "revision": 2,
         "model": MODEL,
         "service_tier": "default",
         "reasoning": "low",
@@ -102,11 +108,18 @@ def protocol():
             "reservation_rate_per_million": {"input": 0.35, "output": 0.50},
             "reservation_note": "Conservative input plus maximum listed short-context cache-write rate; no cache discount. This is a guard estimate, not an invoice.",
         },
-        "control": "Same actual tools and writer permissions; eager discovery, full JSON, text-only replies",
-        "candidate": "Same actual tools and writer permissions; lazy discovery, adaptive text-only replies",
-        "scope": "20 predeclared independent paired synthetic workbooks. Model-selected calls and authored task definitions; same required task/approval workload. Not a SQL-baseline or autonomous tool-adoption comparison.",
+        "arms": {
+            "eager_baseline": "Exact eager schemas and instructions captured from the hash-pinned v0.9.2 wheel; current runtime dispatch",
+            "eager_compact": "Current default typed eager schemas and shared instructions; current runtime dispatch",
+            "lazy_typed_errors": "Current experimental facade with typed validation errors; current runtime dispatch",
+        },
+        "response_format": "full",
+        "response_content": "text",
+        "scope": "The same 20 predeclared scenarios, three independently cloned workbooks per case. All arms use current execution, validation/errors and full JSON text-only output. The baseline freezes only its actual v0.9.2 advertised interface. This isolates interface/schema delivery and shared guidance, not an old-runtime comparison or a pure schema-size causal estimate.",
+        "grading": "Exact model JSON answer plus independently hash-verified integral numeric Parquet values; canonical integer-string previews are accepted, floats and text result columns are not.",
+        "default_release_rule": "All 20 cases attempted with complete usage and stable sources; eager_compact must pass at least eager_baseline minus one cases. Lower tokens on incomplete work are not a win. This is a predeclared acceptance rule, not statistical non-inferiority.",
         "reviewer": "Deterministic scenario intervention by a separate configured approver; only an actual valid pending final gate is reviewed. Approval is not model reasoning and is not credited as a model decision.",
-        "failures": "All 40 arms remain, including setup/answer/enforcement errors, limits and unattempted cases. No final-outcome tuning or replacement trials.",
+        "failures": "All 60 arms remain, including setup/answer/enforcement errors, limits and unattempted cases. No final-outcome tuning or replacement trials.",
     }
 
 
@@ -115,6 +128,7 @@ def source_hashes():
         Path(__file__),
         Path(__file__).with_name("task_model_eval.py"),
         Path(__file__).with_name("model_efficiency.py"),
+        Path(__file__).with_name("approval_model_regrade.py"),
         *sorted((ROOT / "src/agent_workbook").glob("*.py")),
     ]
     return {
@@ -307,7 +321,7 @@ class GuardedProvider:
 
 
 @asynccontextmanager
-async def connection(workspace, arm, identity, log):
+async def connection(workspace, arm, identity, log, *, package_root=None):
     args = [
         "-m",
         "agent_workbook.cli",
@@ -321,17 +335,22 @@ async def connection(workspace, arm, identity, log):
         "--tools",
         *TOOLS,
         "--response-format",
-        "full" if arm == "control" else "adaptive",
+        "full",
         "--response-content",
         "text",
-        "--tool-discovery",
-        "eager" if arm == "control" else "lazy",
     ]
+    if package_root is not None:
+        # Only the archived v0.9.2 process accepts this historical option.
+        args += ["--tool-discovery", "eager"]
+    elif arm == "lazy_typed_errors":
+        args += ["--experimental-lazy"]
     env = {
         key: value
         for key, value in os.environ.items()
         if key in {"PATH", "HOME", "USER", "LOGNAME", "TMPDIR", "LANG", "LC_ALL"}
     }
+    if package_root is not None:
+        env["PYTHONPATH"] = str(package_root)
     with log.open("a") as errors:
         async with (
             stdio_client(
@@ -346,6 +365,100 @@ async def connection(workspace, arm, identity, log):
                 for tool in (await client.list_tools()).tools
             ]
             yield client, definitions, initialized.instructions or ""
+
+
+def interface_counts(definitions, instructions):
+    """Count explicitly serialized lists, excluding wire envelopes/provider framing."""
+    minimal = [
+        {key: tool[key] for key in ("name", "description", "inputSchema")}
+        for tool in definitions
+    ]
+    return {
+        encoding: {
+            "mcp_definition_list": count(compact(minimal)),
+            "openai_function_list": count(compact(shared.function_tools(definitions))),
+            "instructions": count(instructions),
+        }
+        for encoding in ("cl100k_base", "o200k_base")
+        for count in [token_counter(encoding)]
+    }
+
+
+def extract_baseline(wheel, destination):
+    """Extract only authenticated package bytes; no dependency install/network."""
+    if hashlib.sha256(wheel.read_bytes()).hexdigest() != BASELINE_WHEEL_SHA256:
+        raise ValueError("Baseline must be the published, hash-pinned v0.9.2 wheel")
+    hashes = {}
+    with zipfile.ZipFile(wheel) as archive:
+        for entry in archive.infolist():
+            if not entry.filename.startswith("agent_workbook/") or entry.is_dir():
+                continue
+            relative = Path(entry.filename)
+            if ".." in relative.parts or entry.file_size > 8 * 1024 * 1024:
+                raise ValueError("Invalid baseline archive member")
+            body = archive.read(entry)
+            target = destination / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(body)
+            hashes[entry.filename] = hashlib.sha256(body).hexdigest()
+    if "agent_workbook/server.py" not in hashes:
+        raise ValueError("Baseline package missing server")
+    return hashes
+
+
+async def capture_baseline(wheel, output):
+    with tempfile.TemporaryDirectory(prefix="workspool-interface-") as temporary:
+        root = Path(temporary)
+        hashes = extract_baseline(wheel, root / "package")
+        async with connection(
+            root / "workbook",
+            "eager_baseline",
+            "interface-preflight",
+            output / "baseline-preflight.stderr.log",
+            package_root=root / "package",
+        ) as (_, definitions, instructions):
+            if {tool["name"] for tool in definitions} != set(TOOLS):
+                raise ValueError(
+                    "Archived baseline does not expose the exact allowlist"
+                )
+            snapshot = {
+                "version": "0.9.2",
+                "commit": BASELINE_COMMIT,
+                "wheel_sha256": BASELINE_WHEEL_SHA256,
+                "package_sha256": hashes,
+                "definitions": definitions,
+                "instructions": instructions,
+                "counts": interface_counts(definitions, instructions),
+            }
+    (output / "baseline-interface.json").write_text(
+        json.dumps(snapshot, indent=2) + "\n"
+    )
+    return snapshot
+
+
+async def preflight(output, baseline):
+    interfaces = {"eager_baseline": baseline}
+    with tempfile.TemporaryDirectory(prefix="workspool-interface-") as temporary:
+        for arm in ARMS[1:]:
+            async with connection(
+                Path(temporary) / arm,
+                arm,
+                "interface-preflight",
+                output / f"{arm}-preflight.stderr.log",
+            ) as (_, definitions, instructions):
+                interfaces[arm] = {
+                    "definitions": definitions,
+                    "instructions": instructions,
+                    "counts": interface_counts(definitions, instructions),
+                }
+    report = {
+        "state": "planned_not_run",
+        "protocol": protocol(),
+        "interfaces": interfaces,
+        "source_sha256": source_hashes(),
+    }
+    (output / "preflight.json").write_text(json.dumps(report, indent=2) + "\n")
+    return report
 
 
 def audit_task(workspace, expected_sources):
@@ -474,7 +587,7 @@ def phase_expected(phase, setup, allowed=False):
     }
 
 
-def phase_audit_pass(audit, phase, allowed, oracle):
+def phase_audit_pass(audit, phase, allowed, oracle, workspace=None):
     if not all(
         audit.get(key)
         for key in ("source_integrity", "valid_gated_plan", "pinned_current_sources")
@@ -486,17 +599,33 @@ def phase_audit_pass(audit, phase, allowed, oracle):
             and not audit["published_current"]
             and audit.get("publication_events", 0) == 0
         )
-    result = audit.get("final_result") or {}
-    return (
-        audit["published_current"]
-        and result.get("columns") == list(oracle)
-        and compact(result.get("rows")) == compact([list(oracle.values())])
-        and result.get("preview_truncated") is False
+    if not audit["published_current"] or workspace is None:
+        return False
+    # Reuse the independently audited exact-numeric rule, without modifying any
+    # historical score. It verifies the blob digest, numeric schema and full row.
+    spec = importlib.util.spec_from_file_location(
+        "approval_numeric_audit", Path(__file__).with_name("approval_model_regrade.py")
     )
+    auditor = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(auditor)
+    try:
+        audit["materialized_proof"] = auditor.materialized_proof(
+            workspace, {"task_audit": audit, "expected": oracle}
+        )
+    except (ValueError, KeyError, TypeError, OSError):
+        return False
+    return True
 
 
 async def evaluate_arm(
-    case, arm, workspace, provider, setup, connector=connection, progress=None
+    case,
+    arm,
+    workspace,
+    provider,
+    setup,
+    connector=connection,
+    progress=None,
+    baseline_interface=None,
 ):
     conversation = previous.RetainedConversation(provider)
     started = time.perf_counter()
@@ -512,6 +641,13 @@ async def evaluate_arm(
         async with connector(
             workspace, arm, identity, workspace.parent / f"{arm}-{phase}.stderr.log"
         ) as (client, definitions, instructions):
+            if arm == "eager_baseline":
+                if baseline_interface is None:
+                    raise ValueError("Missing captured baseline interface")
+                if {tool["name"] for tool in definitions} != set(TOOLS):
+                    raise ValueError("Current runtime allowlist differs from baseline")
+                definitions = baseline_interface["definitions"]
+                instructions = baseline_interface["instructions"]
             evidence = previous.EvidenceClient(client, conversation)
             result = await shared.solve(
                 conversation,
@@ -530,7 +666,9 @@ async def evaluate_arm(
             # Retain paid responses before context teardown/auditing can fail.
             phases.append(previous.public_result(result))
         audit = audit_task(workspace, setup["sources"])
-        enforcement = phase_audit_pass(audit, phase, allowed, setup["oracle"])
+        enforcement = phase_audit_pass(
+            audit, phase, allowed, setup["oracle"], workspace
+        )
         result.update(
             phase=phase,
             model_answer_correct=result["success"],
@@ -579,9 +717,11 @@ def sum_usage(records):
     }
 
 
-def summarize(records):
+def _pair_summary(records):
+    # Retain historical two-arm aggregation for the read-only regrade utility.
+    arms = ("control", "candidate")
     result = {"arms": {}, "paired": {}}
-    for arm in ARMS:
+    for arm in arms:
         rows = [row for row in records if row["arm"] == arm]
         count = sum(row["success"] for row in rows)
         result["arms"][arm] = {
@@ -596,10 +736,10 @@ def summarize(records):
         pairs.setdefault(row["case"]["id"], {})[row["arm"]] = row
     differences, both_correct, unmeasurable = [], [], 0
     for pair in pairs.values():
-        if set(pair) == set(ARMS):
+        if set(pair) == set(arms):
             if any(
                 not pair[arm]["attempted"] or pair[arm]["usage"].get(key) is None
-                for arm in ARMS
+                for arm in arms
                 for key in ("input_tokens", "output_tokens")
             ):
                 unmeasurable += 1
@@ -608,10 +748,10 @@ def summarize(records):
                 arm: sum(
                     pair[arm]["usage"][key] for key in ("input_tokens", "output_tokens")
                 )
-                for arm in ARMS
+                for arm in arms
             }
             differences.append(costs["candidate"] - costs["control"])
-            if all(pair[arm]["success"] for arm in ARMS):
+            if all(pair[arm]["success"] for arm in arms):
                 both_correct.append(differences[-1])
     if differences:
         rng = random.Random(67401)
@@ -653,12 +793,74 @@ def summarize(records):
     return result
 
 
+def summarize(records):
+    names = {row["arm"] for row in records}
+    if names <= {"control", "candidate"}:
+        return _pair_summary(records)
+    if names - set(ARMS):
+        raise ValueError("Unknown evaluation arm")
+    result = {"arms": {}, "comparisons": {}}
+    for candidate in ARMS[1:]:
+        paired = _pair_summary(
+            [
+                dict(row, arm="control" if row["arm"] == ARMS[0] else "candidate")
+                for row in records
+                if row["arm"] in {ARMS[0], candidate}
+            ]
+        )
+        result["arms"][ARMS[0]] = paired.pop("arms")["control"]
+        rows = [row for row in records if row["arm"] == candidate]
+        count = sum(row["success"] for row in rows)
+        result["arms"][candidate] = {
+            "cases": len(rows),
+            "correct": count,
+            "wilson_95": wilson(count, len(rows)),
+            "enforcement_pass": sum(row["enforcement_pass"] for row in rows),
+            "usage": sum_usage(rows),
+        }
+        result["comparisons"][candidate] = paired
+    return result
+
+
+def release_gate(report):
+    records = report["records"]
+    expected = {(case["id"], arm) for case in declared_cases() for arm in ARMS}
+    actual = {(row["case"]["id"], row["arm"]) for row in records}
+    complete = (
+        actual == expected
+        and len(records) == len(expected)
+        and report["sources_unchanged"]
+        and all(row["attempted"] and row["usage_complete"] for row in records)
+    )
+    arms = report["summary"]["arms"]
+    control, candidate = (arms[name]["correct"] for name in ARMS[:2])
+    return {
+        "rule": "eager_compact correct >= eager_baseline correct - 1",
+        "complete_evidence": complete,
+        "baseline_correct": control,
+        "eager_compact_correct": candidate,
+        "passed": complete and candidate >= control - 1,
+        "scope": "Default-profile acceptance only; no token or statistical superiority claim. Experimental lazy is reported separately.",
+    }
+
+
 async def evaluate(
-    output, provider_factory, *, cases=None, concurrency=2, connector=connection
+    output,
+    provider_factory,
+    *,
+    baseline_interface,
+    cases=None,
+    concurrency=2,
+    connector=connection,
 ):
     cases = declared_cases() if cases is None else cases
     before = source_hashes()
-    report = {"protocol": protocol(), "source_sha256": before, "records": []}
+    report = {
+        "protocol": protocol(),
+        "source_sha256": before,
+        "records": [],
+        "baseline_interface": baseline_interface,
+    }
     semaphore = asyncio.Semaphore(concurrency)
     jobs = []
     for index, case in enumerate(cases):
@@ -668,7 +870,8 @@ async def evaluate(
         setup = fixture(prepared, case)
         for arm in ARMS:
             shutil.copytree(prepared, directory / arm)
-        order = ARMS if index % 2 == 0 else tuple(reversed(ARMS))
+        start = index % len(ARMS)
+        order = ARMS[start:] + ARMS[:start]
         for arm in order:
             jobs.append((case, arm, directory / arm, setup))
 
@@ -677,9 +880,17 @@ async def evaluate(
         async with semaphore:
             progress = []
             provider = provider_factory()
+            started = time.perf_counter()
             try:
                 row = await evaluate_arm(
-                    case, arm, workspace, provider, setup, connector, progress
+                    case,
+                    arm,
+                    workspace,
+                    provider,
+                    setup,
+                    connector,
+                    progress,
+                    baseline_interface,
                 )
             except Exception:  # noqa: BLE001 - preserve a failed arm without exposing credentials/provider bodies
                 row = {
@@ -691,6 +902,7 @@ async def evaluate(
                     "success": False,
                     "enforcement_pass": False,
                     "failure": "harness_or_tool_session_failure",
+                    "wall_seconds": time.perf_counter() - started,
                     "phases": progress,
                     "usage": previous.totals(progress),
                 }
@@ -721,6 +933,7 @@ async def evaluate(
     report["source_sha256_after"] = source_hashes()
     report["sources_unchanged"] = report["source_sha256_after"] == before
     report["summary"] = summarize(report["records"])
+    report["default_release_gate"] = release_gate(report)
     return report
 
 
@@ -729,6 +942,12 @@ async def run(args):
     output.mkdir(parents=True, exist_ok=False)
     declared = protocol()
     (output / "protocol.json").write_text(json.dumps(declared, indent=2) + "\n")
+    baseline = await capture_baseline(
+        args.baseline_wheel.expanduser().resolve(), output
+    )
+    planned = await preflight(output, baseline)
+    if not args.execute:
+        return planned
     key = shared.load_key(args.env_file)
     budget = Budget()
     async with httpx.AsyncClient(
@@ -740,7 +959,9 @@ async def run(args):
                 shared.ResponsesProvider(http, key, request_budget=12), budget
             )
 
-        report = await evaluate(output, factory, concurrency=args.concurrency)
+        report = await evaluate(
+            output, factory, baseline_interface=baseline, concurrency=args.concurrency
+        )
     report["budget"] = budget.report()
     report["runtime"] = {
         name: importlib.metadata.version(name)
@@ -764,15 +985,34 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--env-file", type=Path, default=Path(".env.local"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--baseline-wheel",
+        type=Path,
+        required=True,
+        help="Published v0.9.2 wheel, verified against its fixed SHA256",
+    )
     parser.add_argument("--concurrency", type=int, choices=range(1, 5), default=2)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--plan-only",
+        action="store_true",
+        help="Capture interfaces and protocol offline (default)",
+    )
+    mode.add_argument(
+        "--execute",
+        action="store_true",
+        help="Explicitly authorize this invocation to load a key and call the provider",
+    )
     args = parser.parse_args()
     report = asyncio.run(run(args))
     print(
         json.dumps(
             {
-                "summary": report["summary"],
-                "budget": report["budget"],
-                "sources_unchanged": report["sources_unchanged"],
+                "state": report.get("state", "executed"),
+                "summary": report.get("summary"),
+                "budget": report.get("budget"),
+                "sources_unchanged": report.get("sources_unchanged"),
+                "default_release_gate": report.get("default_release_gate"),
             }
         )
     )
