@@ -103,10 +103,7 @@ class _LocalMCP(FastMCP):
                 tool.outputSchema = None
             elif tool.outputSchema:
                 tool.outputSchema = _slim_schema(tool.outputSchema, nullable=True)
-                if tool.outputSchema == {
-                    "type": "object",
-                    "additionalProperties": True,
-                }:
+                if tool.outputSchema == {"type": "object"}:
                     # An unconstrained object adds no information or validation.
                     tool.outputSchema = None
         return tools

@@ -158,6 +158,16 @@ def test_shared_and_recursive_definitions_remain_references():
     assert _slim_schema(schema) == schema
 
 
+@pytest.mark.parametrize("response_content", ["both", "structured"])
+def test_unconstrained_output_schemas_still_omitted(tmp_path, response_content):
+    app = server_for(Workbook(tmp_path), response_content=response_content)
+    tools = {tool.name: tool for tool in asyncio.run(app.list_tools())}
+    for name in ("save", "inspect", "resume", "query", "refresh"):
+        assert tools[name].outputSchema is None
+    # A wrapped list result does carry a useful output contract.
+    assert tools["find"].outputSchema["properties"]["result"]["type"] == "array"
+
+
 @pytest.mark.parametrize("profile", ["compatible", "efficient", "agent", "runtime"])
 def test_every_profile_advertises_typed_tools_by_default(tmp_path, profile):
     app = server_for(Workbook(tmp_path), profile=profile)
